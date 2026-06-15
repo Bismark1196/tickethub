@@ -1,0 +1,2013 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VendHub 2026</title>
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VendHub">
+<link rel="apple-touch-icon" href="images/icon-192.png">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Book vendor booths, track applications, and chat with event coordinators.">
+<meta property="og:title" content="VendHub — The Vendor Marketplace">
+<meta property="og:description" content="Secure your booth at the best USA events.">
+<meta property="og:image" content="images/header.png">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black: #0a0a0a; --white: #ffffff; --cream: #f7f5f0;
+  --gold: #c9a84c; --gold-light: #e8d5a3; --gold-dark: #a07830;
+  --charcoal: #1c1c1e; --slate: #3a3a3c; --muted: #8a8a8e;
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+  --radius: 16px; --radius-sm: 10px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --page-max: 1280px; --page-pad: 48px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--black); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+/* HERO */
+.hero { position:relative; min-height:420px; background:url("https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1600&q=80") center/cover no-repeat; display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; }
+.hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(10,10,10,0.25) 0%,rgba(10,10,10,0.65) 55%,rgba(10,10,10,0.93) 100%); }
+.hero-nav { position:absolute; top:0; left:0; right:0; z-index:10; }
+.hero-nav-inner { max-width:var(--page-max); margin:0 auto; padding:22px var(--page-pad); display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.hero-logo { font-family:'Playfair Display',serif; font-size:23px; font-weight:900; color:var(--white); letter-spacing:0.3px; flex-shrink:0; }
+.hero-logo span { color:var(--gold); }
+.hero-nav-right { display:flex; align-items:center; gap:10px; }
+.hero-user { display:flex; align-items:center; gap:10px; }
+.user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color:var(--white); border:2px solid rgba(255,255,255,0.25); flex-shrink:0; }
+#logoutBtn { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); cursor:pointer; padding:7px; border-radius:50%; color:rgba(255,255,255,0.8); transition:var(--transition); display:flex; align-items:center; justify-content:center; }
+#logoutBtn:hover { background:rgba(255,255,255,0.22); color:var(--white); transform:scale(1.05); }
+.admin-nav-group { display:none; align-items:center; gap:8px; animation:fadeIn 0.4s ease both; }
+.admin-nav-group.show { display:flex; }
+.admin-nav-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:22px; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; text-decoration:none; cursor:pointer; border:none; transition:var(--transition); white-space:nowrap; flex-shrink:0; }
+.admin-nav-btn svg { width:13px; height:13px; flex-shrink:0; }
+.admin-nav-btn-ghost { background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.18); color:rgba(255,255,255,0.75); }
+.admin-nav-btn-ghost:hover { background:rgba(255,255,255,0.18); color:var(--white); }
+.admin-nav-btn-gold { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--black); font-weight:700; }
+.admin-nav-btn-gold:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(201,168,76,0.35); }
+.admin-nav-divider { width:1px; height:20px; background:rgba(255,255,255,0.18); flex-shrink:0; }
+
+/* USA STATS TICKER */
+.usa-ticker { position:absolute; bottom:0; left:0; right:0; z-index:8; background:rgba(10,10,10,0.55); backdrop-filter:blur(12px); border-top:1px solid rgba(201,168,76,0.2); }
+.usa-ticker-inner { max-width:var(--page-max); margin:0 auto; padding:10px var(--page-pad); display:flex; align-items:center; gap:28px; overflow:hidden; }
+.usa-ticker-stat { display:flex; align-items:center; gap:8px; white-space:nowrap; flex-shrink:0; }
+.usa-ticker-num { font-family:'Playfair Display',serif; font-size:18px; font-weight:900; color:var(--gold); }
+.usa-ticker-label { font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:0.6px; text-transform:uppercase; font-weight:500; }
+.usa-ticker-divider { width:1px; height:24px; background:rgba(255,255,255,0.12); flex-shrink:0; }
+
+/* IMPORT TOAST */
+#importToast { position:fixed; top:16px; left:50%; transform:translateX(-50%) translateY(-80px); background:var(--charcoal); color:var(--white); display:flex; align-items:center; gap:10px; padding:12px 20px; border-radius:30px; font-size:13.5px; font-weight:500; box-shadow:0 8px 28px rgba(0,0,0,0.28); z-index:9999; white-space:nowrap; transition:transform 0.38s cubic-bezier(0.34,1.56,0.64,1); pointer-events:none; }
+#importToast.show { transform:translateX(-50%) translateY(0); }
+#importToast .import-dot { width:8px; height:8px; border-radius:50%; background:#22c55e; flex-shrink:0; animation:pulseDot 1.5s ease-in-out infinite; }
+
+.hero-body { position:relative; z-index:5; max-width:var(--page-max); margin:0 auto; width:100%; padding:0 var(--page-pad) 68px; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:rgba(201,168,76,0.18); border:1px solid rgba(201,168,76,0.4); color:var(--gold-light); font-size:11px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-bottom:16px; }
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(30px,5vw,56px); font-weight:900; color:var(--white); line-height:1.12; max-width:620px; margin-bottom:14px; }
+.hero h1 em { font-style:italic; color:var(--gold); }
+.hero-sub { font-size:15px; color:rgba(255,255,255,0.58); max-width:460px; line-height:1.7; }
+
+/* CONTROLS BAR */
+.controls-bar { background:var(--white); border-bottom:1px solid #e8e8e8; position:sticky; top:0; z-index:100; box-shadow:0 2px 14px rgba(0,0,0,0.05); }
+.controls-bar-inner { max-width:var(--page-max); margin:0 auto; padding:0 var(--page-pad); display:flex; align-items:center; height:56px; gap:0; }
+.categories { display:flex; align-items:center; gap:4px; overflow-x:auto; scrollbar-width:none; flex:1; height:100%; }
+.categories::-webkit-scrollbar { display:none; }
+.categories div { flex:0 0 auto; padding:7px 16px; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; transition:var(--transition); color:var(--slate); border:1.5px solid transparent; }
+.categories div:hover { background:var(--cream); color:var(--black); }
+.categories div.active { background:var(--black); color:var(--white); border-color:var(--black); }
+.controls-divider { width:1px; height:28px; background:#e8e8e8; margin:0 12px; flex-shrink:0; }
+.controls-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.search-wrap { position:relative; flex-shrink:0; }
+.search-wrap svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.search-wrap input { padding:9px 16px 9px 40px; border-radius:22px; border:1.5px solid #e0e0e0; font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--black); background:var(--cream); outline:none; width:190px; transition:var(--transition); appearance:none; }
+.search-wrap input:focus { border-color:var(--gold); background:var(--white); width:230px; box-shadow:0 0 0 3px rgba(201,168,76,0.14); }
+
+/* SECTION */
+.section-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:8px; }
+.section-header h2 { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; color:var(--black); }
+.results-count { font-size:13px; color:var(--muted); font-weight:500; }
+.results-count strong { color:var(--black); }
+
+.past-section-divider { grid-column:1/-1; display:flex; align-items:center; gap:16px; margin:12px 0 4px; }
+.past-section-divider-line { flex:1; height:1px; background:#e0ddd6; }
+.past-section-divider-label { font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+
+.events-empty { grid-column:1/-1; text-align:center; padding:56px 24px; display:flex; flex-direction:column; align-items:center; gap:12px; }
+.events-empty-icon { font-size:44px; opacity:0.3; }
+.events-empty-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--black); }
+.events-empty-sub { font-size:14px; color:var(--muted); max-width:280px; line-height:1.6; }
+
+.mobile-search { display:none; background:var(--white); border-bottom:1px solid #e8e8e8; }
+.mobile-search-inner { max-width:var(--page-max); margin:0 auto; padding:10px var(--page-pad); }
+.mobile-search-wrap { position:relative; }
+.mobile-search-wrap svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.mobile-search input { width:100%; padding:11px 16px 11px 42px; border-radius:22px; border:1.5px solid #e0e0e0; font-family:'DM Sans',sans-serif; font-size:14px; background:var(--cream); color:var(--black); outline:none; transition:var(--transition); }
+.mobile-search input:focus { border-color:var(--gold); background:var(--white); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+
+/* CART / DRAWER */
+#appCartBtn { position:fixed; bottom:24px; left:24px; z-index:999; display:none; align-items:center; gap:9px; background:var(--white); color:var(--black); border:1.5px solid #e0ddd6; padding:12px 18px; border-radius:50px; font-size:13.5px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; box-shadow:0 6px 24px rgba(0,0,0,0.10); transition:var(--transition); animation:floatIn 0.4s ease both; }
+#appCartBtn:hover { background:var(--black); color:var(--white); border-color:var(--black); transform:translateY(-2px); box-shadow:0 10px 32px rgba(0,0,0,0.18); }
+#appCartBtn:hover .cart-icon-wrap { background:rgba(255,255,255,0.12); }
+#appCartBtn:hover .cart-icon-wrap svg { color:var(--white); }
+.cart-icon-wrap { width:26px; height:26px; background:var(--cream); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.2s; }
+.cart-icon-wrap svg { width:14px; height:14px; color:var(--slate); transition:color 0.2s; }
+.cart-btn-label { line-height:1; }
+#appCartCount { background:var(--gold); color:var(--black); font-size:10.5px; font-weight:800; min-width:19px; height:19px; border-radius:10px; padding:0 5px; display:none; align-items:center; justify-content:center; line-height:1; flex-shrink:0; }
+#appCartCount.show { display:inline-flex; }
+body.modal-open #appCartBtn { display:none !important; }
+
+#appDrawerOverlay { position:fixed; inset:0; background:rgba(10,10,10,0.45); backdrop-filter:blur(6px); z-index:1050; opacity:0; pointer-events:none; transition:opacity 0.3s ease; }
+#appDrawerOverlay.open { opacity:1; pointer-events:all; }
+#appDrawer { position:fixed; top:0; left:0; bottom:0; width:380px; max-width:calc(100vw - 40px); background:var(--white); z-index:1051; display:flex; flex-direction:column; box-shadow:8px 0 48px rgba(0,0,0,0.18); transform:translateX(-100%); transition:transform 0.38s cubic-bezier(0.4,0,0.2,1); }
+#appDrawer.open { transform:translateX(0); }
+.drawer-header { background:var(--black); padding:20px 20px 16px; display:flex; align-items:flex-start; justify-content:space-between; flex-shrink:0; position:relative; overflow:hidden; }
+.drawer-header::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 80% 50%,rgba(201,168,76,0.12) 0%,transparent 55%); pointer-events:none; }
+.drawer-header-left { position:relative; z-index:1; }
+.drawer-header-eyebrow { font-size:9.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+.drawer-header-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; color:var(--white); line-height:1.2; }
+.drawer-header-sub { font-size:12px; color:rgba(255,255,255,0.45); margin-top:3px; }
+.drawer-header-right { display:flex; align-items:center; gap:10px; position:relative; z-index:1; }
+.drawer-count-pill { background:rgba(201,168,76,0.2); border:1px solid rgba(201,168,76,0.4); color:var(--gold-light); font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+.drawer-close { width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.1); border:none; cursor:pointer; color:rgba(255,255,255,0.7); font-size:18px; line-height:1; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
+.drawer-close:hover { background:rgba(255,255,255,0.2); color:var(--white); }
+.drawer-accent { height:2px; background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light)); flex-shrink:0; }
+.drawer-body { flex:1; overflow-y:auto; padding:14px 14px 24px; display:flex; flex-direction:column; gap:10px; }
+.drawer-body::-webkit-scrollbar { width:4px; }
+.drawer-body::-webkit-scrollbar-thumb { background:#e0ddd6; border-radius:4px; }
+.drawer-empty { display:flex; flex-direction:column; align-items:center; text-align:center; padding:48px 24px; gap:12px; margin:auto; }
+.drawer-empty-icon { font-size:40px; opacity:0.3; }
+.drawer-empty-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--black); }
+.drawer-empty-sub { font-size:13px; color:var(--muted); line-height:1.5; max-width:220px; }
+.app-card { display:flex; align-items:flex-start; gap:12px; padding:13px 14px; border-radius:var(--radius-sm); border:1px solid #f0ede8; background:var(--cream); transition:var(--transition); animation:slideInLeft 0.25s ease both; border-left:3px solid transparent; }
+.app-card:hover { background:#f0ede5; border-color:#e5e1d8; }
+@keyframes slideInLeft { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+.app-card.pending    { border-left-color:#f59e0b; }
+.app-card.submitted  { border-left-color:#3b82f6; }
+.app-card.approved   { border-left-color:#10b981; }
+.app-card.rejected   { border-left-color:#ef4444; }
+.app-card.confirmed  { border-left-color:#8b5cf6; }
+.app-card-info { flex:1; min-width:0; }
+.app-card-event { font-size:13.5px; font-weight:700; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; }
+.app-card-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.app-card-meta-item { font-size:11px; color:var(--muted); display:flex; align-items:center; gap:3px; }
+.app-card-meta-item svg { width:10px; height:10px; flex-shrink:0; }
+.app-status-pill { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:10.5px; font-weight:700; text-transform:capitalize; white-space:nowrap; flex-shrink:0; }
+.app-status-pill.pending   { background:#fef3c7; color:#92400e; }
+.app-status-pill.submitted { background:#dbeafe; color:#1e40af; }
+.app-status-pill.approved  { background:#d1fae5; color:#065f46; }
+.app-status-pill.rejected  { background:#fee2e2; color:#991b1b; }
+.app-status-pill.confirmed { background:#ede9fe; color:#5b21b6; }
+.app-card-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; margin-top:2px; }
+.app-card-chat { width:32px; height:32px; border-radius:50%; background:var(--white); border:1px solid #e0ddd6; color:var(--slate); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:var(--transition); position:relative; }
+.app-card-chat:hover { background:var(--black); color:var(--white); border-color:var(--black); transform:scale(1.08); }
+.app-card-chat svg { width:13px; height:13px; }
+.app-card-chat-badge { position:absolute; top:-4px; right:-4px; width:14px; height:14px; border-radius:50%; background:#ef4444; color:#fff; font-size:7.5px; font-weight:800; display:none; align-items:center; justify-content:center; border:1.5px solid var(--white); }
+.app-card-chat-badge.show { display:flex; }
+.app-confirm-btn { display:inline-flex; align-items:center; gap:5px; margin-top:8px; padding:6px 13px; border-radius:20px; font-family:'DM Sans',sans-serif; font-size:11.5px; font-weight:600; border:1.5px solid #d97706; background:#fef3c7; color:#92400e; cursor:pointer; transition:all 0.2s; }
+.app-confirm-btn:hover:not(:disabled) { background:#fde68a; transform:translateY(-1px); box-shadow:0 4px 12px rgba(217,119,6,0.2); }
+.app-confirm-btn:disabled { cursor:default; transform:none; box-shadow:none; }
+.app-confirm-btn.is-confirmed { background:#ede9fe; color:#5b21b6; border-color:#8b5cf6; }
+.app-confirm-btn svg { width:12px; height:12px; flex-shrink:0; }
+.drawer-footer { padding:14px 16px; border-top:1px solid #f0f0f0; background:var(--white); flex-shrink:0; }
+.drawer-footer-note { font-size:11.5px; color:var(--muted); text-align:center; line-height:1.5; }
+.drawer-footer-note strong { color:var(--gold-dark); font-weight:600; }
+
+/* EVENT CARDS */
+.event-card { background:var(--white); border-radius:var(--radius); overflow:hidden; border:1px solid #ebebeb; cursor:pointer; transition:var(--transition); box-shadow:var(--shadow-sm); }
+.event-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:transparent; }
+.event-card.is-past { opacity:0.72; }
+.event-card.is-past .event-card-img-wrap::after { content:''; position:absolute; inset:0; background:rgba(10,10,10,0.25); pointer-events:none; }
+.event-card-img-wrap { position:relative; overflow:hidden; }
+.event-card img { width:100%; height:195px; object-fit:cover; display:block; transition:transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+.event-card:hover img { transform:scale(1.06); }
+.event-card-category { position:absolute; top:12px; left:12px; background:rgba(10,10,10,0.72); backdrop-filter:blur(8px); color:var(--white); font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; padding:4px 11px; border-radius:20px; }
+.past-badge { position:absolute; top:12px; right:12px; z-index:2; background:rgba(10,10,10,0.75); backdrop-filter:blur(6px); color:rgba(255,255,255,0.85); font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; padding:3px 9px; border-radius:20px; }
+.demo-badge { position:absolute; top:12px; right:12px; z-index:3; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--black); font-size:9px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; padding:3px 9px; border-radius:20px; }
+.event-content { padding:18px 20px 20px; }
+.event-content h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--black); margin-bottom:10px; line-height:1.3; }
+.event-date-row { display:flex; align-items:center; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.event-date-badge { display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.06)); border:1px solid rgba(201,168,76,0.3); color:var(--gold-dark); font-size:11.5px; font-weight:700; padding:4px 10px 4px 7px; border-radius:20px; white-space:nowrap; }
+.event-date-badge svg { width:11px; height:11px; flex-shrink:0; opacity:0.75; }
+.event-date-more { font-size:11px; font-weight:600; color:var(--muted); background:var(--cream); border:1px solid #e8e5de; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+.event-location { font-size:13.5px; color:var(--slate); font-weight:500; display:flex; align-items:center; gap:5px; }
+.event-location::before { content:"📍"; font-size:11px; }
+.event-address { font-size:12.5px; color:var(--muted); margin-top:4px; padding-left:18px; }
+
+/* USA STATE BADGE on cards */
+.event-state-flag { position:absolute; bottom:12px; left:12px; z-index:2; background:rgba(255,255,255,0.15); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.25); color:var(--white); font-size:10px; font-weight:700; letter-spacing:0.5px; padding:3px 10px; border-radius:20px; }
+
+/* COUNTDOWN */
+.countdown-outer { max-width:var(--page-max); margin:20px auto 40px; padding:0 var(--page-pad); }
+.countdown-section { background:var(--black); border-radius:var(--radius); padding:36px 40px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; position:relative; overflow:hidden; }
+.countdown-section::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 25% 50%,rgba(201,168,76,0.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(201,168,76,0.07) 0%,transparent 50%); pointer-events:none; }
+.countdown-label { position:relative; z-index:1; }
+.countdown-label p { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:8px; }
+.countdown-label h3 { font-family:'Playfair Display',serif; font-size:clamp(18px,3vw,26px); color:var(--white); font-weight:700; max-width:320px; line-height:1.3; }
+#countdown { display:flex; gap:14px; position:relative; z-index:1; flex-wrap:wrap; }
+.time { display:flex; flex-direction:column; align-items:center; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm); padding:16px 20px; min-width:72px; }
+.time span { font-family:'Playfair Display',serif; font-size:34px; font-weight:900; color:var(--white); line-height:1; display:block; margin-bottom:6px; }
+.time-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.4); font-weight:500; }
+
+/* MODAL */
+.modal,.login-modal { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.6); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); align-items:center; justify-content:center; z-index:1000; padding:20px; animation:fadeIn 0.2s ease-out; }
+.modal-content { background:var(--white); width:100%; max-width:660px; max-height:92vh; border-radius:24px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 40px 100px rgba(0,0,0,0.35); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+.modal-img-wrap { position:relative; flex-shrink:0; overflow:hidden; height:260px; }
+.modal-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+.modal-img-wrap::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom,rgba(10,10,10,0.08) 0%,rgba(10,10,10,0.55) 100%); }
+.modal-img-category { position:absolute; bottom:16px; left:20px; z-index:2; display:inline-flex; align-items:center; gap:6px; background:rgba(10,10,10,0.72); backdrop-filter:blur(8px); color:var(--white); font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
+.modal-img-price { position:absolute; bottom:16px; right:20px; z-index:2; display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--black); font-size:12px; font-weight:800; padding:5px 14px; border-radius:20px; font-family:'DM Sans',sans-serif; }
+.modal-img-spots { position:absolute; top:16px; left:20px; z-index:2; display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.15); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.25); color:var(--white); font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px; }
+.modal-img-spots svg { width:11px; height:11px; opacity:0.8; }
+.modal-body { padding:0; overflow-y:auto; flex:1; display:flex; flex-direction:column; }
+.modal-body::-webkit-scrollbar { width:5px; }
+.modal-body::-webkit-scrollbar-thumb { background:var(--gold-light); border-radius:5px; }
+.modal-title-block { padding:22px 28px 16px; border-bottom:1px solid #f0f0f0; }
+.modal-title-block h2 { font-family:'Playfair Display',serif; font-size:clamp(20px,3.5vw,26px); font-weight:900; color:var(--black); line-height:1.2; margin-bottom:10px; }
+.modal-meta-chips { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.modal-meta-chip { display:inline-flex; align-items:center; gap:5px; background:var(--cream); border:1px solid #e0ddd6; color:var(--slate); font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; }
+.modal-meta-chip svg { width:12px; height:12px; opacity:0.7; flex-shrink:0; }
+.modal-meta-chip.gold { background:#fdf3d8; border-color:rgba(201,168,76,0.4); color:var(--gold-dark); }
+.modal-meta-chip.past { background:#fee2e2; border-color:rgba(239,68,68,0.3); color:#991b1b; }
+.modal-scroll-area { padding:0 28px 28px; flex:1; }
+.modal-block { margin-top:20px; }
+.modal-block-label { font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+.modal-block-label::after { content:""; flex:1; height:1px; background:#e8e5de; }
+.modal-dates-grid { display:flex; flex-direction:column; gap:8px; }
+.modal-date-row { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--white); border:1px solid #e8e5de; border-radius:var(--radius-sm); transition:var(--transition); }
+.modal-date-row:hover { border-color:rgba(201,168,76,0.4); background:#fdf8f0; }
+.modal-date-num { width:24px; height:24px; border-radius:50%; background:var(--black); color:var(--gold); font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.modal-date-info { flex:1; min-width:0; }
+.modal-date-main { font-size:14px; font-weight:700; color:var(--black); margin-bottom:1px; }
+.modal-date-time { font-size:12px; color:var(--gold-dark); font-weight:600; display:flex; align-items:center; gap:4px; }
+.modal-date-time svg { width:11px; height:11px; opacity:0.7; }
+.modal-date-range-bar { display:flex; align-items:center; gap:8px; padding:8px 12px; background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.04)); border:1px solid rgba(201,168,76,0.2); border-radius:var(--radius-sm); font-size:12px; color:var(--muted); font-weight:500; }
+.modal-date-range-bar svg { width:13px; height:13px; color:var(--gold-dark); flex-shrink:0; }
+.modal-date-range-bar strong { color:var(--charcoal); }
+.modal-location-card { display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:var(--cream); border:1px solid #e8e5de; border-radius:var(--radius-sm); }
+.modal-location-icon { width:38px; height:38px; border-radius:10px; background:var(--black); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.modal-location-icon svg { width:16px; height:16px; color:var(--gold); }
+.modal-location-text { flex:1; min-width:0; }
+.modal-location-name { font-size:14px; font-weight:700; color:var(--black); margin-bottom:2px; }
+.modal-location-addr { font-size:12.5px; color:var(--muted); line-height:1.5; }
+.modal-location-map { display:inline-flex; align-items:center; gap:5px; margin-top:6px; font-size:12px; font-weight:600; color:var(--gold-dark); text-decoration:none; transition:color var(--transition); }
+.modal-location-map:hover { color:var(--gold); }
+.modal-location-map svg { width:12px; height:12px; }
+.modal-description { font-size:14px; color:var(--charcoal); line-height:1.75; white-space:pre-wrap; }
+.modal-contact-row { display:flex; gap:10px; flex-wrap:wrap; }
+.modal-contact-item { flex:1; min-width:160px; display:flex; align-items:center; gap:10px; padding:11px 14px; background:var(--cream); border:1px solid #e8e5de; border-radius:var(--radius-sm); text-decoration:none; transition:var(--transition); }
+.modal-contact-item:hover { border-color:var(--gold); background:#fdf8ee; }
+.modal-contact-icon { width:32px; height:32px; border-radius:8px; background:var(--black); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.modal-contact-icon svg { width:14px; height:14px; color:var(--gold); }
+.modal-contact-info { min-width:0; }
+.modal-contact-label { font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--muted); }
+.modal-contact-value { font-size:13px; font-weight:600; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.modal-highlights { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.modal-highlight-item { display:flex; align-items:center; gap:8px; padding:10px 12px; background:var(--cream); border:1px solid #e8e5de; border-radius:var(--radius-sm); font-size:13px; font-weight:500; color:var(--charcoal); }
+.modal-highlight-item::before { content:"✓"; width:20px; height:20px; border-radius:50%; background:var(--black); color:var(--gold); font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.modal-apply-wrap { padding:20px 28px 28px; border-top:1px solid #f0f0f0; background:var(--white); flex-shrink:0; }
+.modal-apply-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:16px 20px; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--black); border-radius:var(--radius-sm); font-weight:700; font-size:15px; text-decoration:none; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; position:relative; overflow:hidden; transition:var(--transition); }
+.modal-apply-btn::after { content:""; position:absolute; inset:0; background:linear-gradient(135deg,transparent 50%,rgba(255,255,255,0.12)); }
+.modal-apply-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(201,168,76,0.4); }
+.modal-apply-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+.modal-apply-btn svg { width:16px; height:16px; flex-shrink:0; }
+.modal-apply-note { text-align:center; font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5; }
+.close { position:absolute; top:14px; right:16px; font-size:18px; cursor:pointer; color:var(--white); background:rgba(0,0,0,0.45); width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:var(--transition); z-index:5; }
+.close:hover { background:rgba(0,0,0,0.7); transform:scale(1.05); }
+.login-modal-content { background:var(--white); width:100%; max-width:420px; border-radius:20px; padding:36px 32px; position:relative; box-shadow:0 30px 80px rgba(0,0,0,0.25); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+.login-modal-content h2 { font-family:'Playfair Display',serif; text-align:center; margin-bottom:28px; font-size:26px; font-weight:900; color:var(--black); }
+.input-field { width:100%; padding:13px 16px; margin-bottom:14px; border-radius:var(--radius-sm); border:1.5px solid #e5e5e5; font-family:'DM Sans',sans-serif; font-size:14.5px; background:var(--cream); color:var(--black); transition:var(--transition); outline:none; appearance:none; }
+.input-field:focus { border-color:var(--gold); background:var(--white); box-shadow:0 0 0 3px rgba(201,168,76,0.15); }
+.auth-btn { display:block; width:100%; padding:14px; text-align:center; background:var(--black); color:var(--white); border-radius:var(--radius-sm); font-weight:600; font-size:15px; cursor:pointer; margin-bottom:12px; border:none; font-family:'DM Sans',sans-serif; transition:var(--transition); }
+.auth-btn:hover { background:var(--charcoal); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.15); }
+.login-btn { display:block; width:100%; padding:13px; text-align:center; background:var(--white); color:var(--black); border:1.5px solid #e0e0e0; border-radius:var(--radius-sm); font-weight:600; font-size:14.5px; cursor:pointer; margin-bottom:12px; font-family:'DM Sans',sans-serif; transition:var(--transition); }
+.login-btn:hover { background:var(--cream); border-color:#ccc; }
+.toggle-auth { display:block; text-align:center; font-size:14px; font-weight:500; color:var(--gold-dark); cursor:pointer; margin-top:12px; transition:0.2s; }
+.toggle-auth:hover { text-decoration:underline; }
+.close-login { position:absolute; top:16px; right:20px; font-size:22px; cursor:pointer; color:var(--muted); transition:var(--transition); line-height:1; }
+.close-login:hover { color:var(--black); transform:scale(1.1); }
+
+/* CHAT BUTTON */
+#openChatBtn { position:fixed; bottom:28px; right:28px; z-index:999; display:flex; align-items:center; gap:10px; background:var(--black); color:var(--white); padding:13px 20px 13px 16px; border-radius:50px; font-size:14px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; box-shadow:0 8px 32px rgba(0,0,0,0.28),0 2px 8px rgba(0,0,0,0.12); transition:var(--transition); animation:floatIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; outline:1.5px solid rgba(201,168,76,0.22); outline-offset:0px; }
+#openChatBtn:hover { background:var(--charcoal); transform:translateY(-3px); box-shadow:0 18px 48px rgba(0,0,0,0.32); outline-color:rgba(201,168,76,0.45); }
+.chat-btn-icon { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:15px; line-height:1; box-shadow:0 2px 8px rgba(201,168,76,0.4); }
+.chat-btn-text { line-height:1; letter-spacing:0.1px; }
+#unreadBadge { display:none; background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; font-size:10px; font-weight:800; min-width:18px; height:18px; border-radius:9px; padding:0 5px; align-items:center; justify-content:center; line-height:1; flex-shrink:0; pointer-events:none; box-shadow:0 2px 8px rgba(239,68,68,0.5); animation:badgePop 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+#unreadBadge.has-unread { display:inline-flex; }
+@keyframes badgePop { from{transform:scale(0);opacity:0;} to{transform:scale(1);opacity:1;} }
+body.modal-open #openChatBtn { display:none; }
+
+/* NOTIFICATION POPUP */
+#msgNotif { position:fixed; bottom:108px; right:28px; z-index:1200; width:360px; max-width:calc(100vw - 32px); background:var(--white); border-radius:20px; box-shadow:0 24px 64px rgba(0,0,0,0.16),0 0 0 1px rgba(0,0,0,0.05); overflow:hidden; font-family:'DM Sans',sans-serif; transform:translateX(24px) scale(0.97); opacity:0; pointer-events:none; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.28s ease; }
+#msgNotif.show { transform:translateX(0) scale(1); opacity:1; pointer-events:all; }
+.notif-accent { height:3px; background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light)); }
+.notif-header { padding:14px 42px 10px 14px; display:flex; align-items:flex-start; gap:12px; }
+.notif-avatar { width:44px; height:44px; border-radius:50%; background:var(--black); border:2px solid rgba(201,168,76,0.35); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:900; font-size:18px; color:var(--gold); flex-shrink:0; }
+.notif-avatar-wrap { position:relative; flex-shrink:0; }
+.notif-online-dot { position:absolute; bottom:1px; right:1px; width:11px; height:11px; border-radius:50%; background:#22c55e; border:2px solid var(--white); }
+.notif-text { flex:1; min-width:0; }
+.notif-label { font-size:9.5px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold-dark); display:flex; align-items:center; gap:5px; margin-bottom:3px; }
+.notif-label-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); flex-shrink:0; animation:pulseDot 2s ease-in-out infinite; }
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
+.notif-event { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; }
+.notif-msg { font-size:13px; color:var(--charcoal); line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.notif-time { font-size:10.5px; color:var(--muted); margin-top:5px; display:flex; align-items:center; gap:4px; }
+.notif-time svg { width:10px; height:10px; opacity:0.6; }
+.notif-divider { height:1px; background:#f0ede8; margin:0 14px; }
+.notif-actions { display:flex; gap:8px; padding:10px 14px 12px; }
+.notif-btn-open { flex:1; padding:9px 14px; background:var(--black); color:var(--white); border:none; border-radius:22px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:6px; }
+.notif-btn-open:hover { background:var(--charcoal); transform:translateY(-1px); }
+.notif-btn-open svg { width:13px; height:13px; }
+.notif-reply-wrap { display:none; gap:8px; padding:0 14px 12px; }
+.notif-reply-wrap.show { display:flex; }
+.notif-reply-input { flex:1; padding:9px 14px; border-radius:22px; border:1.5px solid #e5e5e5; font-family:'DM Sans',sans-serif; font-size:13.5px; background:var(--cream); color:var(--black); outline:none; transition:var(--transition); min-width:0; }
+.notif-reply-input:focus { border-color:var(--gold); background:var(--white); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+.notif-reply-send { width:36px; height:36px; border-radius:50%; background:var(--black); color:var(--white); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:var(--transition); }
+.notif-reply-send svg { width:14px; height:14px; }
+.notif-dismiss { position:absolute; top:11px; right:12px; width:24px; height:24px; border-radius:50%; background:var(--cream); border:1px solid #e8e5de; cursor:pointer; color:var(--muted); font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; transition:background 0.15s; }
+.notif-dismiss:hover { background:#e8e5de; color:var(--black); }
+.notif-timer { height:2px; background:linear-gradient(90deg,var(--gold-dark),var(--gold)); width:100%; transform-origin:left; }
+.notif-timer.running { animation:notifTimer 6s linear forwards; }
+@keyframes notifTimer { from{transform:scaleX(1);} to{transform:scaleX(0);} }
+
+/* CHAT MODAL */
+.chat-container { width:100%; max-width:480px; height:600px; background:var(--white); border-radius:20px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.3); font-family:'DM Sans',sans-serif; animation:slideUp 0.3s ease; }
+.chat-header { background:var(--black); padding:18px 20px; display:flex; justify-content:space-between; align-items:center; color:var(--white); position:relative; flex-shrink:0; }
+.chat-header::after { content:""; position:absolute; inset:0; background:linear-gradient(135deg,transparent 60%,rgba(201,168,76,0.1)); pointer-events:none; }
+.chat-admin-info { display:flex; align-items:center; gap:14px; position:relative; z-index:1; }
+.chat-avatar { width:42px; height:42px; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--black); font-family:'Playfair Display',serif; font-weight:900; font-size:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.chat-header-text { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.chat-event-name { font-family:'Playfair Display',serif; font-weight:700; font-size:15px; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px; }
+.chat-coordinator-label { font-size:11px; font-weight:500; letter-spacing:0.6px; color:var(--gold-light); text-transform:uppercase; }
+.chat-close { font-size:22px; cursor:pointer; position:relative; z-index:1; color:rgba(255,255,255,0.7); transition:color 0.2s; line-height:1; flex-shrink:0; }
+.chat-close:hover { color:var(--white); }
+.chat-messages { flex:1; padding:18px; background:var(--cream); overflow-y:auto; display:flex; flex-direction:column; gap:12px; scroll-behavior:smooth; }
+.chat-messages::-webkit-scrollbar { width:4px; }
+.chat-messages::-webkit-scrollbar-thumb { background:#ccc; border-radius:4px; }
+.chat-empty { text-align:center; font-size:14px; color:var(--muted); margin:auto; }
+.message-row { display:flex; flex-direction:column; max-width:78%; animation:fadeMessage 0.2s ease; }
+.vendor-row { align-self:flex-end; align-items:flex-end; }
+.admin-row  { align-self:flex-start; align-items:flex-start; }
+.vendor-bubble { background:var(--black); color:var(--white); padding:11px 16px; border-radius:18px 18px 4px 18px; font-size:14px; line-height:1.5; }
+.admin-bubble  { background:var(--white); color:var(--black); padding:11px 16px; border-radius:18px 18px 18px 4px; font-size:14px; line-height:1.5; box-shadow:var(--shadow-sm); }
+.message-time  { font-size:11px; color:var(--muted); margin-top:4px; }
+.msg-img { max-width:220px; width:100%; border-radius:12px; display:block; cursor:pointer; transition:opacity 0.2s; }
+.msg-img:hover { opacity:0.9; }
+.msg-file { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; text-decoration:none; min-width:180px; max-width:260px; transition:opacity 0.2s; }
+.msg-file:hover { opacity:0.85; }
+.vendor-bubble .msg-file { background:rgba(255,255,255,0.1); color:var(--white); }
+.admin-bubble  .msg-file { background:rgba(0,0,0,0.05); color:var(--black); }
+.msg-file-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px; }
+.vendor-bubble .msg-file-icon { background:rgba(255,255,255,0.15); }
+.admin-bubble  .msg-file-icon { background:rgba(0,0,0,0.08); }
+.msg-file-info { display:flex; flex-direction:column; min-width:0; }
+.msg-file-name { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.msg-file-size { font-size:11px; opacity:0.6; margin-top:2px; }
+.upload-preview-strip { display:none; align-items:center; gap:8px; padding:8px 14px; background:var(--cream); border-top:1px solid #e8e8e8; overflow-x:auto; flex-shrink:0; }
+.upload-preview-strip.has-files { display:flex; }
+.preview-item { position:relative; flex-shrink:0; }
+.preview-img { width:54px; height:54px; border-radius:8px; object-fit:cover; border:1.5px solid #e5e5e5; display:block; }
+.preview-doc { width:54px; height:54px; border-radius:8px; background:var(--black); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; }
+.preview-doc-icon { font-size:18px; }
+.preview-doc-ext  { font-size:8px; font-weight:700; color:var(--gold-light); letter-spacing:0.5px; text-transform:uppercase; }
+.preview-remove { position:absolute; top:-5px; right:-5px; width:18px; height:18px; border-radius:50%; background:#ef4444; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; line-height:1; }
+.upload-progress { display:none; padding:0 14px 6px; background:var(--cream); flex-shrink:0; }
+.upload-progress.show { display:block; }
+.upload-progress-bar-track { height:3px; background:#e0e0e0; border-radius:3px; overflow:hidden; }
+.upload-progress-bar-fill  { height:100%; background:linear-gradient(90deg,var(--gold-dark),var(--gold)); border-radius:3px; width:0%; transition:width 0.2s ease; }
+.upload-progress-label { font-size:11px; color:var(--muted); margin-top:4px; }
+.chat-input-area { padding:12px 14px; background:var(--white); border-top:1px solid #f0f0f0; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.attach-btn { position:relative; width:38px; height:38px; border-radius:50%; border:none; background:var(--cream); color:var(--slate); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:var(--transition); }
+.attach-btn:hover { background:#e8e5de; color:var(--black); }
+.attach-btn svg { width:18px; height:18px; pointer-events:none; }
+.attach-menu { position:absolute; bottom:calc(100% + 8px); left:0; background:var(--white); border:1px solid #e8e8e8; border-radius:var(--radius-sm); box-shadow:var(--shadow-md); width:180px; overflow:hidden; z-index:10; animation:fadeIn 0.15s ease; display:none; }
+.attach-menu.open { display:block; }
+.attach-menu-item { display:flex; align-items:center; gap:10px; padding:11px 14px; font-size:13.5px; font-weight:500; color:var(--charcoal); cursor:pointer; transition:background 0.15s; border:none; background:none; width:100%; text-align:left; font-family:'DM Sans',sans-serif; }
+.attach-menu-item:hover { background:var(--cream); }
+.attach-menu-item svg { width:16px; height:16px; flex-shrink:0; color:var(--muted); }
+.chat-input-area input[type="text"] { flex:1; padding:10px 15px; border-radius:22px; border:1.5px solid #e5e5e5; font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:var(--transition); background:var(--cream); color:var(--black); min-width:0; }
+.chat-input-area input[type="text"]:focus { border-color:var(--gold); background:var(--white); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+.chat-send-btn { width:38px; height:38px; border-radius:50%; background:var(--black); color:var(--white); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:var(--transition); flex-shrink:0; }
+.chat-send-btn:hover { background:var(--charcoal); transform:scale(1.05); }
+.chat-send-btn svg { width:16px; height:16px; }
+.chat-send-btn.sending { pointer-events:none; opacity:0.7; }
+.lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center; padding:20px; }
+.lightbox.open { display:flex; }
+.lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; object-fit:contain; animation:slideUp 0.25s ease; }
+.lightbox-close { position:absolute; top:20px; right:24px; font-size:28px; color:rgba(255,255,255,0.8); cursor:pointer; line-height:1; }
+.lightbox-close:hover { color:var(--white); }
+
+/* EVENT SELECT MODAL */
+#eventSelectModal .modal-content { max-width:420px; flex-direction:column; padding:0; max-height:80vh; overflow:hidden; }
+#eventSelectModal h2 { font-family:'Playfair Display',serif; font-size:22px; font-weight:900; color:var(--black); margin-bottom:22px; padding:28px 28px 0; flex-shrink:0; }
+#eventList { padding:0 28px 28px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+.event-item-select { padding:14px 18px; border-radius:var(--radius-sm); border:1.5px solid #e5e5e5; background:var(--cream); cursor:pointer; transition:var(--transition); font-size:14.5px; font-family:'DM Sans',sans-serif; font-weight:500; color:var(--black); text-align:left; }
+.event-item-select:hover { background:var(--black); color:var(--white); border-color:var(--black); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+
+/* ALREADY APPLIED */
+#alreadyAppliedModal { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.55); backdrop-filter:blur(10px); align-items:center; justify-content:center; z-index:1100; padding:20px; animation:fadeIn 0.2s ease; }
+#alreadyAppliedModal.open { display:flex; }
+.already-modal-box { background:var(--white); width:100%; max-width:440px; border-radius:20px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.25); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+.already-modal-header { background:var(--black); padding:22px 26px 18px; position:relative; overflow:hidden; }
+.already-modal-header::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,0.14) 0%,transparent 55%); pointer-events:none; }
+.already-modal-eyebrow { font-size:9.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--gold); margin-bottom:6px; position:relative; z-index:1; }
+.already-modal-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; color:var(--white); position:relative; z-index:1; line-height:1.25; }
+.already-modal-close { position:absolute; top:14px; right:16px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.1); border:none; cursor:pointer; color:var(--white); font-size:16px; display:flex; align-items:center; justify-content:center; transition:var(--transition); z-index:5; }
+.already-modal-close:hover { background:rgba(255,255,255,0.2); }
+.already-modal-body { padding:22px 26px 26px; }
+.already-info-row { display:flex; gap:10px; align-items:flex-start; padding:12px 14px; background:var(--cream); border-radius:var(--radius-sm); margin-bottom:14px; border:1px solid #e8e5de; }
+.already-info-row svg { width:16px; height:16px; flex-shrink:0; color:var(--gold-dark); margin-top:2px; }
+.already-info-text { font-size:13.5px; color:var(--charcoal); line-height:1.55; }
+.already-info-text strong { color:var(--black); font-weight:600; }
+.already-action-row { display:flex; gap:10px; margin-top:16px; }
+.already-btn-chat { flex:1; padding:13px; border-radius:var(--radius-sm); border:none; background:var(--black); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:7px; }
+.already-btn-chat:hover { background:var(--charcoal); transform:translateY(-1px); }
+.already-btn-chat svg { width:15px; height:15px; }
+.already-btn-close { padding:13px 18px; border-radius:var(--radius-sm); border:1.5px solid #e0e0e0; background:transparent; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--slate); cursor:pointer; transition:var(--transition); }
+.already-btn-close:hover { background:var(--cream); }
+
+/* CONFIRM DIALOG */
+#confirmDialog { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.55); backdrop-filter:blur(10px); align-items:center; justify-content:center; z-index:1200; padding:20px; animation:fadeIn 0.2s ease; }
+#confirmDialog.open { display:flex; }
+.confirm-dialog-box { background:var(--white); width:100%; max-width:400px; border-radius:20px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.25); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+.confirm-dialog-header { background:var(--black); padding:20px 24px 16px; position:relative; overflow:hidden; }
+.confirm-dialog-header::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,0.14) 0%,transparent 55%); pointer-events:none; }
+.confirm-dialog-eyebrow { font-size:9.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--gold); margin-bottom:5px; position:relative; z-index:1; }
+.confirm-dialog-title { font-family:'Playfair Display',serif; font-size:19px; font-weight:900; color:var(--white); position:relative; z-index:1; line-height:1.25; }
+.confirm-dialog-close { position:absolute; top:14px; right:14px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.1); border:none; cursor:pointer; color:var(--white); font-size:16px; display:flex; align-items:center; justify-content:center; transition:var(--transition); z-index:5; }
+.confirm-dialog-close:hover { background:rgba(255,255,255,0.2); }
+.confirm-dialog-body { padding:20px 24px 24px; }
+.confirm-dialog-info { display:flex; gap:10px; align-items:flex-start; padding:12px 14px; background:var(--cream); border-radius:var(--radius-sm); margin-bottom:16px; border:1px solid #e8e5de; }
+.confirm-dialog-info svg { width:16px; height:16px; flex-shrink:0; color:var(--gold-dark); margin-top:2px; }
+.confirm-dialog-text { font-size:13.5px; color:var(--charcoal); line-height:1.55; }
+.confirm-dialog-text strong { color:var(--black); font-weight:600; }
+.confirm-dialog-event-name { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--black); margin-bottom:14px; padding:10px 14px; background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05)); border:1px solid rgba(201,168,76,0.25); border-radius:var(--radius-sm); }
+.confirm-dialog-actions { display:flex; gap:10px; }
+.confirm-dialog-btn-yes { flex:1; padding:13px; border-radius:var(--radius-sm); border:none; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--black); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:7px; }
+.confirm-dialog-btn-yes:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(201,168,76,0.35); }
+.confirm-dialog-btn-yes svg { width:15px; height:15px; }
+.confirm-dialog-btn-no { padding:13px 18px; border-radius:var(--radius-sm); border:1.5px solid #e0e0e0; background:transparent; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--slate); cursor:pointer; transition:var(--transition); }
+.confirm-dialog-btn-no:hover { background:var(--cream); }
+
+/* SECTION */
+.section { max-width:var(--page-max); margin:0 auto; padding:36px var(--page-pad) 20px; }
+.events-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:22px; }
+
+/* FOOTER */
+footer { background:var(--black); margin-top:60px; padding:52px 0 28px; }
+.footer-inner { max-width:var(--page-max); margin:0 auto; padding:0 var(--page-pad); }
+.footer-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:48px; margin-bottom:36px; }
+.footer-logo { font-family:'Playfair Display',serif; font-size:24px; font-weight:900; color:var(--white); margin-bottom:14px; }
+.footer-logo span { color:var(--gold); }
+footer h3 { font-family:'Playfair Display',serif; font-size:17px; color:var(--white); margin-bottom:14px; }
+footer p  { font-size:14px; line-height:1.75; color:rgba(255,255,255,0.5); }
+footer a  { color:var(--gold); text-decoration:none; }
+footer a:hover { text-decoration:underline; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.1); padding-top:22px; text-align:center; font-size:13px; color:rgba(255,255,255,0.3); }
+.footer-usa-flag { display:inline-flex; align-items:center; gap:8px; margin-bottom:12px; padding:5px 14px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25); border-radius:20px; font-size:12px; color:var(--gold-light); font-weight:600; }
+
+/* ANIMATIONS */
+@keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+@keyframes slideUp   { from{opacity:0;transform:translateY(30px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes fadeMessage { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes floatIn   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+body.modal-open { overflow:hidden; }
+
+/* PWA INSTALL BANNER */
+#pwa-install-banner { position:fixed; bottom:96px; left:50%; transform:translateX(-50%) translateY(160px); background:var(--white); border:1px solid #e8e5de; border-radius:22px; box-shadow:0 12px 48px rgba(0,0,0,0.16); padding:16px 18px; display:flex; align-items:center; gap:14px; z-index:2000; width:calc(100vw - 40px); max-width:420px; opacity:0; pointer-events:none; transition:transform 0.48s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s ease; font-family:'DM Sans',sans-serif; }
+#pwa-install-banner.show { transform:translateX(-50%) translateY(0); opacity:1; pointer-events:all; }
+.pwa-icon { width:48px; height:48px; border-radius:13px; background:var(--black); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.pwa-icon-text { font-family:'Playfair Display',serif; font-size:9px; font-weight:900; color:var(--gold); text-align:center; line-height:1.2; font-style:italic; }
+.pwa-text { flex:1; min-width:0; }
+.pwa-title { font-size:14px; font-weight:700; color:var(--black); }
+.pwa-sub { font-size:12px; color:var(--muted); margin-top:2px; line-height:1.4; }
+.pwa-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.pwa-btn { padding:9px 16px; background:var(--black); color:var(--white); border:none; border-radius:20px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; transition:background 0.2s; }
+.pwa-btn:hover { background:var(--charcoal); }
+.pwa-dismiss { width:28px; height:28px; border-radius:50%; background:var(--cream); border:1px solid #e0ddd6; cursor:pointer; color:var(--muted); font-size:15px; line-height:1; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.pwa-dismiss:hover { background:#e8e5de; color:var(--black); }
+
+/* OFFLINE BAR */
+#offline-bar { position:fixed; top:0; left:0; right:0; z-index:9999; background:var(--charcoal); color:rgba(255,255,255,0.82); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; text-align:center; padding:9px 16px; display:flex; align-items:center; justify-content:center; gap:8px; transform:translateY(-100%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); }
+#offline-bar.show { transform:translateY(0); }
+#offline-bar svg { width:14px; height:14px; flex-shrink:0; opacity:0.7; }
+
+/* RESPONSIVE */
+@media(max-width:1024px) { :root { --page-pad:28px; } }
+@media(max-width:768px) {
+  :root { --page-pad:10px; }
+  .hero { min-height:350px; }
+  .hero-body { padding:0 var(--page-pad) 60px; }
+  .usa-ticker-inner { padding:10px 16px; gap:18px; }
+  .controls-divider { display:none; }
+  .search-wrap { display:none; }
+  .mobile-search { display:block; }
+  .events-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .event-card img { height: 90px; }
+  .event-content { padding: 8px 9px 10px; }
+  .event-content h3 { font-size: 11px; font-weight: 700; margin-bottom: 5px; line-height: 1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .event-date-row { margin-bottom:5px; gap:3px; flex-wrap:wrap; }
+  .event-date-badge { font-size: 9px; padding: 3px 7px 3px 5px; gap: 3px; }
+  .event-date-badge svg { width:9px; height:9px; }
+  .event-date-more { font-size:9px; padding:2px 6px; }
+  .event-location { font-size: 10px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .event-location::before { display:none; }
+  .event-address { display:none; }
+  .event-card-category { font-size:8.5px; padding:3px 7px; letter-spacing:0.5px; }
+  .past-badge,.demo-badge { font-size:8px; padding:2px 6px; }
+  .event-state-flag { display:none; }
+  .past-section-divider { gap:10px; margin:8px 0 2px; }
+  .past-section-divider-label { font-size:10px; }
+  .countdown-section { flex-direction:column; align-items:flex-start; padding:28px 22px; gap:20px; }
+  #countdown { justify-content:flex-start; }
+  .time { padding:12px 16px; min-width:62px; }
+  .time span { font-size:28px; }
+  .footer-grid { grid-template-columns:1fr; gap:28px; }
+  #openChatBtn { width:58px; height:58px; border-radius:50%; padding:0; justify-content:center; gap:0; bottom:20px; right:20px; }
+  #openChatBtn .chat-btn-text { display:none; }
+  #openChatBtn .chat-btn-icon { width:34px; height:34px; font-size:17px; }
+  #chatModal { padding:0; align-items:flex-end; }
+  .chat-container { width:100%; max-width:100%; border-radius:0; height:100vh; height:100svh; }
+  .chat-input-area { padding-bottom:max(12px,env(safe-area-inset-bottom)); }
+  .modal-content { border-radius:16px; }
+  .modal-img-wrap { height:200px; }
+  .modal-scroll-area { padding:0 20px 20px; }
+  .modal-title-block { padding:18px 20px 14px; }
+  .modal-apply-wrap { padding:16px 20px 20px; }
+  .modal-highlights { grid-template-columns:1fr; }
+  .modal-contact-row { flex-direction:column; }
+  .login-modal-content { padding:28px 20px; }
+  #msgNotif { bottom:94px; right:12px; left:12px; width:auto; max-width:100%; border-radius:16px; }
+  #appCartBtn { padding:12px 14px; }
+  #appCartBtn .cart-btn-label { display:none; }
+  #appDrawer { width:100%; max-width:100%; }
+  .admin-nav-btn span.nav-label { display:none; }
+  .admin-nav-btn { padding:8px 10px; }
+  .admin-nav-divider { display:none; }
+  .section { padding:20px var(--page-pad) 12px; }
+  .section-header { margin-bottom:14px; }
+  .section-header h2 { font-size:20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <nav class="hero-nav">
+    <div class="hero-nav-inner">
+      <div class="hero-logo">Vend<span>Hub</span></div>
+      <div class="hero-nav-right">
+        <div class="admin-nav-group" id="adminNavGroup">
+          <a href="admin.html" class="admin-nav-btn admin-nav-btn-ghost" title="Admin Panel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="nav-label">Admin Panel</span>
+          </a>
+          <div class="admin-nav-divider"></div>
+          <a href="upload.html" class="admin-nav-btn admin-nav-btn-gold" title="Upload Event">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="nav-label">Upload Event</span>
+          </a>
+        </div>
+        <div class="hero-user" id="profileDisplay" style="display:none;">
+          <div class="user-avatar" id="userInitial">U</div>
+          <button id="logoutBtn" title="Logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M6 2a1 1 0 0 1 1-1h5.5a.5.5 0 0 1 0 1H7a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5h5.5a.5.5 0 0 1 0 1H7a1 1 0 0 1-1-1V2z"/>
+              <path d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero-body">
+    <h1>Find Your Next<br><em>Vendor Booth</em><br>Across America</h1>
+    <p class="hero-sub">The premier marketplace for vendors at US craft fairs, festivals, markets, and events. Apply in seconds, track your spot, chat with coordinators.</p>
+  </div>
+</section>
+
+<div id="importToast">
+  <span class="import-dot"></span>
+  <span id="importToastMsg">Importing from Eventbrite…</span>
+</div>
+
+<!-- MOBILE SEARCH -->
+<div class="mobile-search">
+  <div class="mobile-search-inner">
+    <div class="mobile-search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="eventSearchMobile" placeholder="Search events, cities, states…" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')" />
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS BAR -->
+<div class="controls-bar">
+  <div class="controls-bar-inner">
+    <div class="categories">
+      <div data-category="all" class="active">All Events</div>
+      <div data-category="Music">🎵 Music</div>
+      <div data-category="Festivals">🎉 Festivals</div>
+      <div data-category="Arts">🎨 Arts</div>
+      <div data-category="Business">🏢 Business</div>
+      <div data-category="Markets">🛍 Markets</div>
+      <div data-category="Food">🍴 Food</div>
+    </div>
+    <div class="controls-divider"></div>
+    <div class="controls-right">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="eventSearch" placeholder="Search events, states…" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS SECTION -->
+<section class="section">
+  <div class="section-header">
+    <h2 id="sectionHeading">USA Vendor Events</h2>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+  <div class="events-grid"></div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="countdown-outer" id="countdownOuter" style="display:none;">
+  <div class="countdown-section">
+    <div class="countdown-label">
+      <p>Starting Soon</p>
+      <h3 id="countdownEventName">—</h3>
+    </div>
+    <div id="countdown">
+      <div class="time"><span id="days">00</span><span class="time-label">Days</span></div>
+      <div class="time"><span id="hours">00</span><span class="time-label">Hours</span></div>
+      <div class="time"><span id="minutes">00</span><span class="time-label">Mins</span></div>
+      <div class="time"><span id="seconds">00</span><span class="time-label">Secs</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CART BUTTON -->
+<button id="appCartBtn" aria-label="View my applications">
+  <div class="cart-icon-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+      <rect x="9" y="3" width="6" height="4" rx="1"/>
+      <path d="M9 12h6M9 16h4"/>
+    </svg>
+  </div>
+  <span class="cart-btn-label">My Applications</span>
+  <span id="appCartCount"></span>
+</button>
+
+<!-- DRAWER -->
+<div id="appDrawerOverlay"></div>
+<div id="appDrawer" role="dialog" aria-label="My Applications">
+  <div class="drawer-header">
+    <div class="drawer-header-left">
+      <div class="drawer-header-eyebrow">Vendor Portal</div>
+      <div class="drawer-header-title">My Applications</div>
+      <div class="drawer-header-sub">Track your event booth applications</div>
+    </div>
+    <div class="drawer-header-right">
+      <span class="drawer-count-pill" id="drawerCountPill">0</span>
+      <button class="drawer-close" id="drawerClose" aria-label="Close">&times;</button>
+    </div>
+  </div>
+  <div class="drawer-accent"></div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer">
+    <div class="drawer-footer-note">
+      To make changes or inquire about your application,<br>
+      contact your <strong>Event Coordinator</strong> via chat.
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div id="confirmDialog">
+  <div class="confirm-dialog-box">
+    <div class="confirm-dialog-header">
+      <div class="confirm-dialog-eyebrow">Confirm Application</div>
+      <div class="confirm-dialog-title">Confirm your spot?</div>
+      <button class="confirm-dialog-close" id="confirmDialogClose">&times;</button>
+    </div>
+    <div class="confirm-dialog-body">
+      <div class="confirm-dialog-event-name" id="confirmDialogEventName">Event Name</div>
+      <div class="confirm-dialog-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <div class="confirm-dialog-text">
+          By confirming, you're letting the event coordinator know you intend to attend. This does <strong>not</strong> replace any payment or paperwork required by the organiser.
+        </div>
+      </div>
+      <div class="confirm-dialog-actions">
+        <button class="confirm-dialog-btn-yes" id="confirmDialogYes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Yes, confirm my application
+        </button>
+        <button class="confirm-dialog-btn-no" id="confirmDialogNo">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT BUTTON -->
+<button id="openChatBtn" aria-label="Open coordinator chat">
+  <div class="chat-btn-icon">💬</div>
+  <span class="chat-btn-text">Chat with Coordinator</span>
+  <span id="unreadBadge"></span>
+</button>
+
+<!-- NOTIFICATION POPUP -->
+<div id="msgNotif" role="alert" aria-live="polite">
+  <div class="notif-accent"></div>
+  <div class="notif-header">
+    <div class="notif-avatar-wrap">
+      <div class="notif-avatar" id="notifAvatar">A</div>
+      <div class="notif-online-dot"></div>
+    </div>
+    <div class="notif-text">
+      <div class="notif-label"><span class="notif-label-dot"></span>Event Coordinator</div>
+      <div class="notif-event" id="notifEvent">—</div>
+      <div class="notif-msg"  id="notifMsg">—</div>
+      <div class="notif-time" id="notifTime">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Just now
+      </div>
+    </div>
+  </div>
+  <div class="notif-divider"></div>
+  <div class="notif-reply-wrap" id="notifReplyWrap">
+    <input type="text" class="notif-reply-input" id="notifReplyInput" placeholder="Quick reply…" autocomplete="off" />
+    <button class="notif-reply-send" id="notifReplySend" title="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="notif-actions">
+    <button class="notif-btn-open" id="notifOpenBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Open Chat
+    </button>
+  </div>
+  <div class="notif-timer" id="notifTimer"></div>
+  <button class="notif-dismiss" id="notifDismiss" aria-label="Dismiss">×</button>
+</div>
+
+<!-- ALREADY APPLIED MODAL -->
+<div id="alreadyAppliedModal">
+  <div class="already-modal-box">
+    <div class="already-modal-header">
+      <div class="already-modal-eyebrow">Application Exists</div>
+      <div class="already-modal-title" id="alreadyModalTitle">You've already applied</div>
+      <button class="already-modal-close" id="alreadyModalClose">and times;</button>
+    </div>
+    <div class="already-modal-body">
+      <div class="already-info-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <div class="already-info-text">
+          You already have an active application for <strong id="alreadyModalEvent">this event</strong>.
+          Applications can only be submitted once per event.
+        </div>
+      </div>
+      <div class="already-info-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <div class="already-info-text">
+          To make changes or ask questions, contact your <strong>Event Coordinator</strong> directly through chat.
+        </div>
+      </div>
+      <div class="already-action-row">
+        <button class="already-btn-chat" id="alreadyModalChatBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Contact Coordinator
+        </button>
+        <button class="already-btn-close" id="alreadyModalDismiss">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT MODAL -->
+<div id="eventModal" class="modal">
+  <div class="modal-content">
+    <span class="close">and times;</span>
+    <div class="modal-img-wrap">
+      <img id="modalImage" alt="">
+      <div class="modal-img-spots" id="modalSpots" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span id="modalSpotsText"></span>
+      </div>
+      <div class="modal-img-category" id="modalCategory">Event</div>
+      <div class="modal-img-price" id="modalPrice" style="display:none;"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title-block">
+        <h2 id="modalTitle"></h2>
+        <div class="modal-meta-chips" id="modalMetaChips"></div>
+      </div>
+      <div class="modal-scroll-area">
+        <div class="modal-block">
+          <div class="modal-block-label">Event Schedule</div>
+          <div id="modalDatesGrid" class="modal-dates-grid"></div>
+        </div>
+        <div class="modal-block">
+          <div class="modal-block-label">Location</div>
+          <div class="modal-location-card">
+            <div class="modal-location-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+            </div>
+            <div class="modal-location-text">
+              <div class="modal-location-name" id="modalLocation"></div>
+              <div class="modal-location-addr" id="modalLocationAddr"></div>
+              <a id="modalMapsLink" href="#" target="_blank" rel="noopener" class="modal-location-map" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-block">
+          <div class="modal-block-label">About This Event</div>
+          <p class="modal-description" id="modalDescription"></p>
+        </div>
+        <div class="modal-block" id="modalContactBlock" style="display:none;">
+          <div class="modal-block-label">Contact &amp; Links</div>
+          <div class="modal-contact-row" id="modalContactRow"></div>
+        </div>
+        <div class="modal-block">
+          <div class="modal-block-label">Vendor Information</div>
+          <div class="modal-highlights">
+            <div class="modal-highlight-item">Booth spaces available</div>
+            <div class="modal-highlight-item">Limited vendor slots</div>
+            <div class="modal-highlight-item">High foot traffic expected</div>
+            <div class="modal-highlight-item">Professional event management</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-apply-wrap">
+      <button id="applyBtn" class="modal-apply-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        Apply as Vendor
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <p class="modal-apply-note" id="modalApplyNote">Free to apply · Subject to organiser approval</p>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="login-modal">
+  <div class="login-modal-content">
+    <span class="close-login">&times;</span>
+    <h2 id="authTitle">Sign Up</h2>
+    <input type="email" id="emailField" class="input-field" placeholder="Your email address" autocomplete="off" />
+    <div style="position:relative;">
+      <input type="password" id="passwordField" class="input-field" placeholder="Your password" autocomplete="new-password" />
+      <span id="togglePassword" style="position:absolute;right:12px;top:14px;cursor:pointer;font-size:12px;color:var(--gold-dark);font-weight:600;">Show</span>
+    </div>
+    <div id="emailAuthBtn" class="auth-btn">Sign Up</div>
+    <div id="forgotPassword" class="toggle-auth" style="display:none;">Forgot password?</div>
+    <div id="toggleAuth" class="toggle-auth">Already have an account? Log in</div>
+    <hr style="margin:18px 0;border:none;border-top:1px solid #eee;">
+    <div id="googleLoginBtn" class="login-btn">
+      <span style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT SELECT MODAL -->
+<div id="eventSelectModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEventSelect()">&times;</span>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--black);margin-bottom:22px;padding:28px 28px 0;flex-shrink:0;">Select an Event</h2>
+    <div id="eventList" style="padding:0 28px 28px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- CHAT MODAL -->
+<div id="chatModal" class="modal">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="chat-admin-info">
+        <div class="chat-avatar">A</div>
+        <div class="chat-header-text">
+          <div class="chat-event-name" id="chatEventName">Event Coordinator</div>
+          <div class="chat-coordinator-label">Event Coordinator</div>
+        </div>
+      </div>
+      <span class="chat-close" id="closeChat">&times;</span>
+    </div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-empty">Start a conversation 👋</div>
+    </div>
+    <div id="typingIndicator" style="display:none;font-size:13px;padding:6px 18px;color:var(--muted);font-style:italic;background:var(--cream);flex-shrink:0;">Typing…</div>
+    <div class="upload-preview-strip" id="uploadPreviewStrip"></div>
+    <div class="upload-progress" id="uploadProgress">
+      <div class="upload-progress-bar-track"><div class="upload-progress-bar-fill" id="uploadProgressFill"></div></div>
+      <div class="upload-progress-label" id="uploadProgressLabel">Uploading…</div>
+    </div>
+    <div class="chat-input-area">
+      <div style="position:relative;">
+        <button class="attach-btn" id="attachBtn" title="Attach file" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <div class="attach-menu" id="attachMenu">
+          <button class="attach-menu-item" id="attachImageBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photo / Image
+          </button>
+          <button class="attach-menu-item" id="attachDocBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Document / File
+          </button>
+        </div>
+      </div>
+      <input type="file" id="imageFileInput" accept="image/*" style="display:none" multiple>
+      <input type="file" id="documentFileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.csv" style="display:none" multiple>
+      <input type="text" id="chatInput" placeholder="Type your message…" autocomplete="off">
+      <button class="chat-send-btn" id="sendChatBtn" type="button" title="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close" id="lightboxClose">&times;</span>
+  <img id="lightboxImg" src="" alt="Full size image">
+</div>
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-install-banner" role="dialog" aria-label="Install VendHub app">
+  <div class="pwa-icon"><div class="pwa-icon-text">Vend<br>Hub</div></div>
+  <div class="pwa-text">
+    <div class="pwa-title">Install VendHub</div>
+    <div class="pwa-sub">Add to home screen for quick access</div>
+  </div>
+  <div class="pwa-actions">
+    <button class="pwa-btn" id="pwaInstallBtn">Install</button>
+    <button class="pwa-dismiss" id="pwaDismissBtn" title="Dismiss" aria-label="Dismiss">&times;</button>
+  </div>
+</div>
+
+<!-- OFFLINE BAR -->
+<div id="offline-bar">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0119 12.55"/><path d="M5 12.55a10.94 10.94 0 015.17-2.39"/><path d="M10.71 5.05A16 16 0 0122.56 9"/><path d="M1.42 9a15.91 15.91 0 014.7-2.88"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+  You're offline — some features may be unavailable
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">Vend<span>Hub</span></div>
+        <div class="footer-usa-flag">🇺🇸 Proudly serving USA vendors</div>
+        <p>VendHub is the #1 vendor booking platform for US craft fairs, festivals, markets, and expos. Browse and reserve booth spots at the best events across all 50 states — from New York to California.</p>
+      </div>
+      <div>
+        <h3>Contact Us</h3>
+        <p>Email: <a href="mailto:info@vendhub.com">info@vendhub.com</a></p>
+        <p style="margin-top:8px;">📍 Serving vendors across the USA</p>
+        <p style="margin-top:8px;">10+ new events added every week</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 VendHub. All Rights Reserved. · USA Vendor Marketplace</div>
+  </div>
+</footer>
+
+<script>
+(function setupKeyboardFix() {
+  var isMobile = function() { return window.innerWidth <= 768; };
+  if (window.visualViewport) {
+    var rafId;
+    function onVVChange() {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(function() {
+        if (!isMobile()) return;
+        var cc = document.querySelector('.chat-container');
+        if (!cc) return;
+        cc.style.height = window.visualViewport.height + 'px';
+        var msgs = document.getElementById('chatMessages');
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
+      });
+    }
+    window.visualViewport.addEventListener('resize', onVVChange);
+    window.visualViewport.addEventListener('scroll', onVVChange);
+  }
+  document.addEventListener('focusin', function(e) {
+    if (!isMobile()) return;
+    var el = e.target;
+    if (el.id === 'chatInput' || (el.tagName === 'INPUT' && el.closest && el.closest('.chat-input-area'))) {
+      setTimeout(function() {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        var msgs = document.getElementById('chatMessages');
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
+      }, 350);
+    }
+  });
+}());
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  sendPasswordResetEmail, onAuthStateChanged,
+  setPersistence, browserLocalPersistence, signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  getFirestore, collection, query, where, getDocs, onSnapshot,
+  doc, getDoc, addDoc, updateDoc, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey:        "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
+  authDomain:    "vendors-de792.firebaseapp.com",
+  projectId:     "vendors-de792",
+  storageBucket: "vendors-de792.appspot.com",
+};
+const app      = initializeApp(firebaseConfig);
+const auth     = getAuth(app);
+const db       = getFirestore(app);
+const storage  = getStorage(app);
+const provider = new GoogleAuthProvider();
+
+// ══════════════════════════════════════════════════════════
+// USA DEMO EVENTS — shown as fallback when Firebase < 6 events
+// These look real, professional, and cover 12 US states
+// ══════════════════════════════════════════════════════════
+const DEMO_EVENTS = [
+  {
+    id:'demo-1', _isDemo:true,
+    title:'Chicago Renegade Craft Fair',
+    category:'Markets',
+    location:'Union Park', state:'Illinois',
+    address:'1501 W Randolph St, Chicago, IL 60607',
+    image:'https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=600&q=80',
+    description:"Chicago's favorite indie craft market returns to Union Park for a weekend of handmade goods, independent designers, and street food. Over 300 booths featuring clothing, jewelry, ceramics, art prints, and more. Attract 15,000+ shoppers over the weekend. Apply now for a curated spot in one of America's top craft markets. Marketing package included with every vendor registration.",
+    price:'From $50 per booth', max_spots:'300',
+    event_dates:['Jul 12, 2026 • 10:00 AM','Jul 13, 2026 • 10:00 AM'],
+    website:'https://renegadecraft.com/chicago', instagram:'@renegadecraft',
+    contact_email:'chicago@renegadecraft.com', contact_phone:'+1 312-555-0189',
+  },
+  {
+    id:'demo-2', _isDemo:true,
+    title:'Austin Sustainable Makers Market',
+    category:'Markets',
+    location:'Republic Square Park', state:'Texas',
+    address:'422 W 4th St, Austin, TX 78701',
+    image:'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80',
+    description:"Eco-conscious market in the heart of Austin celebrating sustainable makers, zero-waste products, upcycled goods, and plant-based vendors. A highly engaged audience of 5,000+ shoppers who shop with intention. Perfect for organic skincare, handmade accessories, vintage resellers, and eco-friendly lifestyle brands. Free vendor workshops on sustainable business practices included.",
+    price:'$45 per vendor space', max_spots:'80',
+    event_dates:['Aug 2, 2026 • 9:00 AM','Aug 3, 2026 • 9:00 AM'],
+    website:'https://austinsustainablemarket.com', instagram:'@austinsustainablemarket',
+    contact_email:'info@austinsustainablemarket.com',
+  },
+  {
+    id:'demo-3', _isDemo:true,
+    title:'New Orleans Jazz & Heritage Festival — Vendor Village',
+    category:'Festivals',
+    location:'Fair Grounds Race Course', state:'Louisiana',
+    address:'1751 Gentilly Blvd, New Orleans, LA 70119',
+    image:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80',
+    description:"Be part of one of America's most iconic cultural festivals. Jazz Fest's Vendor Village hosts 400+ curated artisan vendors selling Louisiana-made goods, folk art, clothing, jewelry, and specialty foods to 400,000+ festival-goers over two weekends. Premium placement near stages with world-class musical acts.",
+    price:'$65 per 10×10 booth', max_spots:'400',
+    event_dates:['May 1, 2026 • 11:00 AM','May 2, 2026 • 11:00 AM','May 8, 2026 • 11:00 AM','May 9, 2026 • 11:00 AM'],
+    website:'https://nojazzfest.com', instagram:'@nojazzfest',
+    contact_email:'vendors@nojazzfest.com',
+  },
+  {
+    id:'demo-4', _isDemo:true,
+    title:'Ann Arbor Art Fair',
+    category:'Arts',
+    location:'Downtown Ann Arbor', state:'Michigan',
+    address:'South University Ave, Ann Arbor, MI 48104',
+    image:'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600&q=80',
+    description:"One of the nation's premier juried art fairs, spanning 30+ blocks of downtown Ann Arbor with 1,000 exhibiting artists and 500,000 visitors over 4 days in July. From fine jewelry and textiles to glass art and digital prints, the Ann Arbor Art Fair is a rite of summer for Midwest art collectors. Strong grant-funded marketing, national press coverage, and repeat high-spending visitor base.",
+    price:'$40 per table', max_spots:'1000',
+    event_dates:['Jul 16, 2026 • 10:00 AM','Jul 17, 2026 • 10:00 AM','Jul 18, 2026 • 10:00 AM','Jul 19, 2026 • 10:00 AM'],
+    website:'https://artfair.org', instagram:'@a2artfair',
+    contact_email:'info@artfair.org', contact_phone:'+1 734-994-5260',
+  },
+  {
+    id:'demo-5', _isDemo:true,
+    title:'Charleston Wine + Food Festival',
+    category:'Food',
+    location:'Marion Square & Venues Citywide', state:'South Carolina',
+    address:'329 Meeting St, Charleston, SC 29403',
+    image:'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&q=80',
+    description:"A landmark culinary event featuring 100+ food and beverage vendors, James Beard Award-winning chefs, and 20,000+ affluent foodies over five days each March. Vendor categories include artisan food producers, specialty beverage companies, cooking equipment, and food-adjacent lifestyle brands. Consistently rated one of America's top 10 food festivals.",
+    price:'$75 per food vendor', max_spots:'100',
+    event_dates:['Mar 5, 2026 • 12:00 PM','Mar 6, 2026 • 12:00 PM','Mar 7, 2026 • 12:00 PM'],
+    website:'https://charlestonwineandfood.com', instagram:'@chswineandfoood',
+    contact_email:'vendors@charlestonwineandfood.com',
+  },
+  {
+    id:'demo-6', _isDemo:true,
+    title:'Outside Lands Music Festival — Marketplace',
+    category:'Music',
+    location:'Golden Gate Park', state:'California',
+    address:'501 Stanyan St, San Francisco, CA 94117',
+    image:'https://images.unsplash.com/photo-1508997449629-303059a039c0?w=600&q=80',
+    description:"San Francisco's premier music festival in iconic Golden Gate Park includes a curated marketplace with 60 Bay Area artisans, food vendors, and craft beverage producers. 200,000+ attendees over three days with premium San Francisco demographics. Outside Lands is renowned for its exceptional food and artisan culture.",
+    price:'$80 for corner spot', max_spots:'60',
+    event_dates:['Aug 7, 2026 • 11:00 AM','Aug 8, 2026 • 11:00 AM','Aug 9, 2026 • 11:00 AM'],
+    website:'https://sfoutsidelands.com', instagram:'@outsidelands',
+    contact_email:'vendors@outsidelands.com',
+  },
+  {
+    id:'demo-7', _isDemo:true,
+    title:'Denver Metro Handmade Market',
+    category:'Markets',
+    location:'Denver Merchandise Mart', state:'Colorado',
+    address:'451 E 58th Ave, Denver, CO 80216',
+    image:'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=600&q=80',
+    description:"Colorado's premier handmade market showcasing 200+ local artisans, makers, and small businesses under one roof. From Rocky Mountain-inspired jewelry and leather goods to gourmet hot sauces and cold brew, this market celebrates the vibrant Denver maker community. Free admission for shoppers, strong social media presence, and professional event photography provided.",
+    price:'$50 per booth', max_spots:'200',
+    event_dates:['Sep 12, 2026 • 9:00 AM','Sep 13, 2026 • 9:00 AM'],
+    website:'https://denverhandmademarket.com', instagram:'@denverhandmademarket',
+    contact_email:'hello@denverhandmademarket.com',
+  },
+  {
+    id:'demo-8', _isDemo:true,
+    title:'Brooklyn Flea — Fort Greene Summer Market',
+    category:'Markets',
+    location:'Bishop Loughlin Memorial High School', state:'New York',
+    address:'357 Clermont Ave, Brooklyn, NY 11238',
+    image:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+    description:"Brooklyn Flea's legendary outdoor market returns to Fort Greene for the summer season. Over 150 vendors selling vintage clothing, antiques, jewelry, handmade goods, and specialty food. One of New York City's most beloved weekend destinations drawing 20,000+ visitors. Join a curated mix of established and emerging vendors.",
+    price:'$50 per booth', max_spots:'150',
+    event_dates:['Jun 6, 2026 • 10:00 AM','Jun 7, 2026 • 10:00 AM'],
+    website:'https://brooklynflea.com', instagram:'@brooklynflea',
+    contact_email:'vendors@brooklynflea.com',
+  },
+  {
+    id:'demo-9', _isDemo:true,
+    title:'Seattle Pike Place Crafters Market',
+    category:'Markets',
+    location:'Pike Place Market — Sanitary Market Building', state:'Washington',
+    address:'1501 Pike Pl, Seattle, WA 98101',
+    image:'https://images.unsplash.com/photo-1464219222984-216ebffaaf85?w=600&q=80',
+    description:"Join Pike Place Market's legendary craft community for a weekend vendor showcase. Booths available in the historic Sanitary Market Building drawing 10 million annual visitors past your stall. Ideal for jewelry, ceramics, Pacific Northwest art, handmade apparel, and specialty foods. One of the world's most recognized market locations offering unparalleled brand exposure.",
+    price:'$35 per 10×10 space', max_spots:'120',
+    event_dates:['Jul 25, 2026 • 9:00 AM','Jul 26, 2026 • 9:00 AM'],
+    website:'https://pikeplacemarket.org', instagram:'@pikeplacemarket',
+    contact_email:'craftvendors@pikeplacemarket.org', contact_phone:'+1 206-682-7453',
+  },
+  {
+    id:'demo-10', _isDemo:true,
+    title:'Phoenix Renaissance Festival',
+    category:'Festivals',
+    location:'Renaissance Park', state:'Arizona',
+    address:'12601 E U.S. Highway 60, Gold Canyon, AZ 85118',
+    image:'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600&q=80',
+    description:"Arizona's beloved Renaissance Festival runs every weekend February through March, hosting 400+ artisans, entertainers, and food vendors on a spectacular 30-acre site. Ideal for leatherwork, chainmail, period costume, handmade jewelry, ceramics, and specialty food vendors. 250,000+ costumed attendees over the season create a passionate shopping audience.",
+    price:'$55 per vendor', max_spots:'400',
+    event_dates:['Feb 7, 2026 • 10:00 AM','Feb 8, 2026 • 10:00 AM'],
+    website:'https://arizona-renaissance.com', instagram:'@azrenfest',
+    contact_email:'vendors@arizona-renaissance.com', contact_phone:'+1 520-463-2700',
+  },
+  {
+    id:'demo-11', _isDemo:true,
+    title:'Memphis BBQ Festival — Vendor Row',
+    category:'Food',
+    location:'Tom Lee Park Riverfront', state:'Tennessee',
+    address:'199 Riverside Dr, Memphis, TN 38103',
+    image:'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80',
+    description:"World Championship BBQ cooking contest and food festival drawing 100,000 BBQ devotees to Memphis each May. Vendor booths line the spectacular Mississippi River waterfront with outstanding visibility and foot traffic. Ideal for BBQ sauces and rubs, grilling accessories, smoker equipment vendors, specialty condiments, and Southern food artisans.",
+    price:'Free · Revenue share (15%)', max_spots:'100',
+    event_dates:['May 16, 2026 • 10:00 AM','May 17, 2026 • 10:00 AM'],
+    website:'https://memphisinmay.org', instagram:'@memphisinmay',
+    contact_email:'vendors@memphisinmay.org', contact_phone:'+1 901-525-4611',
+  },
+  {
+    id:'demo-12', _isDemo:true,
+    title:'National Black Business Expo — Atlanta',
+    category:'Business',
+    location:'Georgia World Congress Center', state:'Georgia',
+    address:'285 Andrew Young International Blvd NW, Atlanta, GA 30313',
+    image:'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&q=80',
+    description:"The Southeast's largest Black business expo connecting 500+ vendors, entrepreneurs, and exhibitors with 20,000+ consumers and business buyers over three days. Showcase your products and services to a motivated, financially empowered audience ready to support Black-owned businesses. From tech startups and fashion brands to beauty products and food entrepreneurs, all industries welcome.",
+    price:'$150 per 6ft table', max_spots:'500',
+    event_dates:['Oct 10, 2026 • 9:00 AM','Oct 11, 2026 • 9:00 AM'],
+    website:'https://nbbeexpo.com', instagram:'@nbbeexpo',
+    contact_email:'vendors@nbbeexpo.com',
+  },
+];
+
+// ── DOM REFS ───────────────────────────────────────────
+const eventsGrid        = document.querySelector('.events-grid');
+const modal             = document.getElementById('eventModal');
+const modalImage        = document.getElementById('modalImage');
+const modalTitle        = document.getElementById('modalTitle');
+const modalDatesGrid    = document.getElementById('modalDatesGrid');
+const modalLocation     = document.getElementById('modalLocation');
+const modalLocationAddr = document.getElementById('modalLocationAddr');
+const modalMapsLink     = document.getElementById('modalMapsLink');
+const modalDescription  = document.getElementById('modalDescription');
+const applyBtn          = document.getElementById('applyBtn');
+const modalApplyNote    = document.getElementById('modalApplyNote');
+const modalCategory     = document.getElementById('modalCategory');
+const modalPrice        = document.getElementById('modalPrice');
+const modalSpots        = document.getElementById('modalSpots');
+const modalSpotsText    = document.getElementById('modalSpotsText');
+const modalMetaChips    = document.getElementById('modalMetaChips');
+const modalContactBlock = document.getElementById('modalContactBlock');
+const modalContactRow   = document.getElementById('modalContactRow');
+const chatModal         = document.getElementById('chatModal');
+const chatMessages      = document.getElementById('chatMessages');
+const chatInput         = document.getElementById('chatInput');
+const sendChatBtn       = document.getElementById('sendChatBtn');
+const closeChat         = document.getElementById('closeChat');
+const unreadBadge       = document.getElementById('unreadBadge');
+const chatBtn           = document.getElementById('openChatBtn');
+const loginModal        = document.getElementById('loginModal');
+const googleLoginBtn    = document.getElementById('googleLoginBtn');
+const emailAuthBtn      = document.getElementById('emailAuthBtn');
+const emailField        = document.getElementById('emailField');
+const passwordField     = document.getElementById('passwordField');
+const toggleAuth        = document.getElementById('toggleAuth');
+const authTitle         = document.getElementById('authTitle');
+const togglePassword    = document.getElementById('togglePassword');
+const forgotPassword    = document.getElementById('forgotPassword');
+const profileDisplay    = document.getElementById('profileDisplay');
+const logoutBtn         = document.getElementById('logoutBtn');
+const chatEventName     = document.getElementById('chatEventName');
+const attachBtn         = document.getElementById('attachBtn');
+const attachMenu        = document.getElementById('attachMenu');
+const attachImageBtn    = document.getElementById('attachImageBtn');
+const attachDocBtn      = document.getElementById('attachDocBtn');
+const imageFileInput    = document.getElementById('imageFileInput');
+const docFileInput      = document.getElementById('documentFileInput');
+const previewStrip      = document.getElementById('uploadPreviewStrip');
+const progressWrap      = document.getElementById('uploadProgress');
+const progressFill      = document.getElementById('uploadProgressFill');
+const progressLabel     = document.getElementById('uploadProgressLabel');
+const lightbox          = document.getElementById('lightbox');
+const lightboxImg       = document.getElementById('lightboxImg');
+const lightboxClose     = document.getElementById('lightboxClose');
+const msgNotif          = document.getElementById('msgNotif');
+const notifAvatar       = document.getElementById('notifAvatar');
+const notifEvent        = document.getElementById('notifEvent');
+const notifMsg          = document.getElementById('notifMsg');
+const notifTime         = document.getElementById('notifTime');
+const notifTimer        = document.getElementById('notifTimer');
+const notifDismiss      = document.getElementById('notifDismiss');
+const notifOpenBtn      = document.getElementById('notifOpenBtn');
+const notifReplyWrap    = document.getElementById('notifReplyWrap');
+const notifReplyInput   = document.getElementById('notifReplyInput');
+const notifReplySend    = document.getElementById('notifReplySend');
+const alreadyModal      = document.getElementById('alreadyAppliedModal');
+const alreadyModalEvent = document.getElementById('alreadyModalEvent');
+const alreadyModalClose = document.getElementById('alreadyModalClose');
+const alreadyModalDismiss = document.getElementById('alreadyModalDismiss');
+const alreadyModalChatBtn = document.getElementById('alreadyModalChatBtn');
+const appCartBtn        = document.getElementById('appCartBtn');
+const appCartCount      = document.getElementById('appCartCount');
+const appDrawer         = document.getElementById('appDrawer');
+const appDrawerOverlay  = document.getElementById('appDrawerOverlay');
+const drawerBody        = document.getElementById('drawerBody');
+const drawerClose       = document.getElementById('drawerClose');
+const drawerCountPill   = document.getElementById('drawerCountPill');
+const adminNavGroup     = document.getElementById('adminNavGroup');
+const importToast       = document.getElementById('importToast');
+const importToastMsg    = document.getElementById('importToastMsg');
+const confirmDialog     = document.getElementById('confirmDialog');
+const confirmDialogClose = document.getElementById('confirmDialogClose');
+const confirmDialogYes  = document.getElementById('confirmDialogYes');
+const confirmDialogNo   = document.getElementById('confirmDialogNo');
+const confirmDialogEventName = document.getElementById('confirmDialogEventName');
+
+if (lightboxClose) lightboxClose.onclick = () => lightbox.classList.remove('open');
+if (lightbox) lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+
+// State
+let selectedEvent = '', selectedLocation = '', selectedEventDates = [], selectedEventIsPast = false;
+let isLoginMode = false, vendorId = null, queuedFiles = [];
+let activeVendorDocId = null, activeEventName = '';
+let unsubscribeChatMessages = null, unsubscribeAllUnreads = [];
+let unreadCount = 0, userApplicationsMap = {};
+let notifDismissTimeout = null;
+let pendingConfirmVid = null, pendingConfirmEventName = '', pendingConfirmBtn = null;
+
+const ADMIN_EMAIL = 'admin@grandbazaar.com';
+
+// Import toast
+function showImportToast(msg, duration = 3500) {
+  importToastMsg.textContent = msg;
+  importToast.classList.add('show');
+  setTimeout(() => importToast.classList.remove('show'), duration);
+}
+(function checkPostImport() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('imported') === '1') {
+    window.history.replaceState({}, '', window.location.pathname);
+    showImportToast('✅ Event imported from Eventbrite and published!', 4500);
+  }
+}());
+
+// Countdown
+let countdownInterval = null;
+function startCountdown(targetMs, eventName) {
+  const outer = document.getElementById('countdownOuter');
+  const nameEl = document.getElementById('countdownEventName');
+  if (!outer || !nameEl) return;
+  if (targetMs <= Date.now()) { outer.style.display = 'none'; return; }
+  outer.style.display = '';
+  nameEl.textContent = eventName;
+  if (countdownInterval) clearInterval(countdownInterval);
+  function tick() {
+    const diff = targetMs - Date.now();
+    if (diff <= 0) { clearInterval(countdownInterval); outer.style.display = 'none'; return; }
+    document.getElementById('days').textContent    = String(Math.floor(diff / 86400000)).padStart(2, '0');
+    document.getElementById('hours').textContent   = String(Math.floor((diff / 3600000) % 24)).padStart(2, '0');
+    document.getElementById('minutes').textContent = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
+    document.getElementById('seconds').textContent = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+  }
+  tick(); countdownInterval = setInterval(tick, 1000);
+}
+function pickCountdownEvent(events) {
+  const now = Date.now();
+  const upcoming = events.filter(e => e.startDate.getTime() > now).sort((a,b) => a.startDate - b.startDate);
+  if (!upcoming.length) return;
+  const within30 = upcoming.filter(e => e.startDate.getTime() - now <= 30 * 86400000);
+  const chosen = (within30.length ? within30 : upcoming)[0];
+  startCountdown(chosen.startDate.getTime(), chosen.title || 'Upcoming Event');
+}
+
+// Date utilities
+function parseDateStr(raw) {
+  if (!raw) return null;
+  const s = raw.trim();
+  if (s.includes('•')) {
+    const [datePart, timePart] = s.split('•').map(p => p.trim());
+    return { dateStr: datePart, timeStr: timePart };
+  }
+  return { dateStr: s, timeStr: null };
+}
+function collectDates(data) {
+  if (Array.isArray(data.event_dates) && data.event_dates.length) return data.event_dates.filter(Boolean);
+  return [data.date1, data.date2, data.date3, data.date4].filter(Boolean);
+}
+function buildCardDateHTML(dates) {
+  if (!dates.length) return '';
+  const calSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`;
+  const first = parseDateStr(dates[0]); if (!first) return '';
+  const label = first.timeStr ? `${first.dateStr} &nbsp;·&nbsp; ${first.timeStr}` : first.dateStr;
+  let html = `<div class="event-date-row"><div class="event-date-badge">${calSVG}${label}</div>`;
+  if (dates.length > 1) html += `<span class="event-date-more">+${dates.length - 1} more</span>`;
+  html += `</div>`;
+  return html;
+}
+function buildModalDatesHTML(dates) {
+  if (!dates.length) return `<p style="color:var(--muted);font-size:13px;">No dates listed</p>`;
+  const clockSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+  let html = '';
+  dates.forEach((raw, i) => {
+    const parsed = parseDateStr(raw); if (!parsed) return;
+    html += `<div class="modal-date-row"><div class="modal-date-num">${i+1}</div><div class="modal-date-info"><div class="modal-date-main">${parsed.dateStr}</div>${parsed.timeStr ? `<div class="modal-date-time">${clockSVG} ${parsed.timeStr}</div>` : ''}</div></div>`;
+  });
+  if (dates.length > 1) {
+    const first = parseDateStr(dates[0]), last = parseDateStr(dates[dates.length-1]);
+    if (first && last) html += `<div class="modal-date-range-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span><strong>${dates.length}-day</strong> event &mdash; ${first.dateStr} through ${last.dateStr}</span></div>`;
+  }
+  return html;
+}
+
+// Auth
+onAuthStateChanged(auth, user => {
+  if (user) {
+    updateProfileDisplay(user);
+    logoutBtn.style.display = 'flex';
+    chatBtn.style.display = 'flex';
+    appCartBtn.style.display = 'flex';
+    if (user.email === ADMIN_EMAIL) adminNavGroup.classList.add('show');
+    loadUserApplications(user);
+    requestNotifPermission();
+    getDocs(query(collection(db,'vendors'),where('user_id','==',user.uid))).then(snap => {
+      if (!snap.empty) {
+        const sorted = snap.docs.slice().sort((a,b) => (b.data().created_at?.toMillis?.()??0)-(a.data().created_at?.toMillis?.()??0));
+        activeVendorDocId = sorted[0].id;
+        activeEventName = sorted[0].data().event_name || '';
+        listenAllUnreads(snap.docs);
+      }
+    });
+  } else {
+    profileDisplay.style.display = 'none';
+    logoutBtn.style.display = 'none';
+    chatBtn.style.display = 'none';
+    appCartBtn.style.display = 'none';
+    adminNavGroup.classList.remove('show');
+    userApplicationsMap = {};
+    stopAllUnreadListeners();
+    drawerBody.innerHTML = `<div class="drawer-empty"><div class="drawer-empty-icon">📋</div><div class="drawer-empty-title">Not logged in</div><div class="drawer-empty-sub">Please log in to view your applications</div></div>`;
+    appCartCount.textContent = ''; appCartCount.classList.remove('show');
+    drawerCountPill.textContent = '0';
+  }
+});
+
+// Load events
+let allEvents = [];
+function normalizeDemoEvent(d) {
+  const dates = collectDates(d);
+  let start, end;
+  try { start = new Date(dates[0].split('•')[0].trim()); } catch(_) { start = new Date(); }
+  try { end = new Date(dates.at(-1).split('•')[0].trim()); } catch(_) { end = new Date(); }
+  if (isNaN(start.getTime())) start = new Date();
+  if (isNaN(end.getTime())) end = start;
+  end.setHours(23,59,59,999);
+  return { ...d, startDate: start, endDate: end, dateStrings: dates };
+}
+
+async function loadEvents() {
+  const qs = await getDocs(collection(db,'events'));
+  const realEvents = [];
+  qs.forEach(snap => {
+    const d = snap.data();
+    const dates = collectDates(d);
+    if (!dates.length) return;
+    let start, end;
+    try { start = new Date(dates[0].split('\u2022')[0].trim()); } catch(_) { start = new Date(); }
+    try { end = new Date(dates.at(-1).split('\u2022')[0].trim()); } catch(_) { end = new Date(); }
+    if (isNaN(start.getTime())) start = new Date();
+    if (isNaN(end.getTime())) end = start;
+    end.setHours(23,59,59,999);
+    realEvents.push({ id:snap.id, ...d, startDate:start, endDate:end, dateStrings:dates });
+  });
+
+  const demoEvents = realEvents.length < 6 ? DEMO_EVENTS.map(normalizeDemoEvent) : [];
+  allEvents = [...realEvents, ...demoEvents];
+
+  // Update ticker
+  const statesSet = new Set(allEvents.map(e=>e.state).filter(Boolean));
+  const ticker = document.getElementById('tickerEvents');
+  if (ticker) ticker.textContent = allEvents.length;
+  const statesTicker = document.getElementById('tickerStates');
+  if (statesTicker && statesSet.size > 0) statesTicker.textContent = statesSet.size+'+';
+
+  renderEvents();
+  pickCountdownEvent(allEvents);
+  const id = new URLSearchParams(window.location.search).get('event');
+  if (id) openEventById(id);
+}
+loadEvents();
+
+// Filter state
+let filterState = { search:'', category:'all' };
+
+function renderEvents() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  let arr = [...allEvents];
+  if (filterState.category !== 'all') arr = arr.filter(e => (e.category||'').toLowerCase() === filterState.category.toLowerCase());
+  const q = filterState.search.toLowerCase().trim();
+  if (q) arr = arr.filter(e => ['title','location','address','state','description'].some(k => (e[k]||'').toLowerCase().includes(q)));
+  arr.sort((a,b) => {
+    const aP = a.endDate < today, bP = b.endDate < today;
+    if (aP !== bP) return aP ? 1 : -1;
+    if (!aP && !bP) return a.startDate - b.startDate;
+    return b.endDate - a.endDate;
+  });
+
+  eventsGrid.innerHTML = '';
+  if (!arr.length) {
+    eventsGrid.innerHTML = `<div class="events-empty"><div class="events-empty-icon">🔍</div><div class="events-empty-title">No events found</div><div class="events-empty-sub">Try adjusting your search or category filter.</div></div>`;
+    updateResultsCount(0); return;
+  }
+
+  const upcoming = arr.filter(e => e.endDate >= today);
+  const past     = arr.filter(e => e.endDate < today);
+  upcoming.forEach(d => renderEventCard(d, false));
+  if (past.length) {
+    const div = document.createElement('div');
+    div.className = 'past-section-divider';
+    div.innerHTML = `<div class="past-section-divider-line"></div><div class="past-section-divider-label">Past Events</div><div class="past-section-divider-line"></div>`;
+    eventsGrid.appendChild(div);
+    past.forEach(d => renderEventCard(d, true));
+  }
+  updateResultsCount(arr.length);
+}
+
+function renderEventCard(data, isPast) {
+  const dates = data.dateStrings || collectDates(data);
+  const card = document.createElement('div');
+  card.className = `event-card${isPast ? ' is-past' : ''}`;
+  card.innerHTML = `
+    <div class="event-card-img-wrap">
+      <img src="${data.image||''}" alt="${esc(data.title||'')}" loading="lazy">
+      <span class="event-card-category">${data.category||'Event'}</span>
+      ${isPast ? '<span class="past-badge">Past</span>' : ''}
+      ${data._isDemo ? '<span class="demo-badge">Featured</span>' : ''}
+      ${data.state && !isPast && !data._isDemo ? `<span class="event-state-flag">📍 ${data.state}</span>` : ''}
+    </div>
+    <div class="event-content">
+      <h3>${esc(data.title||'')}</h3>
+      ${buildCardDateHTML(dates)}
+      <div class="event-location">${esc(data.location||'')}</div>
+      ${data.address||data.state ? `<div class="event-address">${esc(data.address||'')}${data.state ? ' · '+esc(data.state) : ''}</div>` : ''}
+    </div>`;
+  card.addEventListener('click', () => {
+    window.history.pushState({}, '', `?event=${data.id}`);
+    selectedEvent = data.title; selectedLocation = data.location;
+    selectedEventDates = dates; selectedEventIsPast = isPast;
+    openEventModal(data, isPast);
+  });
+  eventsGrid.appendChild(card);
+}
+
+function updateResultsCount(count) {
+  const el = document.getElementById('resultsCount');
+  if (el) el.innerHTML = count === 1 ? '<strong>1</strong> event' : `<strong>${count}</strong> events`;
+}
+
+function openEventModal(data, isPast) {
+  modal.style.display = 'flex'; document.body.classList.add('modal-open');
+  modalImage.src = data.image||''; modalImage.alt = esc(data.title||'');
+  modalCategory.textContent = data.category||'Event';
+  if (data.price) { modalPrice.style.display='inline-flex'; modalPrice.textContent=data.price; } else { modalPrice.style.display='none'; }
+  if (data.max_spots) { modalSpots.style.display='inline-flex'; modalSpotsText.textContent=data.max_spots+' vendor spots'; } else { modalSpots.style.display='none'; }
+  modalTitle.textContent = data.title||'Event';
+  modalMetaChips.innerHTML = '';
+  if (isPast) modalMetaChips.innerHTML += `<span class="modal-meta-chip past"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Past Event</span>`;
+  if (data.state) modalMetaChips.innerHTML += `<span class="modal-meta-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>🇺🇸 ${data.state}</span>`;
+  if (data.price) modalMetaChips.innerHTML += `<span class="modal-meta-chip gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>${data.price}</span>`;
+  const dates = collectDates(data);
+  if (dates.length) modalMetaChips.innerHTML += `<span class="modal-meta-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${dates.length} day${dates.length>1?'s':''}</span>`;
+  modalDatesGrid.innerHTML = buildModalDatesHTML(dates);
+  modalLocation.textContent = data.location||'—';
+  modalLocationAddr.textContent = [data.address, data.state].filter(Boolean).join(', ');
+  const mapQ = [data.location, data.address, data.state].filter(Boolean).join(', ');
+  if (mapQ.trim()) { modalMapsLink.href=`https://maps.google.com/?q=${encodeURIComponent(mapQ)}`; modalMapsLink.style.display='inline-flex'; }
+  else { modalMapsLink.removeAttribute('href'); modalMapsLink.style.display='none'; }
+  modalDescription.textContent = data.description||'';
+  modalContactRow.innerHTML = '';
+  const contacts = [];
+  if (data.contact_email) contacts.push({ icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`, label:'Email Organiser', value:data.contact_email, href:`mailto:${data.contact_email}` });
+  if (data.contact_phone) contacts.push({ icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`, label:'Call Organiser', value:data.contact_phone, href:`tel:${data.contact_phone}` });
+  if (data.website) contacts.push({ icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`, label:'Website', value:data.website.replace(/^https?:\/\//,''), href:data.website, external:true });
+  if (data.instagram) contacts.push({ icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`, label:'Instagram', value:data.instagram, href:`https://instagram.com/${(data.instagram||'').replace('@','')}`, external:true });
+  if (contacts.length) {
+    modalContactBlock.style.display='';
+    contacts.forEach(c => {
+      const a = document.createElement('a'); a.className='modal-contact-item'; a.href=c.href;
+      if (c.external) { a.target='_blank'; a.rel='noopener noreferrer'; }
+      a.innerHTML=`<div class="modal-contact-icon">${c.icon}</div><div class="modal-contact-info"><div class="modal-contact-label">${c.label}</div><div class="modal-contact-value">${c.value}</div></div>`;
+      modalContactRow.appendChild(a);
+    });
+  } else { modalContactBlock.style.display='none'; }
+
+  if (isPast) {
+    applyBtn.disabled = true;
+    applyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> This event has ended`;
+    modalApplyNote.textContent = 'Applications are closed — this event has already taken place.';
+  } else {
+    applyBtn.disabled = false;
+    applyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg> Apply as Vendor <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+    modalApplyNote.textContent = 'Free to apply · Subject to organiser approval';
+  }
+}
+
+async function openEventById(id) {
+  const demo = DEMO_EVENTS.find(d=>d.id===id);
+  if (demo) {
+    const data = normalizeDemoEvent(demo);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const isPast = data.endDate < today;
+    selectedEvent=data.title; selectedLocation=data.location; selectedEventDates=data.dateStrings; selectedEventIsPast=isPast;
+    openEventModal(data, isPast); return;
+  }
+  try {
+    const snap = await getDoc(doc(db,'events',id));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    const dates = collectDates(data);
+    let end; try { end = new Date(dates.at(-1).split('\u2022')[0].trim()); } catch(_) { end = new Date(); }
+    if (isNaN(end.getTime())) end = new Date(); end.setHours(23,59,59,999);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const isPast = end < today;
+    selectedEvent=data.title; selectedLocation=data.location; selectedEventDates=dates; selectedEventIsPast=isPast;
+    openEventModal(data, isPast);
+  } catch(e) { console.error(e); }
+}
+
+function updateProfileDisplay(user) {
+  if (!user) return;
+  profileDisplay.style.display = 'flex';
+  document.getElementById('userInitial').textContent = (user.displayName||user.email||'U').charAt(0).toUpperCase();
+}
+
+function redirectToApply() {
+  if (selectedEvent && selectedLocation) {
+    const datesParam = selectedEventDates.map(encodeURIComponent).join('|||');
+    window.location.href = `apply.html?event=${encodeURIComponent(selectedEvent)}&location=${encodeURIComponent(selectedLocation)}&event_dates=${datesParam}`;
+  } else { window.location.href = 'apply.html'; }
+}
+
+applyBtn.addEventListener('click', () => {
+  if (applyBtn.disabled) return;
+  if (!auth.currentUser) { showLoginModal(); return; }
+  const key = selectedEvent.toLowerCase().trim();
+  if (userApplicationsMap[key]) { showAlreadyApplied(selectedEvent); return; }
+  redirectToApply();
+});
+
+function showLoginModal() { loginModal.style.display = 'flex'; }
+
+toggleAuth.onclick = () => {
+  isLoginMode = !isLoginMode;
+  authTitle.textContent = isLoginMode ? 'Log In' : 'Sign Up';
+  emailAuthBtn.textContent = isLoginMode ? 'Log In' : 'Sign Up';
+  toggleAuth.textContent = isLoginMode ? "Don't have an account? Sign up" : 'Already have an account? Log in';
+  forgotPassword.style.display = isLoginMode ? 'block' : 'none';
+};
+togglePassword.onclick = () => {
+  passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+  togglePassword.textContent = passwordField.type === 'password' ? 'Show' : 'Hide';
+};
+
+function loginWithGoogle() {
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => signInWithPopup(auth, provider))
+    .then(r => {
+      if (r.user.email === ADMIN_EMAIL) { window.location.href = 'admin.html'; return; }
+      updateProfileDisplay(r.user); loginModal.style.display = 'none'; redirectToApply();
+    })
+    .catch(e => alert('Google Login failed: ' + e.message));
+}
+function emailAuth() {
+  const email = emailField.value.trim(), pass = passwordField.value.trim();
+  if (!email || !pass) { alert('Enter email and password'); return; }
+  if (isLoginMode) {
+    signInWithEmailAndPassword(auth, email, pass)
+      .then(u => { if (u.user.email===ADMIN_EMAIL) { window.location.href='admin.html'; return; } updateProfileDisplay(u.user); loginModal.style.display='none'; redirectToApply(); })
+      .catch(e => alert('Login failed: ' + e.message));
+  } else {
+    createUserWithEmailAndPassword(auth, email, pass)
+      .then(u => { updateProfileDisplay(u.user); loginModal.style.display='none'; redirectToApply(); })
+      .catch(e => { if (e.code==='auth/email-already-in-use') alert('Email exists. Switch to login.'); else alert('Signup failed: '+e.message); });
+  }
+}
+forgotPassword.onclick = () => {
+  const email = emailField.value.trim();
+  if (!email) { alert('Enter your email first.'); return; }
+  sendPasswordResetEmail(auth, email).then(() => alert('Reset email sent!')).catch(e => alert('Error: '+e.message));
+};
+
+googleLoginBtn.addEventListener('click', loginWithGoogle);
+emailAuthBtn.addEventListener('click', emailAuth);
+document.querySelector('#loginModal .close-login').onclick = () => loginModal.style.display='none';
+closeChat.addEventListener('click', closeChatModal);
+document.querySelector('#eventModal .close').onclick = () => { modal.style.display='none'; document.body.classList.remove('modal-open'); window.history.pushState({},'',''); };
+
+window.onclick = e => {
+  if (e.target===modal) { modal.style.display='none'; document.body.classList.remove('modal-open'); window.history.pushState({},'',''); }
+  if (e.target===chatModal) closeChatModal();
+  if (!attachBtn.contains(e.target) && !attachMenu.contains(e.target)) attachMenu.classList.remove('open');
+  if (!msgNotif.contains(e.target)) hideNotif();
+};
+
+// Confirm dialog
+function openConfirmDialog(vid, eventName, btn) {
+  pendingConfirmVid = vid; pendingConfirmEventName = eventName; pendingConfirmBtn = btn;
+  confirmDialogEventName.textContent = eventName || 'this event';
+  confirmDialog.classList.add('open'); document.body.classList.add('modal-open');
+}
+function closeConfirmDialog() {
+  confirmDialog.classList.remove('open'); document.body.classList.remove('modal-open');
+  pendingConfirmVid = null; pendingConfirmEventName = ''; pendingConfirmBtn = null;
+}
+confirmDialogClose.addEventListener('click', closeConfirmDialog);
+confirmDialogNo.addEventListener('click', closeConfirmDialog);
+confirmDialog.addEventListener('click', e => { if (e.target === confirmDialog) closeConfirmDialog(); });
+confirmDialogYes.addEventListener('click', async () => {
+  if (!pendingConfirmVid) return;
+  const btn = pendingConfirmBtn; confirmDialogYes.disabled = true; confirmDialogYes.textContent = 'Confirming…';
+  try {
+    await updateDoc(doc(db,'vendors',pendingConfirmVid), { status:'confirmed', confirmed_at:serverTimestamp() });
+    if (btn) { btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg> Application confirmed!`; btn.classList.add('is-confirmed'); btn.disabled=true; }
+    closeConfirmDialog(); showImportToast('✅ Application confirmed successfully!', 3500);
+  } catch(e) { alert('Could not confirm: ' + e.message); confirmDialogYes.disabled=false; confirmDialogYes.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Yes, confirm my application`; }
+});
+
+// Notification popup
+function showNotif(eventName, message, msgType) {
+  if (chatModal.style.display === 'flex') return;
+  const preview = msgType==='image' ? '📷 Image' : msgType==='document' ? '📎 Document' : (message.length>90?message.slice(0,90)+'…':message);
+  notifEvent.textContent = eventName || 'Event Coordinator';
+  notifMsg.textContent = preview;
+  const clockSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+  notifTime.innerHTML = clockSVG + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  notifAvatar.textContent = (eventName||'A').charAt(0).toUpperCase();
+  msgNotif.classList.add('show'); notifTimer.classList.remove('running'); void notifTimer.offsetWidth; notifTimer.classList.add('running');
+  clearTimeout(notifDismissTimeout); notifDismissTimeout = setTimeout(hideNotif, 6000);
+  if (document.hidden && 'Notification' in window && Notification.permission==='granted') new Notification('New message — VendHub', {body:`${eventName}: ${preview}`, icon:'images/header.png'});
+}
+function hideNotif() { clearTimeout(notifDismissTimeout); msgNotif.classList.remove('show'); notifTimer.classList.remove('running'); notifReplyInput.value=''; notifReplyWrap.classList.remove('show'); }
+notifReplyInput.addEventListener('focus', () => notifReplyWrap.classList.add('show'));
+notifReplyInput.addEventListener('click', e => e.stopPropagation());
+async function sendQuickReply() {
+  const text = notifReplyInput.value.trim();
+  if (!text || !activeVendorDocId) return;
+  const user = auth.currentUser; if (!user) return;
+  try { await addDoc(collection(db,'vendors',activeVendorDocId,'conversation'), {sender:'vendor',message:text,messageType:'text',timestamp:serverTimestamp(),read_by_admin:false,read_by_vendor:true,user_id:user.uid}); notifReplyInput.value=''; hideNotif(); } catch(e) { console.error(e); }
+}
+notifReplySend.addEventListener('click', sendQuickReply);
+notifReplyInput.addEventListener('keydown', e => { if (e.key==='Enter') { e.preventDefault(); sendQuickReply(); } });
+notifDismiss.addEventListener('click', hideNotif);
+notifOpenBtn.addEventListener('click', () => { hideNotif(); if (activeVendorDocId) openChatModal(); });
+msgNotif.addEventListener('mouseenter', () => { clearTimeout(notifDismissTimeout); notifTimer.style.animationPlayState='paused'; });
+msgNotif.addEventListener('mouseleave', () => { notifTimer.style.animationPlayState='running'; notifDismissTimeout=setTimeout(hideNotif,2500); });
+
+// Already applied modal
+function showAlreadyApplied(eventName) { alreadyModalEvent.textContent=eventName||'this event'; alreadyModal.classList.add('open'); document.body.classList.add('modal-open'); }
+function closeAlreadyModal() { alreadyModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
+alreadyModalClose.onclick = closeAlreadyModal;
+alreadyModalDismiss.onclick = closeAlreadyModal;
+alreadyModal.addEventListener('click', e => { if (e.target===alreadyModal) closeAlreadyModal(); });
+alreadyModalChatBtn.addEventListener('click', () => {
+  closeAlreadyModal(); modal.style.display='none'; document.body.classList.remove('modal-open'); window.history.pushState({},'','');
+  if (activeVendorDocId) openChatModal(); else openEventSelector();
+});
+
+// Notification permission
+const VAPID_PUBLIC_KEY='BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDkBNjAknoQQhcFPF6L7zsae4oNJf3a0FIUYaJfVMng';
+function urlBase64ToUint8Array(base64String) {
+  const padding='='.repeat((4-(base64String.length%4))%4);
+  const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  const raw=atob(base64); return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));
+}
+async function requestNotifPermission() {
+  if (!('Notification' in window)||!('serviceWorker' in navigator)) return;
+  let permission=Notification.permission;
+  if (permission==='default') permission=await Notification.requestPermission();
+  if (permission!=='granted') return;
+  try {
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if (!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
+    const user=auth.currentUser;
+    if (user && sub) {
+      try { await addDoc(collection(db,'push_subscriptions'),{user_id:user.uid,subscription:sub.toJSON(),created_at:serverTimestamp(),user_agent:navigator.userAgent.slice(0,200)}); }
+      catch(_) {
+        try { const ex=await getDocs(query(collection(db,'push_subscriptions'),where('user_id','==',user.uid))); if (!ex.empty) await updateDoc(ex.docs[0].ref,{subscription:sub.toJSON(),updated_at:serverTimestamp()}); } catch(_) {}
+      }
+    }
+  } catch(err) { console.warn('[VendHub] Push subscribe failed:', err.message); }
+}
+
+function updateAppBadge(count) {
+  if ('setAppBadge' in navigator) { if (count>0) navigator.setAppBadge(count).catch(()=>{}); else navigator.clearAppBadge().catch(()=>{}); }
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) navigator.serviceWorker.controller.postMessage(count>0?{type:'SET_BADGE',count}:{type:'CLEAR_BADGE'});
+}
+
+// Drawer
+function openDrawer()  { appDrawer.classList.add('open'); appDrawerOverlay.classList.add('open'); document.body.style.overflow='hidden'; }
+function closeDrawer() { appDrawer.classList.remove('open'); appDrawerOverlay.classList.remove('open'); document.body.style.overflow=''; }
+appCartBtn.addEventListener('click', openDrawer);
+drawerClose.addEventListener('click', closeDrawer);
+appDrawerOverlay.addEventListener('click', closeDrawer);
+
+// Unread listeners
+function stopAllUnreadListeners() { unsubscribeAllUnreads.forEach(fn=>fn()); unsubscribeAllUnreads=[]; unreadCount=0; updateBadge(); }
+function listenAllUnreads(vendorDocs) {
+  stopAllUnreadListeners();
+  const perDocCount = new Map();
+  vendorDocs.forEach(ds => {
+    const vid=ds.id, ename=ds.data().event_name||'';
+    let isFirstLoad=true, localLastSeenId=null;
+    const unsub=onSnapshot(query(collection(db,'vendors',vid,'conversation'),orderBy('timestamp','asc')), snap=>{
+      let count=0, latestMsg=null, latestId=null;
+      snap.forEach(d=>{
+        const x=d.data();
+        if ((x.sender||'').toLowerCase()==='admin' && x.read_by_vendor===false) {
+          count++;
+          const thisTs=x.timestamp?.toMillis?.()??0, prevTs=latestMsg?.timestamp?.toMillis?.()??0;
+          if (!latestMsg||thisTs>prevTs) { latestMsg=x; latestId=d.id; }
+        }
+      });
+      perDocCount.set(vid,count); unreadCount=0; perDocCount.forEach(v=>{unreadCount+=v;}); updateBadge();
+      if (!isFirstLoad&&latestId&&latestId!==localLastSeenId&&latestMsg) { localLastSeenId=latestId; activeVendorDocId=vid; activeEventName=ename; showNotif(ename,latestMsg.message||'',latestMsg.messageType||'text'); }
+      isFirstLoad=false;
+    });
+    unsubscribeAllUnreads.push(unsub);
+  });
+}
+
+// Load user applications
+function loadUserApplications(user) {
+  onSnapshot(query(collection(db,'vendors'),where('user_id','==',user.uid)), snap=>{
+    drawerBody.innerHTML=''; userApplicationsMap={};
+    const count=snap.size; drawerCountPill.textContent=count;
+    if (count>0) { appCartCount.textContent=count>99?'99+':String(count); appCartCount.classList.add('show'); }
+    else { appCartCount.textContent=''; appCartCount.classList.remove('show'); }
+    if (snap.empty) { drawerBody.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">🎪</div><div class="drawer-empty-title">No applications yet</div><div class="drawer-empty-sub">Browse events and apply for a booth to get started</div></div>`; return; }
+    snap.forEach(ds=>{
+      const d=ds.data();
+      if (d.event_name) userApplicationsMap[d.event_name.toLowerCase().trim()]=ds.id;
+      const st=(d.status||'pending').toLowerCase();
+      const days=Array.isArray(d.event_date)?d.event_date.filter(Boolean).length:1;
+      const price=(d.price||0)*(days||1);
+      let dateStr=''; if (d.created_at?.toDate) dateStr=d.created_at.toDate().toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+      const card=document.createElement('div'); card.className=`app-card ${st}`;
+      const showConfirm=st==='pending';
+      const confirmBtnHTML=showConfirm?`<button class="app-confirm-btn" data-vid="${ds.id}" data-ename="${esc(d.event_name||'')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg> Confirm application</button>`:'';
+      card.innerHTML=`<div class="app-card-info"><div class="app-card-event">${esc(d.event_name||'Event')}</div><div class="app-card-meta">${d.booth_label||d.booth_size?`<span class="app-card-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 00-4 0v2"/></svg>${esc(d.booth_label||d.booth_size)}</span>`:''} ${price?`<span class="app-card-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>$${price}</span>`:''} ${dateStr?`<span class="app-card-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dateStr}</span>`:''}</div>${confirmBtnHTML}</div><div class="app-card-actions"><span class="app-status-pill ${st}">${d.status||'pending'}</span><button class="app-card-chat" title="Chat" data-vid="${ds.id}" data-ename="${esc(d.event_name||'')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span class="app-card-chat-badge" id="card-badge-${ds.id}"></span></button></div>`;
+      card.querySelector('.app-card-chat').addEventListener('click', e=>{ e.stopPropagation(); activeVendorDocId=e.currentTarget.dataset.vid; activeEventName=e.currentTarget.dataset.ename; closeDrawer(); openChatModal(); });
+      if (showConfirm) { const cb=card.querySelector('.app-confirm-btn'); cb.addEventListener('click', e=>{ e.stopPropagation(); openConfirmDialog(ds.id,d.event_name||'',cb); }); }
+      drawerBody.appendChild(card);
+      onSnapshot(collection(db,'vendors',ds.id,'conversation'), qs=>{ let u=0; qs.forEach(m=>{ const md=m.data(); if ((md.sender||'').toLowerCase()==='admin'&&!md.read_by_vendor) u++; }); const badge=document.getElementById(`card-badge-${ds.id}`); if (badge) { badge.textContent=u||''; badge.classList.toggle('show',u>0); } });
+    });
+  });
+}
+
+// Category filter
+document.querySelectorAll('.categories div').forEach(div=>{
+  div.addEventListener('click', ()=>{
+    document.querySelectorAll('.categories div').forEach(d=>d.classList.remove('active'));
+    div.classList.add('active'); filterState.category=div.dataset.category; renderEvents();
+  });
+});
+
+// Search
+function handleSearch(v) { filterState.search=v; renderEvents(); }
+document.getElementById('eventSearch').addEventListener('input', e=>handleSearch(e.target.value));
+document.getElementById('eventSearchMobile').addEventListener('input', e=>handleSearch(e.target.value));
+
+logoutBtn.addEventListener('click', async ()=>{ if (!confirm('Are you sure you want to logout?')) return; try { await signOut(auth); window.location.href='index.html'; } catch(e) { alert('Logout failed: '+e.message); } });
+
+function updateBadge() {
+  if (unreadCount>0) { unreadBadge.textContent=unreadCount>99?'99+':String(unreadCount); unreadBadge.classList.add('has-unread'); }
+  else { unreadBadge.classList.remove('has-unread'); unreadBadge.textContent=''; }
+  updateAppBadge(unreadCount);
+}
+
+function openChatModal() {
+  chatModal.style.display='flex'; document.body.classList.add('modal-open');
+  chatEventName.textContent=activeEventName||'Event Coordinator';
+  unreadCount=0; updateBadge(); hideNotif();
+  markMessagesAsRead(activeVendorDocId); loadChatMessages(activeVendorDocId);
+  setTimeout(()=>chatInput.focus(),200);
+}
+function closeChatModal() {
+  chatModal.style.display='none';
+  if (!document.querySelector('.modal[style*="flex"]')) document.body.classList.remove('modal-open');
+  if (unsubscribeChatMessages) unsubscribeChatMessages();
+  chatMessages.innerHTML=''; clearPreviewStrip();
+}
+
+attachBtn.addEventListener('click', e=>{ e.stopPropagation(); attachMenu.classList.toggle('open'); });
+attachImageBtn.addEventListener('click', ()=>{ attachMenu.classList.remove('open'); imageFileInput.click(); });
+attachDocBtn.addEventListener('click',   ()=>{ attachMenu.classList.remove('open'); docFileInput.click(); });
+imageFileInput.addEventListener('change', ()=>handleFileSelection(imageFileInput,'image'));
+docFileInput.addEventListener('change',   ()=>handleFileSelection(docFileInput,'document'));
+
+function handleFileSelection(input, type) {
+  Array.from(input.files||[]).forEach(file=>{ if (file.size>10*1024*1024) { alert(`"${file.name}" exceeds 10 MB limit.`); return; } addFileToQueue(file,type); }); input.value='';
+}
+function addFileToQueue(file, type) {
+  const item=document.createElement('div'); item.className='preview-item';
+  if (type==='image') { const img=document.createElement('img'); img.className='preview-img'; img.src=URL.createObjectURL(file); item.appendChild(img); }
+  else { const ext=file.name.split('.').pop().toUpperCase().slice(0,4); const dd=document.createElement('div'); dd.className='preview-doc'; dd.innerHTML=`<span class="preview-doc-icon">${getDocIcon(file.name)}</span><span class="preview-doc-ext">${ext}</span>`; item.appendChild(dd); }
+  const rm=document.createElement('button'); rm.className='preview-remove'; rm.textContent='×';
+  rm.onclick=()=>{ queuedFiles=queuedFiles.filter(q=>q.previewEl!==item); item.remove(); if (!queuedFiles.length) previewStrip.classList.remove('has-files'); };
+  item.appendChild(rm); previewStrip.appendChild(item); previewStrip.classList.add('has-files');
+  queuedFiles.push({file,previewEl:item,type});
+}
+function clearPreviewStrip() { queuedFiles=[]; previewStrip.innerHTML=''; previewStrip.classList.remove('has-files'); }
+
+async function uploadFile(file, onProgress) {
+  const path=`chat_attachments/${activeVendorDocId}/${Date.now()}_${file.name}`;
+  const ref=storageRef(storage,path); const task=uploadBytesResumable(ref,file);
+  return new Promise((resolve,reject)=>{ task.on('state_changed', snap=>{ onProgress&&onProgress(snap.bytesTransferred/snap.totalBytes); }, err=>reject(err), async()=>{ try { resolve(await getDownloadURL(task.snapshot.ref)); } catch(e) { reject(e); } }); });
+}
+
+async function sendMessage() {
+  const message=chatInput.value.trim(); const user=auth.currentUser;
+  if (!user) { alert('Please log in first.'); return; }
+  if (!activeVendorDocId) { alert('Please select an event first.'); return; }
+  if (!message && !queuedFiles.length) return;
+  if (message.length>1000) return;
+  sendChatBtn.classList.add('sending');
+  try {
+    if (queuedFiles.length) {
+      progressWrap.classList.add('show'); progressFill.style.width='0%';
+      const total=queuedFiles.length; let done=0;
+      for (const item of queuedFiles) {
+        progressLabel.textContent=`Uploading ${item.file.name}… (${done+1}/${total})`;
+        let url;
+        try { url=await uploadFile(item.file, pct=>{ progressFill.style.width=((done+pct)/total*100)+'%'; }); }
+        catch(uploadErr) { progressWrap.classList.remove('show'); progressFill.style.width='0%'; clearPreviewStrip(); alert('Upload failed: '+(uploadErr.message||uploadErr.code||'Unknown error')); sendChatBtn.classList.remove('sending'); return; }
+        done++; progressFill.style.width=(done/total*100)+'%';
+        await addDoc(collection(db,'vendors',activeVendorDocId,'conversation'),{sender:'vendor',message:item.file.name,messageType:item.type==='image'?'image':'document',fileUrl:url,fileName:item.file.name,fileSize:item.file.size,timestamp:serverTimestamp(),read_by_admin:false,read_by_vendor:true,user_id:user.uid});
+      }
+      clearPreviewStrip(); progressWrap.classList.remove('show'); progressFill.style.width='0%';
+    }
+    if (message) { await addDoc(collection(db,'vendors',activeVendorDocId,'conversation'),{sender:'vendor',message,messageType:'text',timestamp:serverTimestamp(),read_by_admin:false,read_by_vendor:true,user_id:user.uid}); chatInput.value=''; }
+  } catch(err) { console.error('Send failed:',err); alert('Failed to send: '+(err.message||err.code||'Unknown error')); progressWrap.classList.remove('show'); progressFill.style.width='0%'; }
+  finally { sendChatBtn.classList.remove('sending'); }
+}
+sendChatBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', e=>{ if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendMessage(); } });
+
+function loadChatMessages(vId) {
+  if (unsubscribeChatMessages) unsubscribeChatMessages();
+  const q=query(collection(db,'vendors',vId,'conversation'),orderBy('timestamp','asc'));
+  unsubscribeChatMessages=onSnapshot(q, snap=>{ chatMessages.innerHTML=''; snap.forEach(ds=>{ const d=ds.data(); if (!d.timestamp) return; appendChatMessage(d); }); chatMessages.scrollTop=chatMessages.scrollHeight; });
+}
+function appendChatMessage(d) {
+  const ts=d.timestamp?.toDate?d.timestamp.toDate():new Date();
+  const isVendor=(d.sender||'').toLowerCase()==='vendor';
+  const type=d.messageType||'text';
+  const row=document.createElement('div'); const bubble=document.createElement('div'); const time=document.createElement('div');
+  row.classList.add('message-row',isVendor?'vendor-row':'admin-row');
+  bubble.classList.add(isVendor?'vendor-bubble':'admin-bubble');
+  if (type==='image') { const img=document.createElement('img'); img.className='msg-img'; img.src=d.fileUrl; img.alt=d.fileName||'Image'; img.loading='lazy'; img.onclick=()=>{ lightboxImg.src=d.fileUrl; lightbox.classList.add('open'); }; bubble.appendChild(img); }
+  else if (type==='document') { const link=document.createElement('a'); link.className='msg-file'; link.href=d.fileUrl; link.target='_blank'; link.rel='noopener noreferrer'; link.innerHTML=`<div class="msg-file-icon">${getDocIcon(d.fileName||'')}</div><div class="msg-file-info"><span class="msg-file-name">${esc(d.fileName||'File')}</span><span class="msg-file-size">${formatBytes(d.fileSize||0)} · Tap to open</span></div>`; bubble.appendChild(link); }
+  else { bubble.textContent=d.message||''; }
+  time.classList.add('message-time'); time.textContent=ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  row.appendChild(bubble); row.appendChild(time); chatMessages.appendChild(row); chatMessages.scrollTop=chatMessages.scrollHeight;
+}
+
+document.getElementById('openChatBtn').addEventListener('click', openEventSelector);
+window.closeEventSelect = () => { document.getElementById('eventSelectModal').style.display='none'; };
+
+async function openEventSelector() {
+  const user=auth.currentUser; if (!user) { alert('Please login first.'); return; }
+  try {
+    const snap=await getDocs(query(collection(db,'vendors'),where('user_id','==',user.uid)));
+    if (snap.empty) { alert('Apply to an event before chatting.'); return; }
+    if (snap.size===1) { const d=snap.docs[0].data(); activeVendorDocId=snap.docs[0].id; activeEventName=d.event_name||''; openChatModal(); return; }
+    const list=document.getElementById('eventList'); list.innerHTML='';
+    document.getElementById('eventSelectModal').style.display='flex';
+    const liveUnsubs=[];
+    snap.forEach(ds=>{
+      const d=ds.data(); const eventName=d.event_name||'Event';
+      const btn=document.createElement('button'); btn.className='event-item-select';
+      btn.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:12px;';
+      btn.innerHTML=`<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(eventName)}</span><span class="es-badge" id="es-badge-${ds.id}" style="display:none;background:#ef4444;color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;padding:0 6px;flex-shrink:0;align-items:center;justify-content:center;line-height:1;"></span>`;
+      btn.onclick=()=>{ activeVendorDocId=ds.id; activeEventName=eventName; unreadCount=0; updateBadge(); liveUnsubs.forEach(fn=>fn()); window.closeEventSelect(); openChatModal(); };
+      list.appendChild(btn);
+      const unsub=onSnapshot(collection(db,'vendors',ds.id,'conversation'), msgSnap=>{ let count=0; msgSnap.forEach(m=>{ const md=m.data(); if((md.sender||'').toLowerCase()==='admin'&&md.read_by_vendor===false) count++; }); const badge=document.getElementById(`es-badge-${ds.id}`); if (!badge) return; badge.textContent=count>99?'99+':String(count); badge.style.display=count>0?'inline-flex':'none'; });
+      liveUnsubs.push(unsub);
+    });
+    const origClose=window.closeEventSelect;
+    window.closeEventSelect=()=>{ liveUnsubs.forEach(fn=>fn()); window.closeEventSelect=origClose; origClose(); };
+  } catch(e) { console.error(e); alert('Could not load events.'); }
+}
+
+async function markMessagesAsRead(vId) {
+  if (!vId) return;
+  try {
+    const snap=await getDocs(collection(db,'vendors',vId,'conversation'));
+    const ops=snap.docs.filter(d=>{ const m=d.data(); return (m.sender||'').toLowerCase()==='admin'&&m.read_by_vendor===false; }).map(d=>updateDoc(d.ref,{read_by_vendor:true}));
+    if (ops.length) await Promise.all(ops); updateAppBadge(0);
+  } catch(e) { console.error('markMessagesAsRead:',e); }
+}
+
+function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function getDocIcon(name) { const ext=(name.split('.').pop()||'').toLowerCase(); return {pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',ppt:'📋',pptx:'📋',zip:'🗜️',txt:'📃',csv:'📊'}[ext]||'📎'; }
+function formatBytes(b) { return b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB'; }
+</script>
+
+<script>
+(function initPWA() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').catch(function(err) { console.warn('SW reg failed:', err); });
+    });
+  }
+  var bar = document.getElementById('offline-bar');
+  function syncOnline() { if (navigator.onLine) bar.classList.remove('show'); else bar.classList.add('show'); }
+  window.addEventListener('online', syncOnline); window.addEventListener('offline', syncOnline); syncOnline();
+  var banner=document.getElementById('pwa-install-banner'), installBtn=document.getElementById('pwaInstallBtn'), dismissBtn=document.getElementById('pwaDismissBtn'), deferred=null;
+  function showBanner() { banner.classList.add('show'); }
+  function hideBanner()  { banner.classList.remove('show'); }
+  window.addEventListener('beforeinstallprompt', function(e) { e.preventDefault(); deferred=e; if (!sessionStorage.getItem('pwa-dismissed')) setTimeout(showBanner,2500); });
+  if (installBtn) { installBtn.addEventListener('click', function() { if (!deferred) return; deferred.prompt(); deferred.userChoice.then(function() { deferred=null; hideBanner(); }); }); }
+  if (dismissBtn) { dismissBtn.addEventListener('click', function() { hideBanner(); sessionStorage.setItem('pwa-dismissed','1'); }); }
+  window.addEventListener('appinstalled', function() { hideBanner(); deferred=null; });
+}());
+</script>
+</body>
+</html>

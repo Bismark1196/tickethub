@@ -1,0 +1,20 @@
+{
+  "name": "vendhub-functions",
+  "description": "Firebase Cloud Functions for VendHub — push notifications, email, weekly summary",
+  "scripts": {
+    "serve":  "firebase emulators:start --only functions",
+    "shell":  "firebase functions:shell",
+    "deploy": "firebase deploy --only functions",
+    "logs":   "firebase functions:log"
+  },
+  "engines": { "node": "20" },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin":     "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "nodemailer":         "^6.9.9",
+    "web-push":           "^3.6.7"
+  },
+  "devDependencies": {},
+  "private": true
+}

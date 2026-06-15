@@ -1,0 +1,148 @@
+<!--
+  ══════════════════════════════════════════════════════
+   VENDHUB  —  PWA + ENHANCEMENT PATCH
+   Drop these snippets into the correct locations.
+  ══════════════════════════════════════════════════════
+
+  1. ADD TO <head> (replace closing </head> tag):
+─────────────────────────────────────────────────────── -->
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VendHub">
+<link rel="apple-touch-icon" href="images/icon-192.png">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Book vendor booths, track applications, and chat with event coordinators.">
+<meta property="og:title" content="VendHub — The Vendor Marketplace">
+<meta property="og:description" content="Secure your booth at the best events.">
+<meta property="og:image" content="images/header.png">
+<meta property="og:type" content="website">
+
+<!--
+  2. INSTALL BANNER STYLES — add inside <style> in index.html:
+─────────────────────────────────────────────────────── -->
+<style id="pwa-styles">
+/* ── PWA INSTALL BANNER ── */
+#pwa-install-banner {
+  position: fixed; bottom: 96px; left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--white); border: 1px solid #e8e5de;
+  border-radius: 22px; box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+  z-index: 900; width: calc(100vw - 40px); max-width: 400px;
+  transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+  font-family: 'DM Sans', sans-serif;
+}
+#pwa-install-banner.show { transform: translateX(-50%) translateY(0); }
+.pwa-icon { width: 46px; height: 46px; border-radius: 12px; background: #0a0a0a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pwa-icon-text { font-family: 'Playfair Display', serif; font-size: 9px; font-weight: 900; color: #c9a84c; text-align: center; line-height: 1.2; }
+.pwa-text { flex: 1; min-width: 0; }
+.pwa-title { font-size: 14px; font-weight: 700; color: #0a0a0a; }
+.pwa-sub { font-size: 12px; color: #8a8a8e; margin-top: 1px; }
+.pwa-btn {
+  padding: 8px 16px; background: #0a0a0a; color: #fff;
+  border: none; border-radius: 20px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.pwa-btn:hover { background: #1c1c1e; }
+.pwa-dismiss { background: none; border: none; cursor: pointer; color: #8a8a8e; font-size: 18px; padding: 4px; flex-shrink: 0; line-height: 1; }
+.pwa-dismiss:hover { color: #3a3a3c; }
+
+/* ── OFFLINE INDICATOR ── */
+#offline-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  background: #1c1c1e; color: rgba(255,255,255,0.8);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  text-align: center; padding: 8px 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transform: translateY(-100%); transition: transform 0.3s ease;
+}
+#offline-bar.show { transform: translateY(0); }
+#offline-bar svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.7; }
+</style>
+
+<!--
+  3. INSTALL BANNER HTML — add just before closing </body>:
+─────────────────────────────────────────────────────── -->
+<div id="pwa-install-banner">
+  <div class="pwa-icon"><div class="pwa-icon-text">Vend<br>Hub</div></div>
+  <div class="pwa-text">
+    <div class="pwa-title">Install VendHub</div>
+    <div class="pwa-sub">Add to home screen for quick access</div>
+  </div>
+  <button class="pwa-btn" id="pwaInstallBtn">Install</button>
+  <button class="pwa-dismiss" id="pwaDismissBtn" title="Dismiss">×</button>
+</div>
+
+<div id="offline-bar">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <line x1="1" y1="1" x2="23" y2="23"/>
+    <path d="M16.72 11.06A10.94 10.94 0 0119 12.55"/>
+    <path d="M5 12.55a10.94 10.94 0 015.17-2.39"/>
+    <path d="M10.71 5.05A16 16 0 0122.56 9"/>
+    <path d="M1.42 9a15.91 15.91 0 014.7-2.88"/>
+    <path d="M8.53 16.11a6 6 0 016.95 0"/>
+    <line x1="12" y1="20" x2="12.01" y2="20"/>
+  </svg>
+  You're offline — some features may be unavailable
+</div>
+
+<!--
+  4. PWA JAVASCRIPT — add just before closing </script> in index.html module:
+─────────────────────────────────────────────────────── -->
+<script>
+(function initPWA() {
+  /* ── Service Worker ── */
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW:', err));
+  }
+
+  /* ── Offline/Online indicator ── */
+  const bar = document.getElementById('offline-bar');
+  function updateOnline() {
+    if (navigator.onLine) bar.classList.remove('show');
+    else bar.classList.add('show');
+  }
+  window.addEventListener('online',  updateOnline);
+  window.addEventListener('offline', updateOnline);
+
+  /* ── Install prompt ── */
+  const banner = document.getElementById('pwa-install-banner');
+  const installBtn = document.getElementById('pwaInstallBtn');
+  const dismissBtn = document.getElementById('pwaDismissBtn');
+  let deferredPrompt = null;
+
+  const dismissed = sessionStorage.getItem('pwa-dismissed');
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!dismissed) {
+      setTimeout(() => banner.classList.add('show'), 3000);
+    }
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      banner.classList.remove('show');
+    });
+  }
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      banner.classList.remove('show');
+      sessionStorage.setItem('pwa-dismissed', '1');
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    banner.classList.remove('show');
+    deferredPrompt = null;
+  });
+}());
+</script>

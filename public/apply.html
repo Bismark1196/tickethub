@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendor Application — VendHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black:      #0a0a0a;
+  --white:      #ffffff;
+  --cream:      #f7f5f0;
+  --gold:       #c9a84c;
+  --gold-light: #e8d5a3;
+  --gold-dark:  #a07830;
+  --charcoal:   #1c1c1e;
+  --slate:      #3a3a3c;
+  --muted:      #8a8a8e;
+  --border:     #e5e5e5;
+  --shadow-sm:  0 2px 12px rgba(0,0,0,0.06);
+  --shadow-md:  0 8px 32px rgba(0,0,0,0.12);
+  --shadow-lg:  0 24px 60px rgba(0,0,0,0.18);
+  --radius:     18px;
+  --radius-sm:  11px;
+  --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  color: var(--black);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position:fixed; inset:0;
+  background: url("images/gr.jpeg") center/cover no-repeat,
+              linear-gradient(135deg,rgba(10,10,10,0.9) 0%,rgba(28,28,30,0.85) 100%);
+  background-blend-mode: overlay; z-index:0;
+}
+body::after {
+  content: ""; position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.4; z-index:0; pointer-events:none;
+}
+
+/* ═══════════════════════════════════════
+   PAGE WRAPPER
+═══════════════════════════════════════ */
+.page {
+  position:relative; z-index:1;
+  min-height:100vh;
+  display:flex; flex-direction:column; align-items:center;
+  padding: 28px 16px 64px;
+}
+
+/* ═══════════════════════════════════════
+   TOP NAV
+═══════════════════════════════════════ */
+.top-nav {
+  width:100%; max-width:740px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px;
+}
+.nav-logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; color:var(--white); text-decoration:none; }
+.nav-logo span { color:var(--gold); }
+.nav-back {
+  display:flex; align-items:center; gap:7px;
+  color:rgba(255,255,255,0.55); font-size:13px; font-weight:500;
+  text-decoration:none; transition:color var(--transition);
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+  padding:7px 14px; border-radius:20px;
+}
+.nav-back:hover { color:var(--gold); border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.08); }
+.nav-back svg { width:14px; height:14px; flex-shrink:0; }
+
+/* ═══════════════════════════════════════
+   CARD
+═══════════════════════════════════════ */
+.card {
+  width:100%; max-width:740px;
+  background:var(--white); border-radius:26px; overflow:hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.12);
+  animation:slideUp 0.48s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+/* ═══════════════════════════════════════
+   CARD HEADER — cinematic black + event preview
+═══════════════════════════════════════ */
+.card-header {
+  background: var(--black);
+  position: relative; overflow: hidden;
+}
+/* Ambient glow */
+.card-header::before {
+  content: ""; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 15% 60%, rgba(201,168,76,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 10%, rgba(201,168,76,0.09) 0%, transparent 50%);
+  pointer-events:none;
+}
+/* Gold accent line at very top */
+.card-header-accent {
+  height:3px;
+  background:linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold));
+}
+
+/* Event info band */
+.card-header-band {
+  padding: 22px 36px 0;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; position:relative; z-index:1;
+}
+.band-left {}
+.band-eyebrow {
+  display: inline-flex; align-items:center; gap:6px;
+  background: rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.35);
+  color: var(--gold-light); font-size:10px; font-weight:700;
+  letter-spacing:1.6px; text-transform:uppercase;
+  padding:4px 12px; border-radius:20px; margin-bottom:10px;
+}
+.card-header h1 {
+  font-family:'Playfair Display',serif;
+  font-size: clamp(22px,4vw,30px); font-weight:900;
+  color:var(--white); line-height:1.15; margin-bottom:6px;
+}
+.card-header h1 em { font-style:italic; color:var(--gold); }
+.header-event-name {
+  font-family:'Playfair Display',serif;
+  font-size:14px; font-style:italic; color:rgba(255,255,255,0.65);
+  margin-bottom:12px;
+}
+
+/* Quick-info chips in header */
+.header-chips { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.header-chip {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14);
+  color:rgba(255,255,255,0.65); font-size:12px; font-weight:500;
+  padding:5px 12px; border-radius:20px;
+}
+.header-chip svg { width:12px; height:12px; opacity:0.7; flex-shrink:0; }
+.header-chip.gold-chip {
+  background:rgba(201,168,76,0.15); border-color:rgba(201,168,76,0.35);
+  color:var(--gold-light);
+}
+
+/* ── PROGRESS STEPS ── */
+.progress-wrap {
+  padding: 22px 36px 0;
+  position:relative; z-index:1;
+}
+.progress-steps { display:flex; align-items:center; padding-bottom:24px; }
+.prog-step {
+  display:flex; flex-direction:column; align-items:center;
+  flex:1; position:relative; cursor:default;
+}
+.prog-step:not(:last-child)::after {
+  content:""; position:absolute; top:16px; left:50%;
+  width:100%; height:2px;
+  background:rgba(255,255,255,0.1); z-index:0;
+  transition:background 0.4s ease;
+}
+.prog-step.done:not(:last-child)::after { background:var(--gold); }
+.prog-dot {
+  width:32px; height:32px; border-radius:50%;
+  border:2px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.05);
+  color:rgba(255,255,255,0.35); font-size:12px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; z-index:1; transition:all var(--transition);
+}
+.prog-step.active .prog-dot {
+  border-color:var(--gold); background:var(--gold); color:var(--black);
+  box-shadow:0 0 0 5px rgba(201,168,76,0.22);
+}
+.prog-step.done .prog-dot {
+  border-color:var(--gold); background:var(--gold); color:var(--black);
+}
+.prog-step.done .prog-dot::after { content:"✓"; font-size:12px; }
+.prog-step.done .prog-dot span { display:none; }
+.prog-label {
+  font-size:10px; font-weight:600; letter-spacing:0.5px;
+  color:rgba(255,255,255,0.28); margin-top:7px;
+  text-align:center; white-space:nowrap;
+  transition:color var(--transition);
+}
+.prog-step.active .prog-label { color:var(--gold); }
+.prog-step.done .prog-label { color:rgba(255,255,255,0.5); }
+
+/* ═══════════════════════════════════════
+   CARD BODY
+═══════════════════════════════════════ */
+.card-body { padding:32px 36px 36px; }
+.step { display:none; }
+.step.active { display:block; animation:fadeStep 0.32s ease-out both; }
+@keyframes fadeStep { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── STEP TITLE ── */
+.step-title { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+.step-title-num {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--black); color:var(--gold);
+  font-family:'Playfair Display',serif; font-size:16px; font-weight:900;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  box-shadow:0 4px 14px rgba(0,0,0,0.18);
+}
+.step-title-text h3 {
+  font-family:'Playfair Display',serif; font-size:21px; font-weight:700; color:var(--black);
+}
+.step-title-text p { font-size:13px; color:var(--muted); margin-top:2px; }
+
+/* ── EVENT IDENTITY STRIP ── */
+.event-identity {
+  display:grid; grid-template-columns:1fr 1fr; gap:0;
+  margin-bottom:28px;
+  border-radius:var(--radius-sm); overflow:hidden;
+  border:1.5px solid #e0ddd6;
+}
+.event-identity-item {
+  padding:14px 18px;
+  background:linear-gradient(135deg,#f5f2ec,#f0ede7);
+  position:relative;
+}
+.event-identity-item:first-child { border-right:1px solid #e0ddd6; }
+.event-identity-item::before {
+  content:""; position:absolute; top:0; left:0; right:0;
+  height:2px; background:linear-gradient(90deg, var(--gold-dark), var(--gold));
+  opacity:0.5;
+}
+.event-identity-label {
+  font-size:9.5px; font-weight:700; letter-spacing:1.2px;
+  text-transform:uppercase; color:var(--muted); margin-bottom:5px;
+}
+.event-identity-value {
+  font-family:'Playfair Display',serif;
+  font-size:14.5px; font-weight:700; color:var(--black);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* ── FIELDS ── */
+.fields-section-label {
+  font-size:9.5px; font-weight:700; letter-spacing:1.2px;
+  text-transform:uppercase; color:var(--muted);
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:14px; margin-top:24px;
+}
+.fields-section-label:first-of-type { margin-top:0; }
+.fields-section-label::after { content:""; flex:1; height:1px; background:var(--border); }
+
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.field-group { margin-bottom:14px; }
+.field-label {
+  display:block; font-size:11.5px; font-weight:600;
+  letter-spacing:0.5px; text-transform:uppercase;
+  color:var(--slate); margin-bottom:7px;
+}
+.field-label .req { color:var(--gold-dark); margin-left:2px; }
+
+.field-wrap { position:relative; }
+.field-wrap svg.field-icon {
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  width:15px; height:15px; color:var(--muted); pointer-events:none;
+}
+.field-wrap.textarea-wrap svg.field-icon { top:15px; transform:none; }
+
+input, select, textarea {
+  width:100%; padding:12px 14px;
+  border-radius:var(--radius-sm); border:1.5px solid var(--border);
+  font-family:'DM Sans',sans-serif; font-size:14px;
+  color:var(--black); background:var(--cream);
+  transition:var(--transition); outline:none;
+  appearance:none; -webkit-appearance:none;
+}
+.has-icon input, .has-icon select, .has-icon textarea { padding-left:42px; }
+input:focus, select:focus, textarea:focus {
+  border-color:var(--gold); background:var(--white);
+  box-shadow:0 0 0 3px rgba(201,168,76,0.13);
+}
+input::placeholder, textarea::placeholder { color:#c0bdb7; }
+textarea { resize:vertical; min-height:110px; line-height:1.65; }
+
+.select-wrap { position:relative; }
+.select-wrap::after {
+  content:""; position:absolute; right:14px; top:50%; transform:translateY(-50%);
+  width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:6px solid var(--muted); pointer-events:none;
+}
+
+/* ── DATE CALENDAR ── */
+.vcal-wrapper {
+  border:1.5px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; background:var(--white); box-shadow:var(--shadow-sm);
+  margin-bottom:8px;
+}
+.vcal-header {
+  background:var(--black); padding:14px 18px 12px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:relative; overflow:hidden;
+}
+.vcal-header::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 80% 50%,rgba(201,168,76,0.12) 0%,transparent 55%);
+  pointer-events:none;
+}
+.vcal-month-label {
+  font-family:'Playfair Display',serif; font-size:16px; font-weight:700;
+  color:var(--white); position:relative; z-index:1;
+}
+.vcal-nav { display:flex; gap:5px; position:relative; z-index:1; }
+.vcal-nav button {
+  width:30px; height:30px; border-radius:50%;
+  background:rgba(255,255,255,0.1); border:none;
+  color:rgba(255,255,255,0.7); cursor:pointer; font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  transition:background 0.15s,color 0.15s;
+}
+.vcal-nav button:hover { background:rgba(255,255,255,0.2); color:var(--white); }
+.vcal-dow-row {
+  display:grid; grid-template-columns:repeat(7,1fr);
+  padding:10px 14px 5px; background:var(--cream);
+  border-bottom:1px solid var(--border);
+}
+.vcal-dow { text-align:center; font-size:10px; font-weight:700; letter-spacing:0.5px; color:var(--muted); text-transform:uppercase; }
+.vcal-days-grid {
+  display:grid; grid-template-columns:repeat(7,1fr);
+  gap:3px; padding:8px 14px 12px; background:var(--white);
+}
+.vcal-day {
+  aspect-ratio:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  font-size:13px; font-weight:500; border-radius:10px;
+  border:1.5px solid transparent; transition:background 0.12s,border-color 0.12s;
+  user-select:none; position:relative; cursor:default; color:#ccc;
+}
+.vcal-day.vcal-event-date { color:var(--black); cursor:pointer; background:var(--cream); border-color:rgba(201,168,76,0.28); }
+.vcal-day.vcal-event-date:hover { background:#fdf8ee; border-color:var(--gold); }
+.vcal-day.vcal-today.vcal-event-date { font-weight:800; color:var(--gold-dark); border-color:rgba(201,168,76,0.5); }
+.vcal-day.vcal-selected { background:var(--gold) !important; color:var(--black) !important; border-color:var(--gold) !important; font-weight:800; box-shadow:0 3px 12px rgba(201,168,76,0.35); }
+.vcal-day-time { font-size:8.5px; font-weight:600; color:var(--gold-dark); opacity:0.85; line-height:1; margin-top:2px; white-space:nowrap; overflow:hidden; max-width:100%; text-overflow:ellipsis; padding:0 2px; }
+.vcal-day.vcal-selected .vcal-day-time { color:rgba(0,0,0,0.55); }
+.vcal-legend { display:flex; align-items:center; gap:14px; padding:10px 16px 12px; background:var(--cream); border-top:1px solid var(--border); flex-wrap:wrap; }
+.vcal-legend-item { display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted); font-weight:500; }
+.vcal-legend-dot { width:14px; height:14px; border-radius:4px; border:1.5px solid transparent; flex-shrink:0; }
+.vcal-legend-dot.ld-event { background:var(--cream); border-color:rgba(201,168,76,0.4); }
+.vcal-legend-dot.ld-selected { background:var(--gold); border-color:var(--gold); }
+.vcal-legend-dot.ld-other { background:var(--white); border-color:#e0e0e0; }
+.vcal-selected-row { display:flex; flex-wrap:wrap; gap:7px; padding:12px 16px 14px; border-top:1px solid var(--border); background:var(--white); min-height:52px; align-items:center; }
+.vcal-selected-title { font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--muted); width:100%; margin-bottom:4px; }
+.vcal-chip { display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 8px; background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07)); border:1.5px solid rgba(201,168,76,0.35); border-radius:20px; font-size:12px; font-weight:700; color:var(--gold-dark); animation:chipIn 0.18s ease both; }
+.vcal-chip-num { width:17px; height:17px; border-radius:50%; background:var(--black); color:var(--gold); font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.vcal-chip-time { font-size:10.5px; color:var(--muted); font-weight:500; }
+.vcal-empty-hint { font-size:13px; color:var(--muted); font-style:italic; }
+@keyframes chipIn { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
+.vcal-no-dates { padding:28px 20px; text-align:center; font-size:13.5px; color:var(--muted); font-style:italic; background:var(--cream); }
+.field-hint { font-size:12px; color:var(--muted); margin-top:4px; padding-left:2px; }
+
+/* ═══════════════════════════════════════
+   BOOTH CARDS — premium grid
+═══════════════════════════════════════ */
+.booth-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px; margin-bottom:16px;
+}
+.booth {
+  padding:16px 12px 14px; border-radius:var(--radius-sm);
+  border:1.5px solid var(--border); text-align:center;
+  cursor:pointer; background:var(--cream);
+  transition:var(--transition); position:relative; overflow:hidden;
+}
+.booth::before {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(135deg,transparent 55%,rgba(201,168,76,0.07));
+  opacity:0; transition:opacity var(--transition);
+}
+.booth:hover { border-color:var(--gold); transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,0.1); }
+.booth:hover::before { opacity:1; }
+.booth.selected {
+  border-color:var(--gold); background:#fdf3d8;
+  box-shadow:0 8px 24px rgba(201,168,76,0.22);
+  transform:translateY(-4px);
+}
+.booth.selected::before { opacity:1; }
+/* Selected tick */
+.booth.selected::after {
+  content:"✓"; position:absolute; top:8px; right:10px;
+  width:18px; height:18px; border-radius:50%;
+  background:var(--gold); color:var(--black);
+  font-size:10px; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+  line-height:18px; text-align:center;
+}
+.booth-size { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--black); margin-bottom:4px; }
+.booth-price { font-size:20px; font-weight:800; color:var(--gold-dark); margin-bottom:2px; font-family:'Playfair Display',serif; }
+.booth-tag { font-size:10px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:var(--muted); }
+.booth.selected .booth-size { color:var(--black); }
+.booth.selected .booth-price { color:var(--gold-dark); }
+
+/* Price summary bar */
+.price-summary {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px; background:var(--black); border-radius:var(--radius-sm);
+  margin-bottom:20px; opacity:0; transition:opacity var(--transition);
+  position:relative; overflow:hidden;
+}
+.price-summary::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 85% 50%,rgba(201,168,76,0.1) 0%,transparent 60%);
+}
+.price-summary.visible { opacity:1; }
+.price-summary-left {}
+.price-summary-label { font-size:11px; color:rgba(255,255,255,0.45); font-weight:500; letter-spacing:0.5px; }
+.price-summary-desc { font-size:12.5px; color:rgba(255,255,255,0.55); margin-top:2px; }
+.price-summary-amount { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; color:var(--gold); position:relative; z-index:1; }
+
+/* ═══════════════════════════════════════
+   ORDER SUMMARY — step 3
+═══════════════════════════════════════ */
+.order-summary {
+  background:var(--black); border-radius:var(--radius-sm);
+  margin-bottom:20px; position:relative; overflow:hidden;
+}
+.order-summary::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 80% 50%,rgba(201,168,76,0.09) 0%,transparent 60%);
+  pointer-events:none;
+}
+.order-summary-header {
+  padding:16px 20px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  display:flex; align-items:center; gap:10px;
+}
+.order-summary-icon {
+  width:32px; height:32px; border-radius:8px;
+  background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.order-summary-icon svg { width:15px; height:15px; color:var(--gold); }
+.order-summary-title { font-size:12px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold); }
+.order-summary-subtitle { font-size:11.5px; color:rgba(255,255,255,0.35); margin-top:1px; }
+.order-rows { padding:4px 20px 8px; }
+.order-row {
+  display:flex; justify-content:space-between; align-items:flex-start;
+  padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.order-row:last-child { border-bottom:none; }
+.order-row-label { font-size:12.5px; color:rgba(255,255,255,0.45); font-weight:500; }
+.order-row-value { font-size:13px; font-weight:600; color:var(--white); max-width:55%; text-align:right; word-break:break-word; }
+.order-row.total {
+  margin:4px -20px 0; padding:16px 20px;
+  background:rgba(201,168,76,0.08); border-top:1px solid rgba(201,168,76,0.2);
+  border-bottom:none;
+}
+.order-row.total .order-row-label { font-size:13px; color:rgba(255,255,255,0.65); font-weight:600; }
+.order-row.total .order-row-value { font-family:'Playfair Display',serif; font-size:24px; color:var(--gold); font-weight:900; }
+
+/* ═══════════════════════════════════════
+   TERMS
+═══════════════════════════════════════ */
+.terms-box {
+  background:var(--cream); border:1.5px solid var(--border);
+  border-radius:var(--radius-sm); overflow:hidden; margin-bottom:18px;
+}
+.terms-box-header {
+  padding:12px 18px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:8px;
+}
+.terms-box-header svg { width:14px; height:14px; color:var(--gold-dark); flex-shrink:0; }
+.terms-box-header span { font-size:10.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--slate); }
+.terms-list { list-style:none; padding:10px 18px 14px; display:flex; flex-direction:column; gap:9px; }
+.terms-list li { display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--charcoal); line-height:1.55; }
+.term-icon {
+  width:20px; height:20px; border-radius:50%;
+  background:var(--black); color:var(--gold);
+  font-size:10px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:1px;
+}
+
+/* Agreement checkbox */
+.agree-wrap {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 16px; border-radius:var(--radius-sm);
+  border:1.5px solid var(--border); background:var(--white);
+  cursor:pointer; transition:var(--transition); margin-bottom:20px;
+}
+.agree-wrap:hover { border-color:var(--gold); background:#fdf8ee; }
+.agree-wrap.checked { border-color:var(--gold); background:#fdf3d8; }
+.custom-check {
+  width:22px; height:22px; border-radius:6px;
+  border:2px solid var(--border); background:var(--white);
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  transition:var(--transition); margin-top:1px;
+}
+.agree-wrap.checked .custom-check { background:var(--gold); border-color:var(--gold); }
+.agree-wrap.checked .custom-check::after { content:"✓"; font-size:13px; font-weight:700; color:var(--black); }
+.agree-text { font-size:13.5px; font-weight:500; color:var(--charcoal); line-height:1.55; }
+.agree-text strong { color:var(--black); }
+#terms { display:none; }
+
+/* ═══════════════════════════════════════
+   NAV BUTTONS
+═══════════════════════════════════════ */
+.nav-buttons { display:flex; gap:12px; margin-top:8px; }
+.btn {
+  flex:1; padding:15px 20px; border-radius:var(--radius-sm);
+  border:none; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600;
+  cursor:pointer; transition:var(--transition);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn svg { width:16px; height:16px; flex-shrink:0; }
+.btn-primary {
+  background:var(--black); color:var(--white);
+  position:relative; overflow:hidden;
+}
+.btn-primary::after { content:""; position:absolute; inset:0; background:linear-gradient(135deg,transparent 50%,rgba(201,168,76,0.1)); }
+.btn-primary:hover { background:var(--charcoal); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.22); }
+.btn-secondary {
+  background:var(--cream); color:var(--slate);
+  border:1.5px solid var(--border); flex:0 0 auto; width:auto; padding:15px 22px;
+}
+.btn-secondary:hover { background:#eeebe4; border-color:#d0ccc4; }
+.btn-submit {
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+  color:var(--black); font-weight:700; font-size:15px;
+}
+.btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(201,168,76,0.4); }
+.btn-submit:active { transform:translateY(0); }
+.btn-submit.loading { pointer-events:none; opacity:0.8; }
+.spinner { width:18px; height:18px; border:2px solid rgba(0,0,0,0.2); border-top-color:var(--black); border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+.btn-submit.loading .spinner { display:block; }
+.btn-submit.loading .btn-text { display:none; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* Divider */
+.section-divider { display:flex; align-items:center; gap:10px; margin:20px 0 16px; }
+.section-divider-line { flex:1; height:1px; background:var(--border); }
+.section-divider-text { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+
+/* TOAST */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--charcoal); color:var(--white); padding:12px 22px; border-radius:30px; font-size:14px; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,0.3); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+.toast.show { transform:translateX(-50%) translateY(0); }
+.toast.error { background:#7f1d1d; }
+.toast.success { background:#14532d; }
+
+@keyframes slideUp { from{opacity:0;transform:translateY(40px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+/* RESPONSIVE */
+@media (max-width:640px) {
+  .page { padding:18px 12px 52px; }
+  .card-header-band { padding:18px 20px 0; }
+  .progress-wrap { padding:18px 20px 0; }
+  .card-body { padding:24px 20px 28px; }
+  .field-row { grid-template-columns:1fr; gap:0; }
+  .event-identity { grid-template-columns:1fr; }
+  .event-identity-item:first-child { border-right:none; border-bottom:1px solid #e0ddd6; }
+  .booth-grid { grid-template-columns:1fr 1fr; gap:9px; }
+  .nav-buttons { flex-direction:column-reverse; gap:10px; }
+  .btn-secondary { width:100%; }
+  .prog-label { font-size:9.5px; }
+  .vcal-days-grid { padding:6px 10px 10px; gap:2px; }
+  .vcal-dow-row { padding:8px 10px 4px; }
+  .card-header h1 { font-size:22px; }
+}
+@media (max-width:360px) {
+  .booth-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">Vend<span>Hub</span></a>
+    <a href="index.html" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Events
+    </a>
+  </nav>
+
+  <!-- CARD -->
+  <div class="card">
+
+    <!-- HEADER -->
+    <div class="card-header">
+      <div class="card-header-accent"></div>
+
+      <div class="card-header-band">
+        <div class="band-left">
+          <div class="band-eyebrow">✦ Vendor Application</div>
+          <h1>Secure Your <em>Booth</em></h1>
+          <div class="header-event-name" id="headerEventName">—</div>
+          <div class="header-chips">
+            <span class="header-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+              <span id="headerLocation">—</span>
+            </span>
+            <span class="header-chip gold-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span id="headerDates">—</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="progress-wrap">
+        <div class="progress-steps">
+          <div class="prog-step active" id="prog-0">
+            <div class="prog-dot"><span>1</span></div>
+            <span class="prog-label">Your Details</span>
+          </div>
+          <div class="prog-step" id="prog-1">
+            <div class="prog-dot"><span>2</span></div>
+            <span class="prog-label">Booth Size</span>
+          </div>
+          <div class="prog-step" id="prog-2">
+            <div class="prog-dot"><span>3</span></div>
+            <span class="prog-label">Confirm</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /card-header -->
+
+    <!-- BODY -->
+    <div class="card-body">
+      <form id="vendorForm" novalidate>
+
+        <!-- ══════════════════ STEP 1 ══════════════════ -->
+        <div class="step step1 active">
+
+          <div class="step-title">
+            <div class="step-title-num">1</div>
+            <div class="step-title-text">
+              <h3>Vendor Details</h3>
+              <p>Tell us about you and your business</p>
+            </div>
+          </div>
+
+          <!-- Event identity strip -->
+          <div class="event-identity">
+            <div class="event-identity-item">
+              <div class="event-identity-label">Event</div>
+              <div class="event-identity-value" id="eventNameDisplay">—</div>
+            </div>
+            <div class="event-identity-item">
+              <div class="event-identity-label">Venue</div>
+              <div class="event-identity-value" id="eventLocDisplay">—</div>
+            </div>
+          </div>
+
+          <input type="hidden" id="eventName">
+          <input type="hidden" id="eventLocation">
+
+          <!-- Personal info -->
+          <div class="fields-section-label">Personal Information</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">First &amp; Last Name <span class="req">*</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input id="fullName" placeholder="John Smith" autocomplete="name">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Facebook Username</label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                <input id="facebook" placeholder="@username (optional)" autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+          <!-- Business info -->
+          <div class="fields-section-label">Business Information</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Business Name <span class="req">*</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <input id="business" placeholder="Your Business LLC" autocomplete="organization">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Invoice Email <span class="req">*</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input id="invoiceEmail" type="email" placeholder="billing@business.com" autocomplete="email">
+              </div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Contact Person <span class="req">*</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.01 1.2 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+                <input id="contact" placeholder="Contact name" autocomplete="name">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Phone Number <span class="req">*</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                <input id="phone" type="tel" placeholder="+1 234 567 8900" autocomplete="tel">
+              </div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Business Location <span class="req">*</span></label>
+              <div class="field-wrap select-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                <select id="locationBase">
+                  <option value="">Select state / region…</option>
+                  <option>Sydney</option><option>Other (International)</option>
+                  <option disabled>── United States ──</option>
+                  <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Primary Category <span class="req">*</span></label>
+              <div class="field-wrap select-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                <select id="category">
+                  <option value="">Select a category…</option>
+                  <option>Boutique Clothing</option><option>Fitness Apparel</option><option>Crystals</option><option>Candles</option><option>Beauty - Makeup/Lashes</option><option>Beauty - Soaps/Bath</option><option>Clay Earrings</option><option>Gold Jewelry</option><option>Permanent Jewelry</option><option>Children's Clothing</option><option>Graphic Tees</option><option>Macrame</option><option>Succulents</option><option>Cricut Merch</option><option>Resin</option><option>Paper Goods</option><option>Home Decor</option><option>Woodworking</option><option>Pet Accessories</option><option>Ceramics</option><option>Vintage/Antique</option><option>Hands-on Activity</option><option>Baked Goods</option><option>Savory Food</option><option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products -->
+          <div class="fields-section-label">Products &amp; Dates</div>
+          <div class="field-group">
+            <label class="field-label">Describe Your Products <span class="req">*</span></label>
+            <div class="field-wrap textarea-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <textarea id="description" placeholder="Tell us what you sell, your price range, and any special setup requirements…"></textarea>
+            </div>
+          </div>
+
+          <!-- Date selection calendar -->
+          <div class="field-group">
+            <label class="field-label">Which Date(s) Will You Attend? <span class="req">*</span></label>
+            <div id="vcalRoot"></div>
+            <p class="field-hint">Tap a highlighted date to select it. Tap again to deselect.</p>
+          </div>
+
+          <div class="nav-buttons">
+            <div></div>
+            <button type="button" class="btn btn-primary" id="next1">
+              Continue to Booth
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div><!-- /step1 -->
+
+        <!-- ══════════════════ STEP 2 ══════════════════ -->
+        <div class="step step2">
+
+          <div class="step-title">
+            <div class="step-title-num">2</div>
+            <div class="step-title-text">
+              <h3>Booth Size &amp; Rates</h3>
+              <p>You are responsible for bringing all booth materials</p>
+            </div>
+          </div>
+
+          <div class="booth-grid" id="boothGrid">
+            <div class="booth" data-size="6x8"         data-price="150" data-label="6ft × 8ft">    <div class="booth-size">6ft × 8ft</div><div class="booth-price">$150</div><div class="booth-tag">Standard</div></div>
+            <div class="booth" data-size="8x10"         data-price="170" data-label="8ft × 10ft">   <div class="booth-size">8ft × 10ft</div><div class="booth-price">$170</div><div class="booth-tag">Standard</div></div>
+            <div class="booth" data-size="10x10"        data-price="190" data-label="10ft × 10ft">  <div class="booth-size">10ft × 10ft</div><div class="booth-price">$190</div><div class="booth-tag">Popular</div></div>
+            <div class="booth" data-size="corner"       data-price="200" data-label="Corner Booth">  <div class="booth-size">Corner</div><div class="booth-price">$200</div><div class="booth-tag">High Visibility</div></div>
+            <div class="booth" data-size="truck"        data-price="240" data-label="Truck Space">   <div class="booth-size">Truck</div><div class="booth-price">$240</div><div class="booth-tag">Vehicle</div></div>
+            <div class="booth" data-size="10x20"        data-price="350" data-label="10ft × 20ft">  <div class="booth-size">10ft × 20ft</div><div class="booth-price">$350</div><div class="booth-tag">Large</div></div>
+            <div class="booth" data-size="premium"      data-price="300" data-label="Premium Booth"> <div class="booth-size">Premium</div><div class="booth-price">$300</div><div class="booth-tag">Featured</div></div>
+            <div class="booth" data-size="double"       data-price="380" data-label="Double Space">  <div class="booth-size">Double Space</div><div class="booth-price">$380</div><div class="booth-tag">Extra Large</div></div>
+            <div class="booth" data-size="sponsor"      data-price="500" data-label="Sponsor Booth"> <div class="booth-size">Sponsor</div><div class="booth-price">$500</div><div class="booth-tag">Premium Partner</div></div>
+            <div class="booth" data-size="food-trailer" data-price="450" data-label="Food Trailer">  <div class="booth-size">Food Trailer</div><div class="booth-price">$450</div><div class="booth-tag">Food Vendors</div></div>
+          </div>
+
+          <input type="hidden" id="boothSize">
+
+          <div class="price-summary" id="priceSummary">
+            <div class="price-summary-left">
+              <div class="price-summary-label">Booth fee</div>
+              <div class="price-summary-desc" id="priceSummaryBoothName">Select a booth above</div>
+            </div>
+            <div class="price-summary-amount" id="priceSummaryAmt">—</div>
+          </div>
+
+          <div class="nav-buttons">
+            <button type="button" class="btn btn-secondary" id="back2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back
+            </button>
+            <button type="button" class="btn btn-primary" id="next2">
+              Review &amp; Confirm
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div><!-- /step2 -->
+
+        <!-- ══════════════════ STEP 3 ══════════════════ -->
+        <div class="step step3">
+
+          <div class="step-title">
+            <div class="step-title-num">3</div>
+            <div class="step-title-text">
+              <h3>Review &amp; Confirm</h3>
+              <p>Check your details and accept the terms</p>
+            </div>
+          </div>
+
+          <!-- Order summary -->
+          <div class="order-summary">
+            <div class="order-summary-header">
+              <div class="order-summary-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+              </div>
+              <div>
+                <div class="order-summary-title">Application Summary</div>
+                <div class="order-summary-subtitle">Review before submitting</div>
+              </div>
+            </div>
+            <div class="order-rows">
+              <div class="order-row"><span class="order-row-label">Event</span><span class="order-row-value" id="sumEvent">—</span></div>
+              <div class="order-row"><span class="order-row-label">Dates Selected</span><span class="order-row-value" id="sumDates">—</span></div>
+              <div class="order-row"><span class="order-row-label">Business</span><span class="order-row-value" id="sumBusiness">—</span></div>
+              <div class="order-row"><span class="order-row-label">Category</span><span class="order-row-value" id="sumCategory">—</span></div>
+              <div class="order-row"><span class="order-row-label">Booth Size</span><span class="order-row-value" id="sumBooth">—</span></div>
+              <div class="order-row total">
+                <span class="order-row-label">Total Due on Acceptance</span>
+                <span class="order-row-value" id="sumTotal">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms -->
+          <div class="terms-box">
+            <div class="terms-box-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>Terms &amp; Conditions</span>
+            </div>
+            <ul class="terms-list">
+              <li><div class="term-icon">1</div><span>Invoice must be paid within <strong>1–2 days</strong> of acceptance.</span></li>
+              <li><div class="term-icon">2</div><span>Unpaid spots will be <strong>reassigned</strong> to the next applicant.</span></li>
+              <li><div class="term-icon">3</div><span>Vendor fee is <strong>NON-REFUNDABLE</strong> under any circumstances.</span></li>
+              <li><div class="term-icon">4</div><span>Vendor fee is <strong>NON-TRANSFERABLE</strong> to other vendors or events.</span></li>
+              <li><div class="term-icon">5</div><span>If the event is cancelled, <strong>alternative dates</strong> will be offered.</span></li>
+              <li><div class="term-icon">6</div><span>Contract must be signed at least <strong>2 days before</strong> the event.</span></li>
+            </ul>
+          </div>
+
+          <!-- Agreement -->
+          <div class="agree-wrap" id="agreeWrap">
+            <div class="custom-check" id="customCheck"></div>
+            <div class="agree-text">
+              I have read and agree to all <strong>Terms &amp; Conditions</strong> listed above.
+              I understand that my vendor fee is non-refundable and non-transferable.
+            </div>
+          </div>
+          <input type="checkbox" id="terms">
+
+          <div class="nav-buttons">
+            <button type="button" class="btn btn-secondary" id="back3">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back
+            </button>
+            <button type="submit" class="btn btn-submit" id="submitBtn">
+              <span class="btn-text">Submit Application ✦</span>
+              <div class="spinner"></div>
+            </button>
+          </div>
+        </div><!-- /step3 -->
+
+      </form>
+    </div><!-- /card-body -->
+  </div><!-- /card -->
+</div><!-- /page -->
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
+  authDomain: "vendors-de792.firebaseapp.com",
+  projectId: "vendors-de792",
+};
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ════════════════════════════════════════════════════
+//  URL PARAMS — unlimited dates
+// ════════════════════════════════════════════════════
+const params               = new URLSearchParams(window.location.search);
+const eventNameFromURL     = params.get("event")    || "";
+const eventLocationFromURL = params.get("location") || "";
+
+let allEventDates;
+const edParam = params.get("event_dates");
+if (edParam) {
+  allEventDates = edParam.split("|||")
+    .map(s => { try { return decodeURIComponent(s.trim()); } catch(e) { return s.trim(); } })
+    .filter(Boolean);
+} else {
+  allEventDates = [];
+  let i = 1;
+  while (true) {
+    const v = params.get(`date${i}`); if (!v) break;
+    allEventDates.push(v); i++;
+  }
+}
+
+// Auth guard
+onAuthStateChanged(auth, user => { if (!user) window.location.href = "index.html"; });
+
+// ── Populate header ───────────────────────────────────
+document.getElementById("eventName").value     = eventNameFromURL;
+document.getElementById("eventLocation").value = eventLocationFromURL;
+document.getElementById("headerEventName").textContent  = eventNameFromURL || "—";
+document.getElementById("headerLocation").textContent   = eventLocationFromURL || "TBD";
+document.getElementById("eventNameDisplay").textContent = eventNameFromURL || "—";
+document.getElementById("eventLocDisplay").textContent  = eventLocationFromURL || "—";
+document.getElementById("headerDates").textContent =
+  allEventDates.length
+    ? allEventDates[0] + (allEventDates.length > 1 ? ` +${allEventDates.length - 1} more` : "")
+    : "TBD";
+
+// ════════════════════════════════════════════════════
+//  VENDOR DATE CALENDAR
+// ════════════════════════════════════════════════════
+const MONTHS   = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DAYS_S   = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+function parseDateStr(raw) {
+  if (!raw) return null;
+  const s = raw.trim();
+  let dateStr = s, timeStr = null;
+  if (s.includes("•")) { [dateStr, timeStr] = s.split("•").map(p => p.trim()); }
+  const parts = dateStr.split(/[\s,]+/).filter(Boolean);
+  const mIdx  = MONTHS_S.indexOf(parts[0]);
+  if (mIdx === -1) return { dateStr, timeStr, year:null, month:null, day:null };
+  const day  = parseInt(parts[1]) || null;
+  const year = parts[2] ? parseInt(parts[2]) : new Date().getFullYear();
+  return { dateStr, timeStr, year, month:mIdx, day };
+}
+
+function buildEventDateMap(dates) {
+  const map = new Map();
+  dates.forEach(raw => {
+    const p = parseDateStr(raw); if (!p || p.year==null || p.day==null) return;
+    const key = `${p.year}-${String(p.month+1).padStart(2,"0")}-${String(p.day).padStart(2,"0")}`;
+    map.set(key, { ...p, raw });
+  });
+  return map;
+}
+
+function getStartMonth(map) {
+  let minYear = null, minMonth = null;
+  for (const p of map.values()) {
+    if (minYear===null || p.year<minYear || (p.year===minYear && p.month<minMonth)) {
+      minYear=p.year; minMonth=p.month;
+    }
+  }
+  const now = new Date();
+  return { year:minYear||now.getFullYear(), month:minMonth!=null?minMonth:now.getMonth() };
+}
+
+function dateKey(y,m,d) { return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
+
+const vcalRoot     = document.getElementById("vcalRoot");
+const eventDateMap = buildEventDateMap(allEventDates);
+const selectedKeys = new Set();
+let calYear, calMonth;
+
+if (allEventDates.length === 0) {
+  vcalRoot.innerHTML = `<div class="vcal-no-dates">No specific dates have been set for this event yet. Please check back later or contact the organiser.</div>`;
+} else {
+  const start = getStartMonth(eventDateMap);
+  calYear=start.year; calMonth=start.month;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "vcal-wrapper";
+  wrapper.innerHTML = `
+    <div class="vcal-header">
+      <span class="vcal-month-label" id="vcalMonthLabel"></span>
+      <div class="vcal-nav">
+        <button type="button" id="vcalPrev">&#8249;</button>
+        <button type="button" id="vcalNext">&#8250;</button>
+      </div>
+    </div>
+    <div class="vcal-dow-row" id="vcalDow"></div>
+    <div class="vcal-days-grid" id="vcalGrid"></div>
+    <div class="vcal-legend">
+      <div class="vcal-legend-item"><div class="vcal-legend-dot ld-event"></div> Event day</div>
+      <div class="vcal-legend-item"><div class="vcal-legend-dot ld-selected"></div> You're attending</div>
+      <div class="vcal-legend-item"><div class="vcal-legend-dot ld-other"></div> Not available</div>
+    </div>
+    <div class="vcal-selected-row" id="vcalSelectedRow">
+      <div class="vcal-selected-title">Your selected dates</div>
+      <span class="vcal-empty-hint" id="vcalEmptyHint">Tap a highlighted date above to select it</span>
+    </div>`;
+  vcalRoot.appendChild(wrapper);
+
+  const dowRow = wrapper.querySelector("#vcalDow");
+  DAYS_S.forEach(d => { const e=document.createElement("div"); e.className="vcal-dow"; e.textContent=d; dowRow.appendChild(e); });
+
+  function renderVCal() {
+    wrapper.querySelector("#vcalMonthLabel").textContent = `${MONTHS[calMonth]} ${calYear}`;
+    const grid=wrapper.querySelector("#vcalGrid"); grid.innerHTML="";
+    const today=new Date(); today.setHours(0,0,0,0);
+    const firstDay=new Date(calYear,calMonth,1).getDay();
+    const days=new Date(calYear,calMonth+1,0).getDate();
+    for (let i=0;i<firstDay;i++) { const e=document.createElement("div"); e.className="vcal-day"; grid.appendChild(e); }
+    for (let d=1;d<=days;d++) {
+      const key=dateKey(calYear,calMonth,d);
+      const isEvent=eventDateMap.has(key), isSel=selectedKeys.has(key);
+      const cellDate=new Date(calYear,calMonth,d); cellDate.setHours(0,0,0,0);
+      const isToday=cellDate.getTime()===today.getTime();
+      const cell=document.createElement("div"); cell.className="vcal-day";
+      if (isEvent) cell.classList.add("vcal-event-date");
+      if (isToday&&isEvent) cell.classList.add("vcal-today");
+      if (isSel) cell.classList.add("vcal-selected");
+      const numSpan=document.createElement("span"); numSpan.textContent=d; cell.appendChild(numSpan);
+      if (isEvent) {
+        const p=eventDateMap.get(key);
+        if (p.timeStr) { const te=document.createElement("div"); te.className="vcal-day-time"; te.textContent=p.timeStr; cell.appendChild(te); }
+        cell.addEventListener("click",()=>{ if(selectedKeys.has(key))selectedKeys.delete(key); else selectedKeys.add(key); renderVCal(); });
+      }
+      grid.appendChild(cell);
+    }
+    renderSelectedChips();
+  }
+
+  function renderSelectedChips() {
+    const row=wrapper.querySelector("#vcalSelectedRow"), hint=wrapper.querySelector("#vcalEmptyHint");
+    [...row.querySelectorAll(".vcal-chip")].forEach(c=>c.remove());
+    const sorted=[...selectedKeys].sort();
+    if (!sorted.length) { hint.style.display=""; return; }
+    hint.style.display="none";
+    sorted.forEach((key,idx) => {
+      const p=eventDateMap.get(key); if (!p) return;
+      const chip=document.createElement("div"); chip.className="vcal-chip";
+      chip.innerHTML=`<div class="vcal-chip-num">${idx+1}</div><span>${p.dateStr}</span>${p.timeStr?`<span class="vcal-chip-time">${p.timeStr}</span>`:""}`;
+      chip.addEventListener("click",()=>{ calYear=p.year; calMonth=p.month; selectedKeys.delete(key); renderVCal(); });
+      row.appendChild(chip);
+    });
+  }
+
+  wrapper.querySelector("#vcalPrev").addEventListener("click",()=>{ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderVCal(); });
+  wrapper.querySelector("#vcalNext").addEventListener("click",()=>{ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderVCal(); });
+  renderVCal();
+}
+
+function getSelectedDates() {
+  return [...selectedKeys].sort().map(k=>{ const p=eventDateMap.get(k); return p?p.raw:k; });
+}
+
+// ── Steps ─────────────────────────────────────────────
+const steps=document.querySelectorAll(".step");
+const progSteps=document.querySelectorAll(".prog-step");
+
+function showStep(i) {
+  steps.forEach((s,idx)=>s.classList.toggle("active",idx===i));
+  progSteps.forEach((p,idx)=>{ p.classList.toggle("active",idx===i); p.classList.toggle("done",idx<i); });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showToast(msg,type="") {
+  const t=document.getElementById("toast"); t.textContent=msg; t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove("show"),3200);
+}
+
+// ── Validation ────────────────────────────────────────
+function validateStep0() {
+  const checks=[
+    {id:"fullName",label:"Full Name"},{id:"business",label:"Business Name"},
+    {id:"invoiceEmail",label:"Invoice Email"},{id:"contact",label:"Contact Person"},
+    {id:"phone",label:"Phone Number"},{id:"description",label:"Product Description"},
+    {id:"locationBase",label:"Business Location"},{id:"category",label:"Primary Category"},
+  ];
+  for (const c of checks) {
+    const el=document.getElementById(c.id);
+    if (!el.value.trim()) {
+      showToast(`Please fill in: ${c.label}`,"error");
+      el.focus(); el.scrollIntoView({behavior:"smooth",block:"center"});
+      return false;
+    }
+  }
+  if (!getSelectedDates().length) { showToast("Please select at least one event date on the calendar.","error"); return false; }
+  return true;
+}
+function validateStep1() {
+  if (!document.getElementById("boothSize").value) { showToast("Please select a booth size.","error"); return false; }
+  return true;
+}
+
+// ── Navigation ────────────────────────────────────────
+document.getElementById("next1").onclick=()=>{ if(validateStep0()){populateSummary();showStep(1);} };
+document.getElementById("next2").onclick=()=>{ if(validateStep1()){populateSummary();showStep(2);} };
+document.getElementById("back2").onclick=()=>showStep(0);
+document.getElementById("back3").onclick=()=>showStep(1);
+
+// ── Booth selection ───────────────────────────────────
+const boothEls=document.querySelectorAll(".booth");
+const priceSummary=document.getElementById("priceSummary");
+const priceSummaryAmt=document.getElementById("priceSummaryAmt");
+const priceSummaryBoothName=document.getElementById("priceSummaryBoothName");
+
+boothEls.forEach(b=>{
+  b.addEventListener("click",()=>{
+    boothEls.forEach(o=>o.classList.remove("selected"));
+    b.classList.add("selected");
+    document.getElementById("boothSize").value=b.dataset.size;
+    priceSummaryAmt.textContent="$"+b.dataset.price;
+    priceSummaryBoothName.textContent=b.dataset.label+" ("+b.dataset.size+")";
+    priceSummary.classList.add("visible");
+  });
+});
+
+// ── Agreement ─────────────────────────────────────────
+const agreeWrap=document.getElementById("agreeWrap");
+const termsInput=document.getElementById("terms");
+agreeWrap.addEventListener("click",()=>{ termsInput.checked=!termsInput.checked; agreeWrap.classList.toggle("checked",termsInput.checked); });
+
+// ── Summary ───────────────────────────────────────────
+function populateSummary() {
+  const sel=getSelectedDates(), booth=document.querySelector(".booth.selected");
+  document.getElementById("sumEvent").textContent   = eventNameFromURL||"—";
+  document.getElementById("sumDates").textContent   = sel.length ? sel.join(" · ") : "—";
+  document.getElementById("sumBusiness").textContent= document.getElementById("business").value||"—";
+  document.getElementById("sumCategory").textContent= document.getElementById("category").value||"—";
+  document.getElementById("sumBooth").textContent   = booth?`${booth.dataset.label} (${booth.dataset.size})`:"—";
+  document.getElementById("sumTotal").textContent   = booth?"$"+booth.dataset.price:"$0";
+}
+
+// ── Submit ────────────────────────────────────────────
+document.getElementById("vendorForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+  if (!auth.currentUser)                          return showToast("You must be logged in.","error");
+  if (!document.getElementById("boothSize").value) return showToast("No booth selected.","error");
+  if (!termsInput.checked)                        return showToast("Please accept the terms & conditions.","error");
+  const selDates=getSelectedDates();
+  if (!selDates.length)                           return showToast("Select at least one event date.","error");
+  const booth=document.querySelector(".booth.selected");
+  const btn=document.getElementById("submitBtn"); btn.classList.add("loading");
+  try {
+    const docRef=await addDoc(collection(db,"vendors"),{
+      vendor_id:     "VND-"+Date.now().toString().slice(-6),
+      user_id:       auth.currentUser.uid,
+      auth_email:    auth.currentUser.email,
+      event_name:    eventNameFromURL,
+      event_location:eventLocationFromURL,
+      full_name:     document.getElementById("fullName").value.trim(),
+      facebook:      document.getElementById("facebook").value.trim(),
+      business:      document.getElementById("business").value.trim(),
+      invoice_email: document.getElementById("invoiceEmail").value.trim(),
+      event_date:    selDates,
+      location:      document.getElementById("locationBase").value,
+      category:      document.getElementById("category").value,
+      contact:       document.getElementById("contact").value.trim(),
+      phone:         document.getElementById("phone").value.trim(),
+      description:   document.getElementById("description").value.trim(),
+      booth_size:    booth.dataset.size,
+      booth_label:   booth.dataset.label,
+      price:         parseInt(booth.dataset.price),
+      status:        "pending",
+      paid:          false,
+      terms_accepted:true,
+      created_at:    serverTimestamp(),
+    });
+    showToast("Application submitted! Redirecting…","success");
+    setTimeout(()=>{ window.location.href=`payment.html?vendorDoc=${docRef.id}`; },1200);
+  } catch(err) {
+    console.error(err);
+    showToast("Submission failed. Please try again.","error");
+    btn.classList.remove("loading");
+  }
+});
+</script>
+</body>
+</html>

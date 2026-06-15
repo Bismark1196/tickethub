@@ -1,0 +1,49 @@
+{
+  "name": "VendHub — The Vendor Marketplace",
+  "short_name": "VendHub",
+  "description": "Book vendor booths, track applications, and chat with coordinators.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["business", "shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/header.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "VendHub Event Listings"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Events",
+      "short_name": "Events",
+      "url": "/index.html",
+      "description": "Browse upcoming vendor events"
+    },
+    {
+      "name": "My Applications",
+      "short_name": "Applications",
+      "url": "/index.html#applications",
+      "description": "View my booth applications"
+    }
+  ]
+}

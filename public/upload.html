@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Event — VendHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:      #0a0a0a;
+  --white:      #ffffff;
+  --cream:      #f7f5f0;
+  --gold:       #c9a84c;
+  --gold-light: #e8d5a3;
+  --gold-dark:  #a07830;
+  --charcoal:   #1c1c1e;
+  --slate:      #3a3a3c;
+  --muted:      #8a8a8e;
+  --border:     #e5e5e5;
+  --shadow-sm:  0 2px 12px rgba(0,0,0,0.06);
+  --shadow-md:  0 8px 28px rgba(0,0,0,0.10);
+  --shadow-lg:  0 24px 60px rgba(0,0,0,0.20);
+  --radius:     16px;
+  --radius-sm:  10px;
+  --transition: 0.27s cubic-bezier(0.4,0,0.2,1);
+  --eb-orange: #f05537;
+  --eb-orange-light: #fff0ed;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  display: flex; flex-direction: column; align-items: center;
+}
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background: url("images/gr.jpeg") center/cover no-repeat,
+              linear-gradient(135deg, rgba(10,10,10,0.88) 0%, rgba(28,28,30,0.84) 100%);
+  background-blend-mode: overlay; z-index: 0;
+}
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4; z-index: 0; pointer-events: none;
+}
+
+.page {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 820px;
+  padding: 32px 16px 64px;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+/* NAV */
+.top-nav { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; color: var(--white); text-decoration: none; }
+.nav-logo span { color: var(--gold); }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.nav-link { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: var(--transition); font-family: 'DM Sans', sans-serif; }
+.nav-link-ghost { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); }
+.nav-link-ghost:hover { background: rgba(255,255,255,0.13); color: var(--white); }
+.nav-link-gold { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--black); font-weight: 700; }
+.nav-link-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(201,168,76,0.3); }
+.nav-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* LOGIN CARD */
+.login-card { width: 100%; max-width: 420px; background: var(--white); border-radius: 24px; padding: 44px 36px; box-shadow: var(--shadow-lg); text-align: center; animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; }
+.login-card-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; position: relative; }
+.login-card-icon::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgba(201,168,76,0.3); }
+.login-card-icon svg { width: 28px; height: 28px; color: var(--gold); }
+.login-card h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: var(--black); margin-bottom: 8px; }
+.login-card p { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+.google-btn { width: 100%; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--white); color: var(--black); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.google-btn:hover { background: var(--cream); border-color: #ccc; transform: translateY(-1px); }
+.google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* ═══ MODE SWITCHER (Eventbrite vs Manual) ═══ */
+.mode-switcher {
+  width: 100%; display: flex; gap: 0;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px; overflow: hidden;
+  margin-bottom: 20px;
+  animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.mode-btn {
+  flex: 1; padding: 15px 18px;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+  color: rgba(255,255,255,0.5); cursor: pointer; border: none; background: none;
+  transition: var(--transition); position: relative;
+}
+.mode-btn:first-child { border-right: 1px solid rgba(255,255,255,0.10); }
+.mode-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+.mode-btn.active {
+  background: var(--white); color: var(--black);
+  border-radius: 12px; margin: 4px; box-shadow: var(--shadow-md);
+}
+.mode-btn.active.eb-mode { background: var(--eb-orange); color: var(--white); }
+.mode-btn:not(.active):hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+.mode-badge {
+  background: var(--gold); color: var(--black);
+  font-size: 9px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 20px;
+}
+.mode-btn.active.eb-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
+
+/* ═══ EVENTBRITE IMPORT CARD ═══ */
+.eb-card {
+  width: 100%; background: var(--white); border-radius: 24px; overflow: hidden;
+  box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+  display: none;
+}
+.eb-header {
+  background: linear-gradient(135deg, #f05537 0%, #d63b1f 100%);
+  padding: 26px 36px 22px; position: relative; overflow: hidden;
+}
+.eb-header::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 85% 20%, rgba(255,255,255,0.12) 0%, transparent 55%);
+}
+.eb-header-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+.eb-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.35);
+  color: var(--white); font-size: 10.5px; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; padding: 4px 13px; border-radius: 20px; margin-bottom: 10px;
+}
+.eb-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(20px,4vw,26px); font-weight: 900; color: var(--white); margin-bottom: 4px; }
+.eb-header-sub { font-size: 13px; color: rgba(255,255,255,0.65); }
+.eb-logo-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.eb-body { padding: 28px 36px 36px; }
+
+/* API Key setup area */
+.eb-setup-section {
+  background: var(--cream); border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); padding: 18px 20px; margin-bottom: 20px;
+}
+.eb-setup-title { font-size: 12px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: var(--slate); margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+.eb-setup-title svg { width: 13px; height: 13px; color: var(--eb-orange); }
+.eb-setup-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+.eb-setup-desc a { color: var(--eb-orange); text-decoration: none; font-weight: 600; }
+.eb-setup-desc a:hover { text-decoration: underline; }
+.eb-api-row { display: flex; gap: 8px; }
+.eb-api-row input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--black); background: var(--white); outline: none; transition: var(--transition); }
+.eb-api-row input:focus { border-color: var(--eb-orange); box-shadow: 0 0 0 3px rgba(240,85,55,0.10); }
+.eb-save-key { padding: 10px 18px; background: var(--eb-orange); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: var(--transition); }
+.eb-save-key:hover { background: #d63b1f; }
+.eb-key-status { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 8px; }
+.eb-key-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+.eb-key-dot.ok { background: #22c55e; }
+.eb-key-dot.err { background: #ef4444; }
+
+/* Import search area */
+.eb-search-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.eb-search-row input { flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); }
+.eb-search-row input:focus { border-color: var(--eb-orange); background: var(--white); box-shadow: 0 0 0 3px rgba(240,85,55,0.10); }
+.eb-search-btn { padding: 12px 22px; background: var(--eb-orange); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); white-space: nowrap; }
+.eb-search-btn:hover { background: #d63b1f; transform: translateY(-1px); }
+.eb-search-btn svg { width: 15px; height: 15px; }
+.eb-search-btn:disabled { opacity: 0.6; pointer-events: none; }
+
+/* OR paste URL directly */
+.eb-divider { text-align: center; font-size: 12px; color: var(--muted); margin: 16px 0; position: relative; }
+.eb-divider::before, .eb-divider::after { content: ""; position: absolute; top: 50%; width: calc(50% - 20px); height: 1px; background: var(--border); }
+.eb-divider::before { left: 0; } .eb-divider::after { right: 0; }
+
+.eb-url-row { display: flex; gap: 8px; margin-bottom: 20px; }
+.eb-url-row input { flex: 1; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); }
+.eb-url-row input:focus { border-color: var(--eb-orange); background: var(--white); box-shadow: 0 0 0 3px rgba(240,85,55,0.10); }
+.eb-fetch-btn { padding: 11px 18px; background: var(--black); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); white-space: nowrap; }
+.eb-fetch-btn:hover { background: var(--charcoal); }
+.eb-fetch-btn:disabled { opacity: 0.6; pointer-events: none; }
+.eb-fetch-btn svg { width: 14px; height: 14px; }
+
+/* Results grid */
+.eb-results { display: none; }
+.eb-results.show { display: block; }
+.eb-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.eb-results-title { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+.eb-results-count { font-size: 12px; font-weight: 600; color: var(--slate); background: var(--cream); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); }
+.eb-event-grid { display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 4px; }
+.eb-event-grid::-webkit-scrollbar { width: 4px; }
+.eb-event-grid::-webkit-scrollbar-track { background: var(--cream); border-radius: 4px; }
+.eb-event-grid::-webkit-scrollbar-thumb { background: #d0cdc7; border-radius: 4px; }
+
+.eb-event-card {
+  display: flex; align-items: stretch; gap: 0;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  overflow: hidden; cursor: pointer; transition: var(--transition);
+  background: var(--white);
+  animation: chipIn 0.2s ease both;
+}
+.eb-event-card:hover { border-color: var(--eb-orange); box-shadow: 0 4px 16px rgba(240,85,55,0.12); transform: translateY(-1px); }
+.eb-event-card.selected { border-color: var(--eb-orange); background: var(--eb-orange-light); }
+.eb-event-thumb {
+  width: 90px; flex-shrink: 0;
+  background: var(--cream); overflow: hidden;
+  position: relative;
+}
+.eb-event-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.eb-event-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; background: linear-gradient(135deg, #fff0ed, #ffe0d9); }
+.eb-event-info { flex: 1; padding: 12px 14px; }
+.eb-event-name { font-weight: 700; font-size: 13.5px; color: var(--black); margin-bottom: 4px; line-height: 1.35; }
+.eb-event-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11.5px; color: var(--muted); }
+.eb-event-meta span { display: flex; align-items: center; gap: 4px; }
+.eb-event-meta svg { width: 11px; height: 11px; }
+.eb-event-check {
+  width: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: var(--border); transition: var(--transition);
+  border-left: 1.5px solid var(--border);
+}
+.eb-event-card.selected .eb-event-check { color: var(--eb-orange); border-left-color: var(--eb-orange); }
+
+/* Import progress / status */
+.eb-import-status {
+  display: none; background: var(--cream); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px 20px; margin-top: 16px;
+}
+.eb-import-status.show { display: block; }
+.eb-import-log { font-size: 12.5px; color: var(--slate); line-height: 2; }
+.eb-import-log-line { display: flex; align-items: center; gap: 8px; }
+.eb-import-log-icon { font-size: 14px; }
+
+/* Import action bar */
+.eb-action-bar {
+  display: none; padding: 16px 0 0; border-top: 1.5px solid var(--border);
+  margin-top: 16px; align-items: center; justify-content: space-between; gap: 12px;
+}
+.eb-action-bar.show { display: flex; }
+.eb-selected-info { font-size: 13px; color: var(--slate); font-weight: 500; }
+.eb-selected-info strong { color: var(--black); }
+.eb-import-btn {
+  padding: 12px 24px; background: var(--eb-orange); color: var(--white);
+  border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center;
+  gap: 7px; transition: var(--transition);
+}
+.eb-import-btn:hover { background: #d63b1f; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(240,85,55,0.3); }
+.eb-import-btn:disabled { opacity: 0.6; pointer-events: none; }
+.eb-import-btn svg { width: 15px; height: 15px; }
+
+/* Loading states */
+.eb-loading {
+  text-align: center; padding: 32px 16px; display: none;
+}
+.eb-loading.show { display: block; }
+.eb-spinner {
+  width: 36px; height: 36px; border: 3px solid #ffd5cc;
+  border-top-color: var(--eb-orange); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+}
+.eb-loading-text { font-size: 13px; color: var(--muted); }
+
+/* empty state */
+.eb-empty { text-align: center; padding: 28px 16px; display: none; }
+.eb-empty.show { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.eb-empty-icon { font-size: 36px; }
+.eb-empty-msg { font-size: 14px; color: var(--muted); }
+
+/* ═══ FORM CARD (Manual) ═══ */
+.form-card { width: 100%; background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; display: none; }
+.form-header { background: var(--black); padding: 26px 36px 22px; position: relative; overflow: hidden; }
+.form-header::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.14) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, rgba(201,168,76,0.07) 0%, transparent 50%); pointer-events: none; }
+.form-header-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+.form-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.35); color: var(--gold-light); font-size: 10.5px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; padding: 4px 13px; border-radius: 20px; margin-bottom: 10px; }
+.form-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(20px, 4vw, 26px); font-weight: 900; color: var(--white); line-height: 1.2; margin-bottom: 4px; }
+.form-header h1 em { font-style: italic; color: var(--gold); }
+.form-header-sub { font-size: 13px; color: rgba(255,255,255,0.45); }
+.edit-mode-pill { display: none; align-items: center; gap: 7px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); color: var(--gold-light); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.edit-mode-pill.show { display: inline-flex; }
+.edit-mode-pill svg { width: 13px; height: 13px; }
+.form-header-user { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; margin-top: 16px; }
+.header-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 900; color: var(--black); flex-shrink: 0; }
+.header-user-name { font-size: 12.5px; color: rgba(255,255,255,0.5); }
+.header-user-name strong { color: rgba(255,255,255,0.8); font-weight: 600; }
+.form-body { padding: 28px 36px 36px; }
+
+/* Pre-fill notice banner */
+.prefill-notice {
+  display: none; background: linear-gradient(135deg, #fff7e6, #ffefd0);
+  border: 1.5px solid rgba(201,168,76,0.4); border-radius: var(--radius-sm);
+  padding: 12px 16px; margin-bottom: 20px;
+  align-items: center; gap: 10px;
+}
+.prefill-notice.show { display: flex; }
+.prefill-notice-icon { font-size: 18px; flex-shrink: 0; }
+.prefill-notice-text { font-size: 13px; color: var(--charcoal); line-height: 1.5; }
+.prefill-notice-text strong { color: var(--gold-dark); }
+.prefill-dismiss { margin-left: auto; font-size: 11px; color: var(--muted); cursor: pointer; border: none; background: none; font-family: 'DM Sans', sans-serif; padding: 4px 8px; border-radius: 6px; transition: var(--transition); flex-shrink: 0; }
+.prefill-dismiss:hover { background: rgba(0,0,0,0.05); color: var(--slate); }
+
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; margin-bottom: 14px; margin-top: 24px; }
+.section-label:first-child { margin-top: 0; }
+.section-label::after { content:""; flex:1; height:1px; background: var(--border); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field-group { margin-bottom: 14px; }
+.field-label { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--slate); margin-bottom: 7px; }
+.field-label .req { color: var(--gold-dark); margin-left: 2px; }
+.field-label .opt { color: var(--muted); font-weight: 400; font-size: 10.5px; margin-left: 4px; text-transform: none; letter-spacing: 0; }
+.field-wrap { position: relative; }
+.field-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--muted); pointer-events: none; }
+.field-icon.top { top: 15px; transform: none; }
+input, select, textarea { width: 100%; padding: 12px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); appearance: none; -webkit-appearance: none; }
+.has-icon input, .has-icon select, .has-icon textarea { padding-left: 40px; }
+input:focus, select:focus, textarea:focus { border-color: var(--gold); background: var(--white); box-shadow: 0 0 0 3px rgba(201,168,76,0.13); }
+input::placeholder, textarea::placeholder { color: #bbb; }
+textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+.field-hint { font-size: 11.5px; color: var(--muted); margin-top: -8px; margin-bottom: 12px; padding-left: 2px; }
+.category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin-bottom: 4px; }
+.cat-chip { padding: 10px 8px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: var(--cream); text-align: center; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--slate); transition: var(--transition); user-select: none; }
+.cat-chip:hover { border-color: var(--gold); background: #fdf8ee; }
+.cat-chip.selected { border-color: var(--gold); background: #fdf3d8; color: var(--black); font-weight: 600; box-shadow: 0 4px 12px rgba(201,168,76,0.15); }
+.cat-chip-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+#category { display: none; }
+
+/* Image upload */
+.img-tabs { display: flex; gap: 0; margin-bottom: 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--cream); }
+.img-tab { flex: 1; padding: 9px 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; border: none; background: none; font-family: 'DM Sans', sans-serif; transition: var(--transition); }
+.img-tab svg { width: 13px; height: 13px; flex-shrink: 0; }
+.img-tab:first-child { border-right: 1.5px solid var(--border); }
+.img-tab.active { background: var(--black); color: var(--gold-light); }
+.img-tab:not(.active):hover { background: #eeebe4; color: var(--slate); }
+.img-upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--cream); padding: 20px 16px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; }
+.img-upload-zone:hover, .img-upload-zone.drag-over { border-color: var(--gold); background: #fdf8ee; }
+.img-upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; padding: 0; border: none; background: none; }
+.img-upload-zone-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+.img-upload-zone-icon svg { width: 18px; height: 18px; color: var(--muted); }
+.img-upload-zone-title { font-size: 13.5px; font-weight: 600; color: var(--slate); margin-bottom: 3px; }
+.img-upload-zone-title strong { color: var(--gold-dark); }
+.img-upload-zone-sub { font-size: 11.5px; color: var(--muted); }
+.img-upload-progress { display: none; margin-top: 10px; }
+.img-upload-progress.show { display: block; }
+.img-upload-progress-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.img-upload-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); border-radius: 4px; width: 0%; transition: width 0.2s ease; }
+.img-upload-progress-label { font-size: 11px; color: var(--muted); margin-top: 5px; display: flex; align-items: center; justify-content: space-between; }
+.img-url-panel { display: none; }
+.img-url-panel.show { display: block; }
+.image-preview-wrap { margin-top: 10px; border-radius: var(--radius-sm); overflow: hidden; border: 1.5px solid var(--border); background: var(--cream); height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
+.image-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.image-preview-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); }
+.image-preview-placeholder svg { width: 28px; height: 28px; opacity: 0.4; }
+.image-preview-placeholder span { font-size: 12.5px; }
+.img-filename-badge { display: none; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(10,10,10,0.72); backdrop-filter: blur(6px); color: var(--white); font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 20px; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis; }
+.image-preview-wrap:has(img[style*="block"]) .img-filename-badge { display: block; }
+.img-clear-btn { display: none; position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(10,10,10,0.65); border: none; cursor: pointer; color: var(--white); font-size: 14px; line-height: 1; align-items: center; justify-content: center; transition: background 0.15s; }
+.img-clear-btn:hover { background: #ef4444; }
+
+/* Calendar */
+.cal-wrapper { border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--white); box-shadow: var(--shadow-sm); }
+.cal-header { background: var(--black); padding: 16px 20px 14px; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
+.cal-header::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.13) 0%, transparent 55%); pointer-events: none; }
+.cal-month-label { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--white); position: relative; z-index: 1; }
+.cal-nav { display: flex; gap: 6px; position: relative; z-index: 1; }
+.cal-nav button { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.cal-nav button:hover { background: rgba(255,255,255,0.2); color: var(--white); }
+.cal-dow-row { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--cream); padding: 10px 16px 6px; border-bottom: 1px solid var(--border); }
+.cal-dow { text-align: center; font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; color: var(--muted); text-transform: uppercase; }
+.cal-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; padding: 10px 16px 14px; background: var(--white); }
+.cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 13.5px; font-weight: 500; border-radius: 10px; cursor: pointer; border: 1.5px solid transparent; color: var(--black); transition: background 0.12s, border-color 0.12s, color 0.12s; user-select: none; position: relative; }
+.cal-day:hover:not(.cal-day-empty):not(.cal-day-past) { background: #fdf8ee; border-color: var(--gold-light); }
+.cal-day.cal-day-today { font-weight: 800; color: var(--gold-dark); border-color: rgba(201,168,76,0.5); }
+.cal-day.cal-day-selected { background: var(--gold); color: var(--black); border-color: var(--gold); font-weight: 700; }
+.cal-day.cal-day-selected:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
+.cal-day.cal-day-empty { cursor: default; }
+.cal-day.cal-day-past { color: #ccc; cursor: not-allowed; }
+.cal-day.cal-day-timed::after { content: ""; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--black); }
+.cal-time-panel { border-top: 1px solid var(--border); padding: 14px 16px 16px; background: var(--cream); display: none; }
+.cal-time-panel.show { display: block; }
+.cal-time-panel-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-time-panel-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--slate); display: flex; align-items: center; gap: 6px; }
+.cal-time-panel-day { font-family: 'Playfair Display', serif; font-size: 13px; color: var(--gold-dark); font-weight: 700; }
+.cal-time-slots { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+.cal-time-slot { padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; font-weight: 600; color: var(--slate); cursor: pointer; transition: var(--transition); }
+.cal-time-slot:hover { border-color: var(--gold); color: var(--black); background: #fdf8ee; }
+.cal-time-slot.active { background: var(--black); color: var(--white); border-color: var(--black); }
+.cal-custom-row { display: flex; align-items: center; gap: 8px; }
+.cal-custom-row input { flex: 1; padding: 8px 12px; font-size: 13px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: var(--white); color: var(--black); outline: none; font-family: 'DM Sans', sans-serif; transition: var(--transition); }
+.cal-custom-row input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+.cal-custom-apply { padding: 8px 16px; border-radius: var(--radius-sm); background: var(--black); color: var(--white); border: none; font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+.cal-custom-apply:hover { background: var(--charcoal); }
+.cal-selected-wrap { padding: 12px 16px 14px; border-top: 1px solid var(--border); background: var(--white); }
+.cal-selected-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cal-selected-title { font-size: 10.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+.cal-clear-all { font-size: 11.5px; color: var(--muted); cursor: pointer; font-weight: 500; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 2px 6px; border-radius: 6px; transition: var(--transition); }
+.cal-clear-all:hover { color: #ef4444; background: #fee2e2; }
+.cal-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.cal-chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px 5px 10px; background: var(--cream); border: 1.5px solid #e8e5de; border-radius: 20px; font-size: 12.5px; font-weight: 600; color: var(--charcoal); animation: chipIn 0.18s ease both; }
+.cal-chip-num { width: 18px; height: 18px; border-radius: 50%; background: var(--black); color: var(--gold); font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cal-chip-time { color: var(--muted); font-size: 11px; font-weight: 500; white-space: nowrap; }
+.cal-chip-remove { width: 16px; height: 16px; border-radius: 50%; background: #e0ddd6; border: none; cursor: pointer; color: var(--slate); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background 0.12s; line-height: 1; flex-shrink: 0; }
+.cal-chip-remove:hover { background: #ef4444; color: var(--white); }
+.cal-empty-hint { font-size: 13px; color: var(--muted); text-align: center; padding: 6px 0; font-style: italic; }
+
+/* Submit */
+.submit-area { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+.btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--black); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 9px; position: relative; overflow: hidden; }
+.btn-submit::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.1)); }
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(201,168,76,0.35); }
+.btn-submit:disabled { opacity: 0.6; pointer-events: none; }
+.btn-submit svg { width: 17px; height: 17px; flex-shrink: 0; }
+.spinner { width: 18px; height: 18px; border: 2.5px solid rgba(0,0,0,0.2); border-top-color: var(--black); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+.btn-submit.loading .spinner { display: block; }
+.btn-submit.loading .btn-label, .btn-submit.loading .btn-icon { display: none; }
+.btn-secondary-action { width: 100%; padding: 13px; background: transparent; color: var(--muted); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 7px; }
+.btn-secondary-action:hover { background: var(--cream); color: var(--slate); }
+.btn-secondary-action svg { width: 15px; height: 15px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--charcoal); color: var(--white); padding: 11px 22px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 9999; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: #14532d; }
+.toast.error   { background: #7f1d1d; }
+
+/* Animations */
+@keyframes slideUp { from { opacity:0; transform:translateY(36px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes chipIn { from { opacity:0; transform: scale(0.85); } to { opacity:1; transform: scale(1); } }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .page { padding: 20px 12px 48px; }
+  .form-header { padding: 22px 20px 18px; }
+  .form-body, .eb-body { padding: 22px 18px 28px; }
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+  .category-grid { grid-template-columns: repeat(3, 1fr); }
+  .nav-link-gold span { display: none; }
+  .mode-btn span.mode-label { display: none; }
+  .eb-action-bar { flex-direction: column; }
+  .eb-search-row { flex-direction: column; }
+  .eb-url-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">Vend<span>Hub</span></a>
+    <div class="nav-actions">
+      <a href="admin.html" class="nav-link nav-link-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Admin Panel
+      </a>
+      <button class="nav-link nav-link-gold" id="loginBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        <span>Sign In with Google</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- LOGIN CARD -->
+  <div class="login-card" id="loginCard">
+    <div class="login-card-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    </div>
+    <h2>Event Management</h2>
+    <p>Sign in with your admin Google account to upload and manage VendHub events.</p>
+    <button class="google-btn" id="loginCardBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+  </div>
+
+  <!-- MODE SWITCHER (shown after login) -->
+  <div class="mode-switcher" id="modeSwitcher" style="display:none;">
+    <button class="mode-btn active" id="modeManual">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <span class="mode-label">Manual Upload</span>
+    </button>
+    <button class="mode-btn" id="modeEventbrite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      <span class="mode-label">Import from Eventbrite</span>
+      <span class="mode-badge">AUTO</span>
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       EVENTBRITE IMPORT CARD
+  ═══════════════════════════════════════════════ -->
+  <div class="eb-card" id="ebCard">
+    <div class="eb-header">
+      <div class="eb-header-top">
+        <div>
+          <div class="eb-eyebrow">⚡ Auto Import</div>
+          <h1>Import from Eventbrite</h1>
+          <p class="eb-header-sub">Search your Eventbrite events or paste a URL — we'll fill the form automatically</p>
+        </div>
+        <div class="eb-logo-icon">🎟️</div>
+      </div>
+    </div>
+
+    <div class="eb-body">
+
+      <!-- API Key Setup -->
+      <div class="eb-setup-section" id="ebSetupSection">
+        <div class="eb-setup-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Eventbrite API Key Required
+        </div>
+        <p class="eb-setup-desc">
+          Get your private token from <a href="https://www.eventbrite.com/account-settings/apps" target="_blank" rel="noopener">Eventbrite → Account Settings → Developer Links → API Keys</a>. It's free and instant.
+        </p>
+        <div class="eb-api-row">
+          <input type="password" id="ebApiKey" placeholder="Paste your Eventbrite Private Token here…" autocomplete="off">
+          <button class="eb-save-key" id="ebSaveKey">Save Key</button>
+        </div>
+        <div class="eb-key-status" id="ebKeyStatus">
+          <div class="eb-key-dot" id="ebKeyDot"></div>
+          <span id="ebKeyMsg">No API key saved</span>
+        </div>
+      </div>
+
+      <!-- Search by keyword -->
+      <div class="section-label" style="margin-top:0;">Search Your Eventbrite Events</div>
+      <div class="eb-search-row">
+        <input type="text" id="ebSearchInput" placeholder="Search by event name, city, keyword…" autocomplete="off">
+        <button class="eb-search-btn" id="ebSearchBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search
+        </button>
+      </div>
+
+      <div class="eb-divider">or paste an Eventbrite event URL</div>
+
+      <!-- Paste URL -->
+      <div class="eb-url-row">
+        <input type="text" id="ebUrlInput" placeholder="https://www.eventbrite.com/e/your-event-name-tickets-123456789" autocomplete="off">
+        <button class="eb-fetch-btn" id="ebFetchBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Fetch Event
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div class="eb-loading" id="ebLoading">
+        <div class="eb-spinner"></div>
+        <div class="eb-loading-text" id="ebLoadingText">Searching Eventbrite…</div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="eb-empty" id="ebEmpty">
+        <div class="eb-empty-icon">🔍</div>
+        <div class="eb-empty-msg">No events found. Try a different keyword.</div>
+      </div>
+
+      <!-- Results -->
+      <div class="eb-results" id="ebResults">
+        <div class="eb-results-header">
+          <span class="eb-results-title">Results</span>
+          <span class="eb-results-count" id="ebResultsCount">0 events</span>
+        </div>
+        <div class="eb-event-grid" id="ebEventGrid"></div>
+      </div>
+
+      <!-- Action bar -->
+      <div class="eb-action-bar" id="ebActionBar">
+        <div class="eb-selected-info"><strong id="ebSelectedCount">0</strong> event(s) selected</div>
+        <button class="eb-import-btn" id="ebImportBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Import to Form
+        </button>
+      </div>
+
+      <!-- Import log -->
+      <div class="eb-import-status" id="ebImportStatus">
+        <div class="eb-import-log" id="ebImportLog"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       MANUAL FORM CARD
+  ═══════════════════════════════════════════════ -->
+  <div class="form-card" id="formCard">
+
+    <div class="form-header">
+      <div class="form-header-top">
+        <div>
+          <div class="form-eyebrow" id="formEyebrow">✦ New Event</div>
+          <h1 id="formHeading">Upload an <em>Event</em></h1>
+          <p class="form-header-sub" id="formSubheading">Fill in the details below to publish this event to VendHub</p>
+        </div>
+        <div class="edit-mode-pill" id="editModePill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Editing Event
+        </div>
+      </div>
+      <div class="form-header-user" id="headerUserRow" style="display:none;">
+        <div class="header-avatar" id="headerAvatar">A</div>
+        <div class="header-user-name">Signed in as <strong id="headerEmail">—</strong></div>
+      </div>
+    </div>
+
+    <div class="form-body">
+
+      <!-- Pre-fill notice -->
+      <div class="prefill-notice" id="prefillNotice">
+        <div class="prefill-notice-icon">✨</div>
+        <div class="prefill-notice-text">
+          <strong>Pre-filled from Eventbrite!</strong> Review the details below, make any edits, then click Upload Event.
+        </div>
+        <button class="prefill-dismiss" id="prefillDismiss">Dismiss</button>
+      </div>
+
+      <form id="eventForm" novalidate>
+
+        <!-- Basic Info -->
+        <div class="section-label">Basic Information</div>
+
+        <div class="field-group">
+          <label class="field-label">Event Title <span class="req">*</span></label>
+          <div class="field-wrap has-icon">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+            <input id="title" type="text" placeholder="e.g. Baltimore Springs Craft Fair" required autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Venue / Location <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+              <input id="locationField" type="text" placeholder="e.g. City Expo Center" required autocomplete="off">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">State / Region <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <input id="state" type="text" placeholder="e.g. Maryland" required autocomplete="off">
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Full Address <span class="req">*</span></label>
+          <div class="field-wrap has-icon">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <input id="address" type="text" placeholder="123 Main St, Baltimore, MD 21201" required autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Event Dates -->
+        <div class="section-label">Event Dates</div>
+        <p class="field-hint" style="margin-bottom:14px;">
+          Click dates to select them. Click again to deselect. Set a start time per day below. At least <strong>one date</strong> is required.
+        </p>
+
+        <div class="cal-wrapper" id="calWrapper">
+          <div class="cal-header">
+            <span class="cal-month-label" id="calMonthLabel">— —</span>
+            <div class="cal-nav">
+              <button type="button" id="calPrev">&#8249;</button>
+              <button type="button" id="calNext">&#8250;</button>
+            </div>
+          </div>
+          <div class="cal-dow-row" id="calDowRow"></div>
+          <div class="cal-days-grid" id="calDaysGrid"></div>
+          <div class="cal-time-panel" id="calTimePanel">
+            <div class="cal-time-panel-top">
+              <div class="cal-time-panel-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Start time for <span class="cal-time-panel-day" id="calTimePanelDay">—</span>
+              </div>
+            </div>
+            <div class="cal-time-slots" id="calTimeSlots"></div>
+            <div class="cal-custom-row">
+              <input type="text" id="calCustomTime" placeholder="Custom, e.g. 10:30 AM" autocomplete="off">
+              <button type="button" class="cal-custom-apply" id="calCustomApply">Set Time</button>
+            </div>
+          </div>
+          <div class="cal-selected-wrap">
+            <div class="cal-selected-header">
+              <span class="cal-selected-title">Selected Dates</span>
+              <button type="button" class="cal-clear-all" id="calClearAll">Clear all</button>
+            </div>
+            <div class="cal-chips" id="calChips"><span class="cal-empty-hint">No dates selected yet</span></div>
+          </div>
+        </div>
+
+        <!-- Media & Pricing -->
+        <div class="section-label">Media &amp; Pricing</div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Event Image <span class="req">*</span></label>
+            <div class="img-tabs">
+              <button type="button" class="img-tab active" id="tabUpload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload File
+              </button>
+              <button type="button" class="img-tab" id="tabUrl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                Paste URL
+              </button>
+            </div>
+            <div id="uploadPanel">
+              <div class="img-upload-zone" id="imgDropZone">
+                <input type="file" id="imgFileInput" accept="image/jpeg,image/png,image/webp,image/gif" />
+                <div class="img-upload-zone-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <div class="img-upload-zone-title"><strong>Click to upload</strong> or drag & drop</div>
+                <div class="img-upload-zone-sub">JPG, PNG, WEBP, GIF · Max 5 MB</div>
+              </div>
+              <div class="img-upload-progress" id="imgUploadProgress">
+                <div class="img-upload-progress-track">
+                  <div class="img-upload-progress-fill" id="imgProgressFill"></div>
+                </div>
+                <div class="img-upload-progress-label">
+                  <span id="imgProgressName">Uploading…</span>
+                  <span id="imgProgressPct">0%</span>
+                </div>
+              </div>
+            </div>
+            <div class="img-url-panel" id="urlPanel">
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <input id="imageUrl" type="text" placeholder="https://example.com/image.jpg" autocomplete="off">
+              </div>
+            </div>
+            <input type="hidden" id="image">
+            <div class="image-preview-wrap" id="imagePreviewWrap">
+              <img id="imagePreview" alt="Preview">
+              <div class="image-preview-placeholder" id="imagePlaceholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>Image preview</span>
+              </div>
+              <div class="img-filename-badge" id="imgFilenameBadge"></div>
+              <button type="button" class="img-clear-btn" id="imgClearBtn" title="Remove image" style="display:flex;">×</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Vendor Price / Fee <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <input id="price" type="text" placeholder="e.g. Free / $50 / From $150" required autocomplete="off">
+            </div>
+            <div style="margin-top:14px;">
+              <label class="field-label">Max Vendor Spots <span class="opt">(optional)</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                <input id="maxSpots" type="number" min="1" placeholder="e.g. 50" autocomplete="off">
+              </div>
+            </div>
+            <div style="margin-top:14px;">
+              <label class="field-label">Contact / Organiser Email <span class="opt">(optional)</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input id="contactEmail" type="email" placeholder="organiser@example.com" autocomplete="off">
+              </div>
+            </div>
+            <div style="margin-top:14px;">
+              <label class="field-label">Organiser Phone <span class="opt">(optional)</span></label>
+              <div class="field-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                <input id="contactPhone" type="tel" placeholder="+1 234 567 8900" autocomplete="off">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="section-label">Category</div>
+        <div class="category-grid">
+          <div class="cat-chip" data-value="Music"><span class="cat-chip-icon">🎵</span>Music</div>
+          <div class="cat-chip" data-value="Festivals"><span class="cat-chip-icon">🎉</span>Festivals</div>
+          <div class="cat-chip" data-value="Arts"><span class="cat-chip-icon">🎨</span>Arts</div>
+          <div class="cat-chip" data-value="Business"><span class="cat-chip-icon">🏢</span>Business</div>
+          <div class="cat-chip" data-value="Markets"><span class="cat-chip-icon">🛍</span>Markets</div>
+          <div class="cat-chip" data-value="Food"><span class="cat-chip-icon">🍴</span>Food</div>
+        </div>
+        <select id="category"></select>
+
+        <!-- Description -->
+        <div class="section-label">Event Description</div>
+        <div class="field-group">
+          <label class="field-label">Description <span class="req">*</span></label>
+          <div class="field-wrap has-icon">
+            <svg class="field-icon top" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <textarea id="description" class="has-icon" placeholder="Describe the event — atmosphere, foot traffic, vendor rules…" required></textarea>
+          </div>
+          <div class="field-hint" id="charCount">0 / 5000 characters</div>
+        </div>
+
+        <!-- Links -->
+        <div class="section-label">Links <span style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted);margin-left:4px;">(optional)</span></div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Event Website</label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <input id="website" type="url" placeholder="https://yourevent.com" autocomplete="off">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Instagram Handle</label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              <input id="instagram" type="text" placeholder="@yourevent" autocomplete="off">
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-area">
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="btn-label">Upload Event</span>
+            <div class="spinner"></div>
+          </button>
+          <button type="button" class="btn-secondary-action" id="resetBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            Clear Form
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, getDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey:        "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
+  authDomain:    "vendors-de792.firebaseapp.com",
+  projectId:     "vendors-de792",
+  storageBucket: "vendors-de792.firebasestorage.app",
+};
+const app      = initializeApp(firebaseConfig);
+const db       = getFirestore(app);
+const auth     = getAuth(app);
+const storage  = getStorage(app);
+const provider = new GoogleAuthProvider();
+
+function showToast(msg, type = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove("show"), 3400);
+}
+function el(id) { return document.getElementById(id); }
+
+// ── Edit mode ──────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const editId = params.get("edit") || null;
+let editingEventId = editId;
+if (editId) {
+  el("formEyebrow").textContent    = "✦ Edit Event";
+  el("formHeading").innerHTML      = `Edit <em>Event</em>`;
+  el("formSubheading").textContent = "Update the event details below";
+  el("editModePill").classList.add("show");
+  el("submitBtn").querySelector(".btn-label").textContent = "Update Event";
+}
+
+// ── Auth ───────────────────────────────────────────────
+async function doLogin() {
+  try { await setPersistence(auth, browserLocalPersistence); await signInWithPopup(auth, provider); }
+  catch (err) { showToast("Login failed: " + err.message, "error"); }
+}
+el("loginBtn").onclick     = doLogin;
+el("loginCardBtn").onclick = doLogin;
+
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    el("loginCard").style.display  = "none";
+    el("loginBtn").style.display   = "none";
+    el("modeSwitcher").style.display = "flex";
+    el("formCard").style.display   = "block";    // default to manual
+    el("headerUserRow").style.display = "flex";
+    el("headerAvatar").textContent = (user.displayName || user.email || "A").charAt(0).toUpperCase();
+    el("headerEmail").textContent  = user.displayName || user.email;
+    if (editingEventId) loadEvent(editingEventId);
+    initEbKeyStatus();
+  } else {
+    el("loginCard").style.display = "flex";
+    el("loginCard").style.flexDirection = "column";
+    el("loginCard").style.alignItems = "center";
+    el("modeSwitcher").style.display = "none";
+    el("formCard").style.display  = "none";
+    el("ebCard").style.display    = "none";
+  }
+});
+
+// ── Mode switcher ──────────────────────────────────────
+let currentMode = "manual";
+el("modeManual").addEventListener("click", () => setMode("manual"));
+el("modeEventbrite").addEventListener("click", () => setMode("eventbrite"));
+
+function setMode(mode) {
+  currentMode = mode;
+  el("modeManual").classList.toggle("active", mode === "manual");
+  el("modeEventbrite").classList.toggle("active", mode === "eventbrite");
+  el("modeEventbrite").classList.toggle("eb-mode", mode === "eventbrite");
+  el("formCard").style.display = mode === "manual" ? "block" : "none";
+  el("ebCard").style.display   = mode === "eventbrite" ? "block" : "none";
+}
+
+// ═══════════════════════════════════════════════════════
+//  EVENTBRITE INTEGRATION
+// ═══════════════════════════════════════════════════════
+const EB_KEY_STORAGE = "vhub_eb_private_token";
+let ebToken = "";
+let ebSelectedEvents = new Set();
+let ebFetchedEvents  = [];
+
+function initEbKeyStatus() {
+  const saved = localStorage.getItem(EB_KEY_STORAGE) || "";
+  if (saved) {
+    ebToken = saved;
+    el("ebApiKey").value = saved;
+    setEbKeyStatus("ok", "API key loaded from storage");
+  } else {
+    setEbKeyStatus("none", "No API key saved");
+  }
+}
+
+function setEbKeyStatus(state, msg) {
+  const dot = el("ebKeyDot");
+  dot.className = "eb-key-dot" + (state === "ok" ? " ok" : state === "err" ? " err" : "");
+  el("ebKeyMsg").textContent = msg;
+}
+
+el("ebSaveKey").addEventListener("click", () => {
+  const val = el("ebApiKey").value.trim();
+  if (!val) { showToast("Please enter your Eventbrite Private Token.", "error"); return; }
+  ebToken = val;
+  localStorage.setItem(EB_KEY_STORAGE, val);
+  setEbKeyStatus("ok", "API key saved ✓");
+  showToast("API key saved!", "success");
+});
+
+// ── Eventbrite search ──────────────────────────────────
+el("ebSearchBtn").addEventListener("click", doEbSearch);
+el("ebSearchInput").addEventListener("keydown", e => { if (e.key === "Enter") doEbSearch(); });
+
+async function doEbSearch() {
+  if (!ebToken) { showToast("Please save your Eventbrite API key first.", "error"); return; }
+  const q = el("ebSearchInput").value.trim();
+  showEbLoading("Searching Eventbrite…");
+  clearEbResults();
+
+  try {
+    // Use Eventbrite v3 API — search own events by organizer
+    // Note: Eventbrite's API has CORS restrictions from browsers.
+    // We'll use a CORS proxy for client-side requests.
+    const url = q
+      ? `https://www.eventbriteapi.com/v3/events/search/?q=${encodeURIComponent(q)}&token=${ebToken}&expand=venue,logo,ticket_availability`
+      : `https://www.eventbriteapi.com/v3/users/me/events/?token=${ebToken}&status=live,draft&expand=venue,logo,ticket_availability&order_by=start_desc`;
+
+    const resp = await fetchWithProxy(url);
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error_description || errData.error || `HTTP ${resp.status}`);
+    }
+    const data = await resp.json();
+    const events = data.events || [];
+    hideEbLoading();
+    if (!events.length) { showEbEmpty(); return; }
+    renderEbResults(events);
+  } catch (err) {
+    hideEbLoading();
+    console.error("Eventbrite search error:", err);
+    showToast("Eventbrite error: " + err.message, "error");
+    setEbKeyStatus("err", "API error — check token or try again");
+  }
+}
+
+// ── Fetch single event by URL ──────────────────────────
+el("ebFetchBtn").addEventListener("click", doEbFetchUrl);
+
+async function doEbFetchUrl() {
+  if (!ebToken) { showToast("Please save your Eventbrite API key first.", "error"); return; }
+  const raw = el("ebUrlInput").value.trim();
+  if (!raw) { showToast("Please paste an Eventbrite event URL.", "error"); return; }
+
+  // Extract event ID from URL patterns like:
+  // https://www.eventbrite.com/e/event-name-tickets-123456789
+  // https://www.eventbrite.com/e/123456789
+  const idMatch = raw.match(/(?:tickets-|\/e\/)(\d{8,})/);
+  if (!idMatch) { showToast("Couldn't extract an event ID from that URL.", "error"); return; }
+  const eventId = idMatch[1];
+
+  showEbLoading("Fetching event details…");
+  clearEbResults();
+
+  try {
+    const url = `https://www.eventbriteapi.com/v3/events/${eventId}/?token=${ebToken}&expand=venue,logo,organizer,ticket_availability`;
+    const resp = await fetchWithProxy(url);
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error_description || errData.error || `HTTP ${resp.status}`);
+    }
+    const event = await resp.json();
+    hideEbLoading();
+    renderEbResults([event]);
+  } catch (err) {
+    hideEbLoading();
+    console.error("Eventbrite fetch error:", err);
+    showToast("Eventbrite error: " + err.message, "error");
+  }
+}
+
+// ── CORS proxy helper ──────────────────────────────────
+// Eventbrite API blocks direct browser requests. We use a public
+// CORS proxy. For production, use your own server-side proxy.
+async function fetchWithProxy(url) {
+  // Try direct first (works if CORS is open or from server)
+  try {
+    const direct = await fetch(url, { headers: { Authorization: `Bearer ${ebToken}` } });
+    if (direct.ok || direct.status !== 0) return direct;
+  } catch (_) { /* fall through to proxy */ }
+
+  // Fallback: allorigins proxy
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+  return fetch(proxyUrl);
+}
+
+// ── Render Eventbrite results ──────────────────────────
+function renderEbResults(events) {
+  ebFetchedEvents = events;
+  el("ebResults").classList.add("show");
+  el("ebResultsCount").textContent = `${events.length} event${events.length !== 1 ? "s" : ""}`;
+  const grid = el("ebEventGrid");
+  grid.innerHTML = "";
+
+  events.forEach((ev, i) => {
+    const name     = ev.name?.text || "Untitled Event";
+    const venue    = ev.venue?.name || "";
+    const city     = ev.venue?.address?.city || "";
+    const country  = ev.venue?.address?.country || "";
+    const start    = ev.start?.local ? new Date(ev.start.local) : null;
+    const thumb    = ev.logo?.url || ev.logo?.original?.url || "";
+    const isFree   = ev.is_free;
+    const ticketMin = ev.ticket_availability?.minimum_ticket_price?.major_value;
+
+    const dateStr = start
+      ? start.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "Date TBD";
+    const timeStr = start
+      ? start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+      : "";
+    const priceStr = isFree ? "Free" : (ticketMin ? `From $${ticketMin}` : "Paid");
+    const locationStr = [venue, city, country].filter(Boolean).join(", ");
+
+    const card = document.createElement("div");
+    card.className = "eb-event-card";
+    card.dataset.idx = i;
+    card.innerHTML = `
+      <div class="eb-event-thumb">
+        ${thumb
+          ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\"eb-event-thumb-placeholder\\">🎟️</div>'">`
+          : `<div class="eb-event-thumb-placeholder">🎟️</div>`}
+      </div>
+      <div class="eb-event-info">
+        <div class="eb-event-name">${escHtml(name)}</div>
+        <div class="eb-event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            ${escHtml(dateStr)}${timeStr ? " · " + escHtml(timeStr) : ""}
+          </span>
+          ${locationStr ? `<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${escHtml(locationStr)}</span>` : ""}
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>${priceStr}</span>
+        </div>
+      </div>
+      <div class="eb-event-check">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>`;
+
+    card.addEventListener("click", () => toggleEbSelect(i, card));
+    grid.appendChild(card);
+  });
+}
+
+function toggleEbSelect(idx, card) {
+  if (ebSelectedEvents.has(idx)) {
+    ebSelectedEvents.delete(idx);
+    card.classList.remove("selected");
+  } else {
+    // Single-select for now: only one event populates form at a time
+    ebSelectedEvents.clear();
+    document.querySelectorAll(".eb-event-card").forEach(c => c.classList.remove("selected"));
+    ebSelectedEvents.add(idx);
+    card.classList.add("selected");
+  }
+  const count = ebSelectedEvents.size;
+  el("ebSelectedCount").textContent = count;
+  const bar = el("ebActionBar");
+  if (count > 0) bar.classList.add("show"); else bar.classList.remove("show");
+}
+
+function clearEbResults() {
+  el("ebResults").classList.remove("show");
+  el("ebEmpty").classList.remove("show");
+  el("ebActionBar").classList.remove("show");
+  el("ebImportStatus").classList.remove("show");
+  el("ebEventGrid").innerHTML = "";
+  ebSelectedEvents.clear();
+  ebFetchedEvents = [];
+}
+function showEbLoading(msg) {
+  el("ebLoading").classList.add("show");
+  el("ebLoadingText").textContent = msg;
+  el("ebSearchBtn").disabled = true;
+  el("ebFetchBtn").disabled  = true;
+}
+function hideEbLoading() {
+  el("ebLoading").classList.remove("show");
+  el("ebSearchBtn").disabled = false;
+  el("ebFetchBtn").disabled  = false;
+}
+function showEbEmpty() { el("ebEmpty").classList.add("show"); }
+
+// ── Import selected event into form ───────────────────
+el("ebImportBtn").addEventListener("click", doEbImport);
+
+async function doEbImport() {
+  if (!ebSelectedEvents.size) return;
+  const idx = [...ebSelectedEvents][0];
+  const ev  = ebFetchedEvents[idx];
+  if (!ev) return;
+
+  el("ebImportBtn").disabled = true;
+  el("ebImportStatus").classList.add("show");
+
+  const logEl = el("ebImportLog");
+  function log(icon, msg) {
+    const line = document.createElement("div");
+    line.className = "eb-import-log-line";
+    line.innerHTML = `<span class="eb-import-log-icon">${icon}</span><span>${msg}</span>`;
+    logEl.appendChild(line);
+  }
+  logEl.innerHTML = "";
+  log("⏳", "Starting import…");
+
+  // ── Map Eventbrite fields → VendHub form ──
+  const name     = ev.name?.text || "";
+  const desc     = ev.description?.text || ev.summary || "";
+  const venue    = ev.venue;
+  const start    = ev.start?.local ? new Date(ev.start.local) : null;
+  const thumb    = ev.logo?.url || ev.logo?.original?.url || "";
+  const website  = ev.url || "";
+  const isFree   = ev.is_free;
+  const ticketMin = ev.ticket_availability?.minimum_ticket_price?.major_value;
+  const orgEmail = ev.organizer?.email || "";
+  const cap      = ev.capacity || null;
+
+  // Title
+  if (name) { el("title").value = name; log("✅", `Title: "${name.slice(0, 50)}${name.length > 50 ? "…" : ""}"`); }
+
+  // Location
+  if (venue) {
+    el("locationField").value = venue.name || "";
+    el("state").value = venue.address?.region || venue.address?.city || "";
+    const addrParts = [
+      venue.address?.address_1,
+      venue.address?.address_2,
+      venue.address?.city,
+      venue.address?.region,
+      venue.address?.postal_code,
+      venue.address?.country,
+    ].filter(Boolean);
+    el("address").value = addrParts.join(", ");
+    log("✅", `Location: ${venue.name || "venue"}`);
+  }
+
+  // Date & time
+  if (start) {
+    const y = start.getFullYear(), m = start.getMonth(), d = start.getDate();
+    const key = dateKey(y, m, d);
+    const timeStr = start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    selectedDates.set(key, { year: y, month: m, day: d, time: timeStr });
+    calYear = y; calMonth = m;
+    focusedKey = key;
+    renderCalendar();
+    log("✅", `Date: ${start.toDateString()} at ${timeStr}`);
+  }
+
+  // Price
+  const priceStr = isFree ? "Free" : (ticketMin ? `From $${ticketMin}` : "Paid");
+  el("price").value = priceStr;
+  log("✅", `Price: ${priceStr}`);
+
+  // Description
+  if (desc) { el("description").value = desc.slice(0, 5000); updateCharCount(); log("✅", "Description imported"); }
+
+  // Website
+  if (website) { el("website").value = website; log("✅", "Website linked"); }
+
+  // Contact email
+  if (orgEmail) { el("contactEmail").value = orgEmail; log("✅", `Organiser email: ${orgEmail}`); }
+
+  // Capacity
+  if (cap) { el("maxSpots").value = cap; log("✅", `Capacity: ${cap}`); }
+
+  // Image
+  if (thumb) {
+    el("image").value   = thumb;
+    el("imageUrl").value = thumb;
+    switchTab("url");
+    previewImage(thumb);
+    log("✅", "Event image imported");
+  } else {
+    log("⚠️", "No image found — please upload one manually");
+  }
+
+  // Auto-detect category from tags/format
+  const lowerName = name.toLowerCase() + " " + desc.toLowerCase();
+  const catMap = [
+    { val: "Music",     terms: ["music", "concert", "band", "festival", "dj", "live"] },
+    { val: "Festivals", terms: ["festival", "fair", "celebration", "carnival"] },
+    { val: "Arts",      terms: ["art", "craft", "gallery", "exhibition", "design"] },
+    { val: "Business",  terms: ["business", "networking", "conference", "summit", "entrepreneur"] },
+    { val: "Markets",   terms: ["market", "vendor", "bazaar", "pop-up", "popup", "flea"] },
+    { val: "Food",      terms: ["food", "restaurant", "culinary", "chef", "dining", "taste"] },
+  ];
+  for (const cat of catMap) {
+    if (cat.terms.some(t => lowerName.includes(t))) {
+      setCategory(cat.val);
+      log("✅", `Category auto-detected: ${cat.val}`);
+      break;
+    }
+  }
+
+  log("🎉", "Import complete! Review the form below.");
+  el("ebImportBtn").disabled = false;
+
+  // Switch to manual form to review
+  setTimeout(() => {
+    setMode("manual");
+    el("prefillNotice").classList.add("show");
+    el("formCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    showToast("Event imported! Review and submit.", "success");
+  }, 1200);
+}
+
+el("prefillDismiss").addEventListener("click", () => el("prefillNotice").classList.remove("show"));
+
+function escHtml(str) {
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ═══════════════════════════════════════════════════════
+//  IMAGE UPLOAD ENGINE
+// ═══════════════════════════════════════════════════════
+const tabUpload     = el("tabUpload");
+const tabUrl        = el("tabUrl");
+const uploadPanel   = el("uploadPanel");
+const urlPanel      = el("urlPanel");
+const imgDropZone   = el("imgDropZone");
+const imgFileInput  = el("imgFileInput");
+const imgUploadProgress = el("imgUploadProgress");
+const imgProgressFill   = el("imgProgressFill");
+const imgProgressName   = el("imgProgressName");
+const imgProgressPct    = el("imgProgressPct");
+const imageHidden   = el("image");
+const imgPreview    = el("imagePreview");
+const imgPlaceholder = el("imagePlaceholder");
+const imgFilenameBadge = el("imgFilenameBadge");
+const imgClearBtn   = el("imgClearBtn");
+
+let activeTab = "upload";
+
+function switchTab(tab) {
+  activeTab = tab;
+  tabUpload.classList.toggle("active", tab === "upload");
+  tabUrl.classList.toggle("active",    tab === "url");
+  uploadPanel.style.display = tab === "upload" ? "" : "none";
+  urlPanel.classList.toggle("show",    tab === "url");
+}
+
+tabUpload.addEventListener("click", () => switchTab("upload"));
+tabUrl.addEventListener("click",    () => switchTab("url"));
+
+el("imageUrl").addEventListener("input", e => {
+  const v = e.target.value.trim();
+  imageHidden.value = v;
+  previewImage(v);
+  imgFilenameBadge.textContent = "";
+});
+
+imgDropZone.addEventListener("dragover",  e => { e.preventDefault(); imgDropZone.classList.add("drag-over"); });
+imgDropZone.addEventListener("dragleave", () => imgDropZone.classList.remove("drag-over"));
+imgDropZone.addEventListener("drop", e => {
+  e.preventDefault(); imgDropZone.classList.remove("drag-over");
+  const file = e.dataTransfer.files[0];
+  if (file) handleImageFile(file);
+});
+
+imgFileInput.addEventListener("change", () => {
+  if (imgFileInput.files[0]) handleImageFile(imgFileInput.files[0]);
+  imgFileInput.value = "";
+});
+
+function friendlyStorageError(err) {
+  const code = err?.code || "";
+  if (code === "storage/unauthorized")     return "Upload blocked — check Firebase Storage rules.";
+  if (code === "storage/canceled")         return "Upload cancelled.";
+  if (code === "storage/unknown")          return "Storage bucket not found. Enable Firebase Storage first.";
+  if (err?.message?.includes("404"))      return "Storage bucket not found (404). Go to Firebase Console → Build → Storage → Get Started.";
+  return "Upload failed: " + (err?.message || err?.code || "Unknown error");
+}
+
+async function handleImageFile(file) {
+  if (!file.type.startsWith("image/")) { showToast("Please select an image file.", "error"); return; }
+  if (file.size > 5 * 1024 * 1024)     { showToast("Image must be under 5 MB.", "error");   return; }
+  if (!auth.currentUser)                { showToast("Please sign in first.", "error");        return; }
+
+  imgUploadProgress.classList.add("show");
+  imgProgressFill.style.width = "0%";
+  imgProgressName.textContent = file.name;
+  imgProgressPct.textContent  = "0%";
+  imgDropZone.style.pointerEvents = "none";
+
+  const safeName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
+  const path     = `event_images/${safeName}`;
+
+  async function tryUpload(bucketUrl) {
+    const storageInstance = bucketUrl ? getStorage(app, `gs://${bucketUrl}`) : storage;
+    const ref  = storageRef(storageInstance, path);
+    const task = uploadBytesResumable(ref, file);
+    return new Promise((resolve, reject) => {
+      task.on("state_changed",
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          imgProgressFill.style.width = pct + "%";
+          imgProgressPct.textContent  = pct + "%";
+        },
+        err => reject(err),
+        async () => { try { resolve(await getDownloadURL(task.snapshot.ref)); } catch(e) { reject(e); } }
+      );
+    });
+  }
+
+  try {
+    let downloadURL;
+    try { downloadURL = await tryUpload(null); }
+    catch (primaryErr) {
+      const isNotFound = primaryErr?.code === "storage/unknown" || primaryErr?.message?.includes("404");
+      if (isNotFound) {
+        imgProgressName.textContent = "Retrying with legacy bucket…";
+        downloadURL = await tryUpload("vendors-de792.appspot.com");
+      } else { throw primaryErr; }
+    }
+    imageHidden.value = downloadURL;
+    previewImage(downloadURL);
+    imgFilenameBadge.textContent = file.name;
+    imgUploadProgress.classList.remove("show");
+    imgDropZone.style.pointerEvents = "";
+    showToast("Image uploaded!", "success");
+  } catch (err) {
+    console.error("Storage upload error:", err);
+    imgUploadProgress.classList.remove("show");
+    imgDropZone.style.pointerEvents = "";
+    showToast(friendlyStorageError(err), "error");
+  }
+}
+
+imgClearBtn.addEventListener("click", () => {
+  imageHidden.value = ""; el("imageUrl").value = "";
+  imgPreview.style.display = "none"; imgPlaceholder.style.display = "flex";
+  imgFilenameBadge.textContent = ""; imgFileInput.value = "";
+  imgUploadProgress.classList.remove("show");
+});
+
+function previewImage(url) {
+  if (!url) { imgPreview.style.display = "none"; imgPlaceholder.style.display = "flex"; return; }
+  imgPreview.onload  = () => { imgPreview.style.display = "block"; imgPlaceholder.style.display = "none"; };
+  imgPreview.onerror = () => { imgPreview.style.display = "none";  imgPlaceholder.style.display = "flex"; };
+  imgPreview.src = url;
+}
+
+// ═══════════════════════════════════════════════════════
+//  MULTI-DATE CALENDAR ENGINE
+// ═══════════════════════════════════════════════════════
+const MONTHS   = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DAYS_S   = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+const TIME_SLOTS = ["6:00 AM","7:00 AM","8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM","8:00 PM"];
+
+const selectedDates = new Map();
+let calYear, calMonth, focusedKey = null;
+
+const today = new Date(); today.setHours(0,0,0,0);
+calYear = today.getFullYear(); calMonth = today.getMonth();
+
+function dateKey(y, m, d) { return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
+function formatLabel(obj) { return `${MONTHS_S[obj.month]} ${obj.day}, ${obj.year} • ${obj.time || "9:00 AM"}`; }
+function sortedKeys() { return [...selectedDates.keys()].sort(); }
+
+function renderCalendar() {
+  el("calMonthLabel").textContent = `${MONTHS[calMonth]} ${calYear}`;
+  const dowRow = el("calDowRow");
+  if (!dowRow.childElementCount) {
+    DAYS_S.forEach(d => { const e = document.createElement("div"); e.className="cal-dow"; e.textContent=d; dowRow.appendChild(e); });
+  }
+  const grid = el("calDaysGrid");
+  grid.innerHTML = "";
+  const firstDay    = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  for (let i = 0; i < firstDay; i++) { const e = document.createElement("div"); e.className = "cal-day cal-day-empty"; grid.appendChild(e); }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cellDate = new Date(calYear, calMonth, d); cellDate.setHours(0,0,0,0);
+    const key = dateKey(calYear, calMonth, d);
+    const isPast  = cellDate < today;
+    const isToday = cellDate.getTime() === today.getTime();
+    const isSel   = selectedDates.has(key);
+    const isTimed = isSel && selectedDates.get(key).time;
+    const cell = document.createElement("div");
+    cell.className = "cal-day";
+    cell.textContent = d;
+    if (isPast) cell.classList.add("cal-day-past");
+    else {
+      if (isToday) cell.classList.add("cal-day-today");
+      if (isSel)   { cell.classList.add("cal-day-selected"); if (isTimed) cell.classList.add("cal-day-timed"); }
+      cell.addEventListener("click", () => toggleDay(calYear, calMonth, d, key));
+    }
+    grid.appendChild(cell);
+  }
+  renderChips(); renderTimePanel();
+}
+
+function toggleDay(y, m, d, key) {
+  if (selectedDates.has(key)) {
+    if (focusedKey === key) { selectedDates.delete(key); focusedKey = sortedKeys().at(-1) || null; }
+    else { focusedKey = key; }
+  } else { selectedDates.set(key, {year:y, month:m, day:d, time:null}); focusedKey = key; }
+  renderCalendar();
+}
+
+function renderTimePanel() {
+  const panel = el("calTimePanel");
+  if (!focusedKey || !selectedDates.has(focusedKey)) { panel.classList.remove("show"); return; }
+  panel.classList.add("show");
+  const obj = selectedDates.get(focusedKey);
+  el("calTimePanelDay").textContent = `${MONTHS_S[obj.month]} ${obj.day}, ${obj.year}`;
+  const slotsEl = el("calTimeSlots"); slotsEl.innerHTML = "";
+  TIME_SLOTS.forEach(t => {
+    const chip = document.createElement("div");
+    chip.className = "cal-time-slot" + (obj.time === t ? " active" : "");
+    chip.textContent = t;
+    chip.addEventListener("click", () => { selectedDates.get(focusedKey).time = t; el("calCustomTime").value = ""; renderCalendar(); });
+    slotsEl.appendChild(chip);
+  });
+}
+
+function renderChips() {
+  const container = el("calChips"); container.innerHTML = "";
+  const keys = sortedKeys();
+  if (!keys.length) { container.innerHTML = `<span class="cal-empty-hint">No dates selected yet</span>`; return; }
+  keys.forEach((key, idx) => {
+    const obj = selectedDates.get(key);
+    const chip = document.createElement("div"); chip.className = "cal-chip";
+    chip.innerHTML = `<div class="cal-chip-num">${idx+1}</div><span>${MONTHS_S[obj.month]} ${obj.day}, ${obj.year}</span><span class="cal-chip-time">${obj.time || "9:00 AM"}</span><button type="button" class="cal-chip-remove" title="Remove">×</button>`;
+    chip.querySelector(".cal-chip-remove").addEventListener("click", () => {
+      selectedDates.delete(key); if (focusedKey === key) focusedKey = sortedKeys().at(-1) || null; renderCalendar();
+    });
+    chip.addEventListener("click", e => {
+      if (e.target.classList.contains("cal-chip-remove")) return;
+      calYear = obj.year; calMonth = obj.month; focusedKey = key; renderCalendar();
+    });
+    container.appendChild(chip);
+  });
+}
+
+el("calPrev").addEventListener("click", () => { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); });
+el("calNext").addEventListener("click", () => { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); });
+el("calCustomApply").addEventListener("click", () => {
+  const v = el("calCustomTime").value.trim();
+  if (v && focusedKey && selectedDates.has(focusedKey)) { selectedDates.get(focusedKey).time = v; renderCalendar(); }
+});
+el("calCustomTime").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); el("calCustomApply").click(); } });
+el("calClearAll").addEventListener("click", () => {
+  if (!selectedDates.size) return;
+  if (confirm("Clear all selected dates?")) { selectedDates.clear(); focusedKey = null; renderCalendar(); }
+});
+renderCalendar();
+
+function getSelectedDateLabels() { return sortedKeys().map(k => formatLabel(selectedDates.get(k))); }
+
+// ── Load event for editing ─────────────────────────────
+async function loadEvent(id) {
+  try {
+    const snap = await getDoc(doc(db, "events", id));
+    if (!snap.exists()) { showToast("Event not found.", "error"); return; }
+    const d = snap.data();
+    el("title").value         = d.title          || "";
+    el("locationField").value = d.location       || "";
+    el("address").value       = d.address        || "";
+    el("state").value         = d.state          || "";
+    el("price").value         = d.price          || "";
+    el("description").value   = d.description    || "";
+    el("maxSpots").value      = d.max_spots       || "";
+    el("contactEmail").value  = d.contact_email  || "";
+    el("contactPhone").value  = d.contact_phone  || "";
+    el("website").value       = d.website        || "";
+    el("instagram").value     = d.instagram      || "";
+    if (d.category) setCategory(d.category);
+    updateCharCount();
+    if (d.image) { imageHidden.value = d.image; el("imageUrl").value = d.image; switchTab("url"); previewImage(d.image); }
+    const dates = d.event_dates || [d.date1, d.date2, d.date3, d.date4].filter(Boolean);
+    dates.forEach(str => {
+      if (!str) return;
+      const parts = str.replace(" • ", " ").split(" ");
+      const mIdx  = MONTHS_S.indexOf(parts[0]); if (mIdx === -1) return;
+      const day   = parseInt(parts[1]); const year = parseInt(parts[2]);
+      const time  = parts.slice(3).join(" ") || "9:00 AM";
+      const key   = dateKey(year, mIdx, day);
+      selectedDates.set(key, {year, month:mIdx, day, time});
+      calYear = year; calMonth = mIdx;
+    });
+    focusedKey = sortedKeys()[0] || null;
+    renderCalendar();
+    showToast("Event loaded for editing.", "success");
+  } catch (err) { showToast("Error loading event: " + err.message, "error"); }
+}
+
+// ── Category ───────────────────────────────────────────
+let selectedCategory = "";
+function setCategory(val) {
+  selectedCategory = val;
+  document.querySelectorAll(".cat-chip").forEach(c => c.classList.toggle("selected", c.dataset.value === val));
+}
+document.querySelectorAll(".cat-chip").forEach(chip => chip.addEventListener("click", () => setCategory(chip.dataset.value)));
+
+// ── Char count ─────────────────────────────────────────
+function updateCharCount() {
+  const len = el("description").value.length;
+  el("charCount").textContent = `${len} / 5000 characters`;
+  el("charCount").style.color = len > 5000 ? "#991b1b" : "var(--muted)";
+}
+el("description").addEventListener("input", updateCharCount);
+
+// ── Form submit ────────────────────────────────────────
+el("eventForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!auth.currentUser) { showToast("Please sign in first.", "error"); return; }
+  const required = [
+    { id: "title",         label: "Event Title" },
+    { id: "locationField", label: "Venue / Location" },
+    { id: "state",         label: "State / Region" },
+    { id: "address",       label: "Full Address" },
+    { id: "price",         label: "Vendor Price / Fee" },
+    { id: "description",   label: "Description" },
+  ];
+  for (const f of required) {
+    if (!el(f.id).value.trim()) {
+      showToast(`Please fill in: ${f.label}`, "error");
+      el(f.id).focus();
+      el(f.id).scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+  }
+  if (!selectedDates.size) { showToast("Please select at least one event date.", "error"); return; }
+  if (!selectedCategory)   { showToast("Please select a category.", "error");            return; }
+  if (!imageHidden.value)  { showToast("Please add an event image.", "error");           return; }
+  if (el("description").value.length > 5000) { showToast("Description is too long (max 5000 chars).", "error"); return; }
+
+  const btn = el("submitBtn");
+  btn.disabled = true; btn.classList.add("loading");
+
+  const labels = getSelectedDateLabels();
+  const eventData = {
+    title:         el("title").value.trim(),
+    event_dates:   labels,
+    date1:         labels[0] || null,
+    date2:         labels[1] || null,
+    date3:         labels[2] || null,
+    date4:         labels[3] || null,
+    location:      el("locationField").value.trim(),
+    address:       el("address").value.trim(),
+    state:         el("state").value.trim(),
+    image:         imageHidden.value,
+    price:         el("price").value.trim(),
+    description:   el("description").value.trim(),
+    category:      selectedCategory || "all",
+    max_spots:     el("maxSpots").value ? parseInt(el("maxSpots").value) : null,
+    contact_email: el("contactEmail").value.trim() || null,
+    contact_phone: el("contactPhone").value.trim() || null,
+    website:       el("website").value.trim() || null,
+    instagram:     el("instagram").value.trim() || null,
+    uploaded_by:   auth.currentUser.email,
+    updated_at:    serverTimestamp(),
+  };
+  if (!editingEventId) eventData.created_at = serverTimestamp();
+
+  try {
+    if (editingEventId) {
+      await updateDoc(doc(db, "events", editingEventId), eventData);
+      showToast("Event updated successfully!", "success");
+    } else {
+      await addDoc(collection(db, "events"), eventData);
+      showToast("Event uploaded successfully!", "success");
+      resetForm();
+    }
+  } catch (err) { showToast("Error: " + err.message, "error"); }
+  finally { btn.disabled = false; btn.classList.remove("loading"); }
+});
+
+function resetForm() {
+  el("eventForm").reset();
+  setCategory(""); updateCharCount();
+  imageHidden.value = ""; el("imageUrl").value = "";
+  imgPreview.style.display = "none"; imgPlaceholder.style.display = "flex";
+  imgFilenameBadge.textContent = "";
+  imgUploadProgress.classList.remove("show");
+  switchTab("upload");
+  selectedDates.clear(); focusedKey = null;
+  calYear = today.getFullYear(); calMonth = today.getMonth();
+  renderCalendar();
+  el("prefillNotice").classList.remove("show");
+}
+
+el("resetBtn").onclick = () => {
+  if (!confirm("Clear all fields?")) return;
+  resetForm(); showToast("Form cleared.");
+};
+</script>
+</body>
+</html>

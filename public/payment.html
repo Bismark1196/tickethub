@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirm Application — VendHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================
+   TOKENS
+=========================== */
+:root {
+  --black:      #0a0a0a;
+  --white:      #ffffff;
+  --cream:      #f7f5f0;
+  --gold:       #c9a84c;
+  --gold-light: #e8d5a3;
+  --gold-dark:  #a07830;
+  --charcoal:   #1c1c1e;
+  --slate:      #3a3a3c;
+  --muted:      #8a8a8e;
+  --border:     #e5e5e5;
+  --success-bg: #d1fae5;
+  --success-fg: #065f46;
+  --shadow-sm:  0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg:  0 24px 60px rgba(0,0,0,0.22);
+  --radius:     16px;
+  --radius-sm:  10px;
+  --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  color: var(--black);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    url("images/gr.jpeg") center/cover no-repeat,
+    linear-gradient(135deg, rgba(10,10,10,0.88) 0%, rgba(28,28,30,0.82) 100%);
+  background-blend-mode: overlay;
+  z-index: 0;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===========================
+   PAGE
+=========================== */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 60px;
+}
+
+/* ===========================
+   TOP NAV
+=========================== */
+.top-nav {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--white);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(255,255,255,0.55);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+.nav-back:hover { color: var(--gold); }
+.nav-back svg { width:16px; height:16px; }
+
+/* ===========================
+   LOADING SKELETON
+=========================== */
+#loadingState {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.skeleton {
+  background: rgba(255,255,255,0.07);
+  border-radius: var(--radius-sm);
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+.sk-header { height: 120px; border-radius: var(--radius); }
+.sk-row    { height: 52px; }
+.sk-row-sm { height: 40px; width: 60%; }
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+/* ===========================
+   MAIN CARD
+=========================== */
+.card {
+  width: 100%;
+  max-width: 720px;
+  background: var(--white);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+  display: none; /* shown after data loads */
+}
+
+/* ── Card Header ── */
+.card-header {
+  background: var(--black);
+  padding: 28px 36px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.card-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 50%, rgba(201,168,76,0.15) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(201,168,76,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.35);
+  color: var(--gold-light);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  padding: 4px 13px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.card-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.card-header h1 em { font-style: italic; color: var(--gold); }
+
+.card-header-sub {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.5);
+  position: relative;
+  z-index: 1;
+}
+
+/* Vendor ID tag */
+.vendor-id-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.vendor-id-label {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.vendor-id-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* Status chip */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.status-pending  { background: rgba(250,204,21,0.15);  color: #fbbf24; border: 1px solid rgba(250,204,21,0.25); }
+.status-submitted{ background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+.status-approved { background: rgba(34,197,94,0.2);   color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+.status-dot { width:7px; height:7px; border-radius:50%; background:currentColor; }
+
+.meta-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.meta-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+}
+.meta-chip svg { width:12px; height:12px; opacity:0.7; }
+
+/* ===========================
+   CARD BODY
+=========================== */
+.card-body {
+  padding: 28px 36px 36px;
+}
+
+/* ── Section titles ── */
+.section-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Detail grid ── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+.detail-cell {
+  background: var(--white);
+  padding: 14px 18px;
+  transition: background var(--transition);
+}
+.detail-cell:hover { background: #fdfcf8; }
+
+.detail-cell.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-key {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.detail-val {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--charcoal);
+  line-height: 1.5;
+  word-break: break-word;
+}
+.detail-val.highlight {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--black);
+}
+
+/* ── Date chips inside table cell ── */
+.date-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.date-chip-item {
+  background: var(--cream);
+  border: 1px solid #e0ddd6;
+  color: var(--slate);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* ===========================
+   PRICING PANEL
+=========================== */
+.pricing-panel {
+  background: var(--black);
+  border-radius: var(--radius-sm);
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.pricing-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 85% 50%, rgba(201,168,76,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.pricing-panel-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pricing-row:last-child { border-bottom: none; padding-top: 12px; }
+.pricing-label { font-size: 13px; color: rgba(255,255,255,0.5); }
+.pricing-value { font-size: 14px; font-weight: 600; color: var(--white); }
+.pricing-row.total .pricing-label {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+}
+.pricing-row.total .pricing-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+/* ===========================
+   NOTICE BANNER
+=========================== */
+.notice {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.notice-info {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+.notice-warn {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+.notice svg { width:18px; height:18px; flex-shrink:0; margin-top:1px; }
+.notice-info svg { color: #d97706; }
+.notice-warn svg { color: #dc2626; }
+.notice-text { font-size: 13.5px; color: var(--charcoal); line-height: 1.6; }
+.notice-text strong { color: var(--black); }
+
+/* ===========================
+   DECLARATION
+=========================== */
+.declaration {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  font-size: 13.5px;
+  color: var(--slate);
+  line-height: 1.65;
+}
+.declaration strong { color: var(--black); }
+
+/* ===========================
+   SUBMIT BUTTON
+=========================== */
+.submit-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 17px 24px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--black);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.2px;
+  position: relative;
+  overflow: hidden;
+}
+.btn-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.1));
+}
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(201,168,76,0.35);
+}
+.btn-submit:active:not(:disabled) { transform: translateY(0); }
+.btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.btn-submit svg { width:18px; height:18px; flex-shrink:0; }
+
+/* Spinner */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(0,0,0,0.25);
+  border-top-color: var(--black);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.btn-submit.loading .spinner    { display: block; }
+.btn-submit.loading .btn-label  { display: none; }
+.btn-submit.loading .btn-icon   { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Progress overlay during submit */
+.submit-progress {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.submit-progress.show { display: flex; }
+.progress-bar-track {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+.progress-text {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.btn-cancel {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.btn-cancel:hover { background: var(--cream); color: var(--slate); }
+
+/* ===========================
+   TOAST
+=========================== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--charcoal);
+  color: var(--white);
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 9999;
+  white-space: nowrap;
+}
+.toast.show   { transform: translateX(-50%) translateY(0); }
+.toast.error  { background: #7f1d1d; }
+.toast.success{ background: #14532d; }
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(40px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 640px) {
+  .page { padding: 20px 12px 48px; }
+  .card-header { padding: 22px 20px 18px; }
+  .card-body   { padding: 22px 18px 28px; }
+
+  .detail-grid { grid-template-columns: 1fr; }
+  .detail-cell.full-width { grid-column: 1; }
+
+  .header-top { flex-direction: column-reverse; gap: 10px; }
+  .vendor-id-tag { align-items: flex-start; }
+
+  .top-nav { margin-bottom: 22px; }
+
+  .pricing-row.total .pricing-value { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">Vend<span>Hub</span></a>
+    <a href="index.html" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Events
+    </a>
+  </nav>
+
+  <!-- SKELETON LOADER -->
+  <div id="loadingState">
+    <div class="skeleton sk-header"></div>
+    <div class="skeleton sk-row"></div>
+    <div class="skeleton sk-row"></div>
+    <div class="skeleton sk-row"></div>
+    <div class="skeleton sk-row-sm"></div>
+  </div>
+
+  <!-- MAIN CARD (hidden until loaded) -->
+  <div class="card" id="mainCard">
+
+    <!-- HEADER -->
+    <div class="card-header">
+      <div class="header-top">
+        <div>
+          <div class="header-badge">✦ Application Review</div>
+          <h1>Confirm Your <em>Application</em></h1>
+          <p class="card-header-sub">Please review all details carefully before submitting</p>
+        </div>
+        <div class="vendor-id-tag">
+          <span class="vendor-id-label">Vendor ID</span>
+          <span class="vendor-id-value" id="displayVendorId">—</span>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <div class="status-chip status-pending" id="statusChip">
+          <span class="status-dot"></span>
+          <span id="statusText">Pending Review</span>
+        </div>
+        <div class="meta-chips">
+          <div class="meta-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span id="metaDate">—</span>
+          </div>
+          <div class="meta-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+            <span id="metaLocation">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="card-body">
+
+      <!-- ── Event Info ── -->
+      <div class="section-label">Event Details</div>
+      <div class="detail-grid" style="margin-bottom:20px;">
+        <div class="detail-cell">
+          <div class="detail-key">Event Name</div>
+          <div class="detail-val highlight" id="confirmEvent">—</div>
+        </div>
+        <div class="detail-cell">
+          <div class="detail-key">Venue / Location</div>
+          <div class="detail-val" id="confirmLocation">—</div>
+        </div>
+        <div class="detail-cell full-width">
+          <div class="detail-key">Selected Date(s)</div>
+          <div class="detail-val" id="confirmDate">—</div>
+        </div>
+      </div>
+
+      <!-- ── Vendor Info ── -->
+      <div class="section-label">Vendor Information</div>
+      <div class="detail-grid" style="margin-bottom:20px;">
+        <div class="detail-cell">
+          <div class="detail-key">Full Name</div>
+          <div class="detail-val" id="confirmFullName">—</div>
+        </div>
+        <div class="detail-cell">
+          <div class="detail-key">Business Name</div>
+          <div class="detail-val" id="confirmBusiness">—</div>
+        </div>
+        <div class="detail-cell">
+          <div class="detail-key">Invoice Email</div>
+          <div class="detail-val" id="confirmEmail">—</div>
+        </div>
+        <div class="detail-cell">
+          <div class="detail-key">Contact Person</div>
+          <div class="detail-val" id="confirmContact">—</div>
+        </div>
+        <div class="detail-cell">
+          <div class="detail-key">Phone Number</div>
+          <div class="detail-val" id="confirmPhone">—</div>
+        </div>
+        <div class="detail-cell">
+          <div class="detail-key">Product Category</div>
+          <div class="detail-val" id="confirmCategory">—</div>
+        </div>
+        <div class="detail-cell full-width">
+          <div class="detail-key">Product Description</div>
+          <div class="detail-val" id="confirmDescription">—</div>
+        </div>
+      </div>
+
+      <!-- ── Booth & Pricing ── -->
+      <div class="section-label">Booth &amp; Pricing</div>
+      <div class="detail-grid" style="margin-bottom:16px;">
+        <div class="detail-cell">
+          <div class="detail-key">Booth Size</div>
+          <div class="detail-val highlight" id="confirmBooth">—</div>
+        </div>
+        <div class="detail-cell">
+          <div class="detail-key">Days Attending</div>
+          <div class="detail-val highlight" id="confirmDays">—</div>
+        </div>
+      </div>
+
+      <div class="pricing-panel">
+        <div class="pricing-panel-title">Payment Breakdown</div>
+        <div class="pricing-row">
+          <span class="pricing-label">Booth Rate</span>
+          <span class="pricing-value" id="pricingRate">$0</span>
+        </div>
+        <div class="pricing-row">
+          <span class="pricing-label">Days Selected</span>
+          <span class="pricing-value" id="pricingDays">0</span>
+        </div>
+        <div class="pricing-row">
+          <span class="pricing-label">Service Fee</span>
+          <span class="pricing-value">$0</span>
+        </div>
+        <div class="pricing-row total">
+          <span class="pricing-label">Total Due on Acceptance</span>
+          <span class="pricing-value" id="pricingTotal">$0</span>
+        </div>
+      </div>
+
+      <!-- ── Notices ── -->
+      <div class="notice notice-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <div class="notice-text">
+          Your application will be reviewed by the event coordinator. Upon acceptance, you will receive an invoice at your registered email.
+          <strong>Payment must be completed within 1–2 business days</strong> to secure your spot.
+        </div>
+      </div>
+
+      <div class="notice notice-warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <div class="notice-text">
+          <strong>All vendor fees are non-refundable and non-transferable.</strong>
+          Ensure all details above are correct before submitting. Changes cannot be made after submission.
+        </div>
+      </div>
+
+      <!-- ── Declaration ── -->
+      <div class="declaration">
+        By submitting this application, I confirm that all information provided is accurate and complete. I agree to the VendHub
+        <strong>Terms &amp; Conditions</strong> and acknowledge that vendor fees are non-refundable. I understand my spot is not
+        guaranteed until acceptance and payment are both confirmed.
+      </div>
+
+      <!-- ── Submit area ── -->
+      <div class="submit-wrap">
+        <div class="submit-progress" id="submitProgress">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-text" id="progressText">Processing your application…</div>
+        </div>
+
+        <button class="btn-submit" id="submitBtn">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+          <span class="btn-label">Confirm Application</span>
+          <div class="spinner"></div>
+        </button>
+
+        <button class="btn-cancel" id="cancelBtn" onclick="history.back()">
+          Cancel &amp; Go Back
+        </button>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /card -->
+
+</div><!-- /page -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ FIREBASE SCRIPT ══ -->
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
+       from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
+  authDomain: "vendors-de792.firebaseapp.com",
+  projectId: "vendors-de792",
+};
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ── Helpers ──────────────────────────────────────────
+function showToast(msg, type = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove("show"), 3400);
+}
+
+function el(id) { return document.getElementById(id); }
+
+// ── URL ───────────────────────────────────────────────
+const vendorDocId = new URLSearchParams(window.location.search).get("vendorDoc");
+if (!vendorDocId) {
+  showToast("Invalid vendor reference.", "error");
+  setTimeout(() => window.location.href = "index.html", 1500);
+}
+
+let vendorData = null;
+
+// ── Auth + data load ──────────────────────────────────
+onAuthStateChanged(auth, async user => {
+  if (!user) { window.location.href = "index.html"; return; }
+
+  try {
+    const snap = await getDoc(doc(db, "vendors", vendorDocId));
+
+    if (!snap.exists()) {
+      showToast("Application not found.", "error");
+      setTimeout(() => window.location.href = "index.html", 1500);
+      return;
+    }
+
+    vendorData = snap.data();
+
+    if (vendorData.user_id !== user.uid) {
+      showToast("Access denied.", "error");
+      setTimeout(() => window.location.href = "index.html", 1500);
+      return;
+    }
+
+    // ── Populate ────────────────────────────────────
+    const selectedDates = (vendorData.event_date || []).filter(Boolean);
+    const days = selectedDates.length || 1;
+    const totalPrice = (vendorData.price || 0) * days;
+
+    // Header
+    el("displayVendorId").textContent = vendorData.vendor_id || "—";
+    el("metaDate").textContent = selectedDates[0] || "—";
+    el("metaLocation").textContent = vendorData.event_location || "—";
+
+    // Status chip
+    const status = vendorData.status || "pending";
+    const chipEl = el("statusChip");
+    const textEl = el("statusText");
+    if (status === "submitted" || status === "approved") {
+      chipEl.className = "status-chip status-submitted";
+      textEl.textContent = status === "approved" ? "Approved" : "Submitted";
+    } else {
+      textEl.textContent = "Pending Review";
+    }
+
+    // Event details
+    el("confirmEvent").textContent    = vendorData.event_name     || "—";
+    el("confirmLocation").textContent = vendorData.event_location || "—";
+
+    // Date chips
+    if (selectedDates.length) {
+      const wrap = document.createElement("div");
+      wrap.className = "date-chips-wrap";
+      selectedDates.forEach(d => {
+        const chip = document.createElement("span");
+        chip.className = "date-chip-item";
+        chip.textContent = d;
+        wrap.appendChild(chip);
+      });
+      el("confirmDate").innerHTML = "";
+      el("confirmDate").appendChild(wrap);
+    } else {
+      el("confirmDate").textContent = "—";
+    }
+
+    // Vendor info
+    el("confirmFullName").textContent   = vendorData.full_name    || "—";
+    el("confirmBusiness").textContent   = vendorData.business     || "—";
+    el("confirmEmail").textContent      = vendorData.invoice_email|| "—";
+    el("confirmContact").textContent    = vendorData.contact      || "—";
+    el("confirmPhone").textContent      = vendorData.phone        || "—";
+    el("confirmCategory").textContent   = vendorData.category     || "—";
+    el("confirmDescription").textContent= vendorData.description  || "—";
+
+    // Booth
+    const boothLabel = vendorData.booth_label || vendorData.booth_size || "—";
+    el("confirmBooth").textContent = boothLabel;
+    el("confirmDays").textContent  = days + (days === 1 ? " day" : " days");
+
+    // Pricing
+    el("pricingRate").textContent  = "$" + (vendorData.price || 0);
+    el("pricingDays").textContent  = days + (days === 1 ? " day" : " days");
+    el("pricingTotal").textContent = "$" + totalPrice;
+
+    // Show card, hide skeleton
+    el("loadingState").style.display = "none";
+    el("mainCard").style.display     = "block";
+
+    // If already submitted, disable submit button
+    if (status === "submitted" || status === "approved") {
+      const btn = el("submitBtn");
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+          <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span>Already Submitted</span>`;
+    }
+
+  } catch (err) {
+    console.error(err);
+    showToast("Failed to load application. Please try again.", "error");
+  }
+});
+
+// ── Submit ────────────────────────────────────────────
+el("submitBtn").onclick = async () => {
+  if (!vendorData) return;
+
+  const btn      = el("submitBtn");
+  const progress = el("submitProgress");
+  const fill     = el("progressFill");
+  const progText = el("progressText");
+
+  btn.disabled = true;
+  btn.classList.add("loading");
+  progress.classList.add("show");
+
+  // Animated progress steps
+  const steps = [
+    { pct: 20, msg: "Validating your details…" },
+    { pct: 45, msg: "Securing your application…" },
+    { pct: 70, msg: "Communicating with server…" },
+    { pct: 90, msg: "Almost done…" },
+  ];
+
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < steps.length) {
+      fill.style.width   = steps[i].pct + "%";
+      progText.textContent = steps[i].msg;
+      i++;
+    }
+  }, 1200);
+
+  try {
+    // Simulate realistic processing time (matches original 6s intent)
+    await new Promise(r => setTimeout(r, 5000));
+    clearInterval(interval);
+
+    fill.style.width     = "100%";
+    progText.textContent = "Submitting to VendHub…";
+
+    await setDoc(
+      doc(db, "vendors", vendorDocId),
+      { status: "submitted", submitted_at: serverTimestamp() },
+      { merge: true }
+    );
+
+    localStorage.setItem("submittedEventName", vendorData.event_name || "Your Event");
+
+    showToast("Application submitted successfully!", "success");
+    setTimeout(() => {
+      window.location.href = `success.html?vendorDoc=${encodeURIComponent(vendorDocId)}`;
+    }, 1000);
+
+  } catch (err) {
+    clearInterval(interval);
+    console.error(err);
+    showToast("Submission failed: " + err.message, "error");
+    btn.disabled = false;
+    btn.classList.remove("loading");
+    progress.classList.remove("show");
+    fill.style.width = "0%";
+  }
+};
+</script>
+</body>
+</html>

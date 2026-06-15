@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Events: public read, admin-only write ──────────────────
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.token.email == 'admin@grandbazaar.com';
+    }
+
+    // ── Vendor applications ────────────────────────────────────
+    match /vendors/{vendorId} {
+      // Authenticated users can create (their own doc)
+      allow create: if request.auth != null
+                    && request.resource.data.user_id == request.auth.uid;
+
+      // Owner can read their own; admin reads all
+      allow read: if request.auth != null
+                  && (resource.data.user_id == request.auth.uid
+                      || request.auth.token.email == 'admin@grandbazaar.com');
+
+      // Admin can update any; owner can only update status field
+      allow update: if request.auth != null
+                    && (request.auth.token.email == 'admin@grandbazaar.com'
+                        || (resource.data.user_id == request.auth.uid
+                            && request.resource.data.diff(resource.data)
+                               .affectedKeys().hasOnly(['status'])));
+
+      allow delete: if request.auth != null
+                    && request.auth.token.email == 'admin@grandbazaar.com';
+
+      // ── Chat messages sub-collection ───────────────────────
+      match /conversation/{messageId} {
+        allow read: if request.auth != null
+                    && (get(/databases/$(database)/documents/vendors/$(vendorId)).data.user_id == request.auth.uid
+                        || request.auth.token.email == 'admin@grandbazaar.com');
+
+        allow create: if request.auth != null
+                      && (get(/databases/$(database)/documents/vendors/$(vendorId)).data.user_id == request.auth.uid
+                          || request.auth.token.email == 'admin@grandbazaar.com')
+                      && request.resource.data.keys().hasAll(['sender','message','timestamp']);
+
+        // Only mark read fields as updated
+        allow update: if request.auth != null
+                      && request.resource.data.diff(resource.data)
+                         .affectedKeys().hasOnly(['read_by_vendor','read_by_admin']);
+      }
+    }
+  }
+}

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Events — VendHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#0a0a0a; --white:#ffffff; --cream:#f7f5f0;
+  --gold:#c9a84c; --gold-light:#e8d5a3; --gold-dark:#a07830;
+  --charcoal:#1c1c1e; --slate:#3a3a3c; --muted:#8a8a8e; --border:#e5e5e5;
+  --sidebar-w:240px;
+  --shadow-sm:0 2px 12px rgba(0,0,0,0.06);
+  --shadow-md:0 8px 28px rgba(0,0,0,0.10);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.18);
+  --radius:14px; --radius-sm:9px;
+  --transition:0.25s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--black); min-height:100vh; display:flex; -webkit-font-smoothing:antialiased; }
+
+/* ── SIDEBAR ── */
+.sidebar { width:var(--sidebar-w); background:var(--black); min-height:100vh; display:flex; flex-direction:column; flex-shrink:0; position:sticky; top:0; height:100vh; overflow-y:auto; }
+.sidebar-logo { padding:28px 24px 20px; border-bottom:1px solid rgba(255,255,255,0.08); }
+.sidebar-logo a { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; color:var(--white); text-decoration:none; }
+.sidebar-logo a span { color:var(--gold); }
+.sidebar-label { padding:20px 24px 8px; font-size:9.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.3); }
+.sidebar-item { display:flex; align-items:center; gap:10px; padding:11px 24px; font-size:13.5px; font-weight:500; color:rgba(255,255,255,0.55); cursor:pointer; border-left:3px solid transparent; transition:var(--transition); user-select:none; }
+.sidebar-item:hover { background:rgba(255,255,255,0.05); color:var(--white); }
+.sidebar-item.active { background:rgba(201,168,76,0.1); color:var(--gold-light); border-left-color:var(--gold); }
+.sidebar-item svg { width:16px; height:16px; flex-shrink:0; opacity:0.7; }
+.sidebar-item.active svg { opacity:1; }
+.sidebar-footer { margin-top:auto; padding:20px 24px; border-top:1px solid rgba(255,255,255,0.08); }
+.sidebar-admin-row { display:flex; align-items:center; gap:10px; }
+.sidebar-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:900; font-size:14px; color:var(--black); flex-shrink:0; }
+.sidebar-admin-info { flex:1; min-width:0; }
+.sidebar-admin-name { font-size:13px; font-weight:600; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sidebar-admin-role { font-size:11px; color:rgba(255,255,255,0.35); }
+.logout-btn { background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.4); transition:color var(--transition); padding:4px; border-radius:6px; }
+.logout-btn:hover { color:#ef4444; }
+.logout-btn svg { width:16px; height:16px; display:block; }
+
+/* ── MAIN ── */
+.main { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; }
+.topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 32px; height:60px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-shrink:0; position:sticky; top:0; z-index:50; box-shadow:var(--shadow-sm); }
+.topbar-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:900; color:var(--black); }
+.topbar-title span { color:var(--gold-dark); font-style:italic; }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.search-wrap { position:relative; }
+.search-wrap svg { position:absolute; left:11px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--muted); pointer-events:none; }
+.search-wrap input { padding:8px 14px 8px 34px; border-radius:20px; border:1.5px solid var(--border); font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--black); background:var(--cream); outline:none; width:220px; transition:var(--transition); }
+.search-wrap input:focus { border-color:var(--gold); background:var(--white); width:260px; box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+.add-btn { display:flex; align-items:center; gap:7px; padding:8px 16px; background:var(--black); color:var(--white); border:none; border-radius:20px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer; transition:var(--transition); }
+.add-btn:hover { background:var(--charcoal); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+.add-btn svg { width:14px; height:14px; }
+.page-body { padding:28px 32px; flex:1; overflow-y:auto; }
+
+/* ── STATS ── */
+.stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; margin-bottom:28px; }
+.stat-card { background:var(--white); border-radius:var(--radius); padding:18px 20px; border:1px solid var(--border); box-shadow:var(--shadow-sm); position:relative; overflow:hidden; }
+.stat-card::after { content:""; position:absolute; top:0; right:0; width:60px; height:60px; border-radius:0 var(--radius) 0 60px; opacity:0.07; }
+.stat-card.gold::after { background:var(--gold); }
+.stat-card.blue::after { background:#3b82f6; }
+.stat-card.green::after { background:#22c55e; }
+.stat-card.red::after { background:#ef4444; }
+.stat-label { font-size:11px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.stat-value { font-family:'Playfair Display',serif; font-size:30px; font-weight:900; color:var(--black); line-height:1; }
+.stat-sub { font-size:12px; color:var(--muted); margin-top:4px; }
+
+/* ── FILTERS ── */
+.controls-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+.filter-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.filter-tab { padding:6px 15px; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; border:1.5px solid var(--border); background:var(--white); color:var(--slate); transition:var(--transition); user-select:none; }
+.filter-tab:hover { background:var(--cream); }
+.filter-tab.active { background:var(--black); color:var(--white); border-color:var(--black); }
+
+/* ── TABLE ── */
+.table-wrap { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; box-shadow:var(--shadow-sm); }
+.table-header { display:flex; align-items:center; justify-content:space-between; padding:16px 22px; border-bottom:1px solid var(--border); }
+.table-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:var(--black); }
+.table-count { font-size:12px; color:var(--muted); font-weight:500; }
+#eventsList { display:flex; flex-direction:column; }
+
+/* ── EVENT ROW ── */
+.event-row { display:flex; align-items:center; gap:16px; padding:16px 22px; border-bottom:1px solid #f5f5f5; transition:background var(--transition); animation:fadeIn 0.2s ease both; }
+.event-row:last-child { border-bottom:none; }
+.event-row:hover { background:#fdfcf8; }
+.event-thumb { width:64px; height:64px; border-radius:var(--radius-sm); object-fit:cover; flex-shrink:0; border:1px solid var(--border); background:var(--cream); }
+.event-thumb-placeholder { width:64px; height:64px; border-radius:var(--radius-sm); background:var(--cream); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--muted); }
+.event-thumb-placeholder svg { width:22px; height:22px; opacity:0.4; }
+.event-info { flex:1; min-width:0; }
+.event-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:5px; }
+
+/* meta row */
+.event-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px; }
+.event-meta-item { display:flex; align-items:center; gap:4px; font-size:12px; color:var(--muted); font-weight:500; }
+.event-meta-item svg { width:11px; height:11px; opacity:0.7; flex-shrink:0; }
+.cat-badge { display:inline-flex; align-items:center; gap:4px; background:var(--cream); border:1px solid #e0ddd6; color:var(--slate); font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; }
+.badge-active  { background:#d1fae5; border:1px solid #a7f3d0; color:#065f46; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
+.badge-expired { background:#fee2e2; border:1px solid #fecaca; color:#991b1b; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
+
+/* professional date row */
+.event-dates-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.event-date-first { display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07)); border:1px solid rgba(201,168,76,0.32); color:var(--gold-dark); font-size:11.5px; font-weight:700; padding:3px 10px 3px 7px; border-radius:20px; white-space:nowrap; }
+.event-date-first svg { width:11px; height:11px; flex-shrink:0; opacity:0.75; }
+.event-date-time { display:inline-flex; align-items:center; gap:4px; background:var(--cream); border:1px solid #e0ddd6; color:var(--slate); font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+.event-date-time svg { width:10px; height:10px; opacity:0.65; flex-shrink:0; }
+.event-date-more { font-size:11px; font-weight:700; color:var(--muted); background:var(--cream); border:1px solid #e8e5de; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+
+.event-actions { display:flex; gap:6px; align-items:center; flex-shrink:0; }
+.btn-edit { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:var(--radius-sm); border:none; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:var(--transition); background:var(--black); color:var(--white); }
+.btn-edit:hover { background:var(--charcoal); transform:translateY(-1px); }
+.btn-edit svg { width:13px; height:13px; }
+.btn-delete { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:var(--radius-sm); border:none; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:var(--transition); background:#fee2e2; color:#991b1b; }
+.btn-delete:hover { background:#fecaca; transform:translateY(-1px); }
+.btn-delete svg { width:13px; height:13px; }
+
+/* ── SKELETON ── */
+.skeleton-row { display:flex; align-items:center; gap:16px; padding:16px 22px; border-bottom:1px solid #f5f5f5; }
+.sk { background:#f0f0f0; border-radius:8px; animation:shimmer 1.4s ease-in-out infinite; }
+.sk-thumb { width:64px; height:64px; border-radius:var(--radius-sm); flex-shrink:0; }
+.sk-text-wrap { flex:1; display:flex; flex-direction:column; gap:8px; }
+.sk-title { height:16px; width:50%; }
+.sk-sub { height:12px; width:35%; }
+.sk-btn { height:34px; width:72px; border-radius:var(--radius-sm); flex-shrink:0; }
+@keyframes shimmer { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align:center; padding:56px 24px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+.empty-state svg { width:40px; height:40px; color:var(--muted); opacity:0.4; }
+.empty-state h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--black); }
+.empty-state p { font-size:14px; color:var(--muted); }
+
+/* ── DELETE MODAL ── */
+.modal-backdrop { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.6); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+.modal-backdrop.open { display:flex; }
+.confirm-modal { background:var(--white); width:100%; max-width:420px; border-radius:20px; overflow:hidden; box-shadow:var(--shadow-lg); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+.confirm-modal-header { background:var(--black); padding:22px 26px 18px; position:relative; overflow:hidden; }
+.confirm-modal-header::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,0.12) 0%,transparent 55%); pointer-events:none; }
+.confirm-modal-header h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; color:var(--white); position:relative; z-index:1; }
+.confirm-modal-header p { font-size:13px; color:rgba(255,255,255,0.45); position:relative; z-index:1; margin-top:4px; }
+.confirm-modal-close { position:absolute; top:14px; right:16px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.1); border:none; cursor:pointer; color:var(--white); font-size:16px; display:flex; align-items:center; justify-content:center; transition:var(--transition); z-index:5; }
+.confirm-modal-close:hover { background:rgba(255,255,255,0.2); }
+.confirm-modal-body { padding:22px 26px 26px; }
+.confirm-event-name { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--black); background:var(--cream); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:16px; border:1px solid #e0ddd6; }
+.confirm-warning { display:flex; gap:10px; align-items:flex-start; padding:12px 14px; background:#fef2f2; border:1px solid #fecaca; border-radius:var(--radius-sm); margin-bottom:20px; }
+.confirm-warning svg { width:16px; height:16px; color:#dc2626; flex-shrink:0; margin-top:1px; }
+.confirm-warning p { font-size:13px; color:#7f1d1d; line-height:1.5; }
+.confirm-actions { display:flex; gap:10px; }
+.btn-confirm-cancel { flex:1; padding:13px; border-radius:var(--radius-sm); border:1.5px solid var(--border); background:transparent; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--slate); cursor:pointer; transition:var(--transition); }
+.btn-confirm-cancel:hover { background:var(--cream); }
+.btn-confirm-delete { flex:1; padding:13px; border-radius:var(--radius-sm); border:none; background:#dc2626; color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:7px; }
+.btn-confirm-delete:hover { background:#b91c1c; transform:translateY(-1px); box-shadow:0 4px 14px rgba(220,38,38,0.25); }
+.btn-confirm-delete svg { width:15px; height:15px; }
+.btn-confirm-delete.loading { pointer-events:none; opacity:0.7; }
+.del-spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:var(--white); border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+.btn-confirm-delete.loading .del-spinner { display:block; }
+.btn-confirm-delete.loading .del-btn-text { display:none; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--charcoal); color:var(--white); padding:11px 22px; border-radius:30px; font-size:14px; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,0.3); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+.toast.show { transform:translateX(-50%) translateY(0); }
+.toast.success { background:#14532d; }
+.toast.error   { background:#7f1d1d; }
+
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{opacity:0;transform:translateY(28px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px) {
+  .sidebar { display:none; }
+  .topbar { padding:0 16px; }
+  .page-body { padding:18px 16px; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .event-row { flex-wrap:wrap; gap:10px; }
+  .event-actions { width:100%; justify-content:flex-end; }
+  .search-wrap input { width:140px; }
+  .search-wrap input:focus { width:180px; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html">Vend<span>Hub</span></a></div>
+
+  <div class="sidebar-label">Management</div>
+  <div class="sidebar-item" onclick="location.href='admin.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    Applications
+  </div>
+  <div class="sidebar-item" onclick="location.href='upload.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Upload Event
+  </div>
+  <div class="sidebar-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Edit Events
+  </div>
+
+  <div class="sidebar-label">Settings</div>
+  <div class="sidebar-item" id="sidebarLogout">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Sign Out
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-admin-row">
+      <div class="sidebar-avatar" id="sidebarAvatarEl">A</div>
+      <div class="sidebar-admin-info">
+        <div class="sidebar-admin-name" id="sidebarAdminName">Admin</div>
+        <div class="sidebar-admin-role">Event Coordinator</div>
+      </div>
+      <button class="logout-btn" id="logoutBtn" title="Sign out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title">Manage <span>Events</span></div>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Search events…"
+          autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')"/>
+      </div>
+      <button class="add-btn" onclick="location.href='upload.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Event
+      </button>
+    </div>
+  </header>
+
+  <div class="page-body">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-label">Total Events</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">Published</div></div>
+      <div class="stat-card blue"><div class="stat-label">Upcoming</div><div class="stat-value" id="statUpcoming">—</div><div class="stat-sub">Future dates</div></div>
+      <div class="stat-card green"><div class="stat-label">Categories</div><div class="stat-value" id="statCategories">—</div><div class="stat-sub">Active types</div></div>
+      <div class="stat-card red"><div class="stat-label">Past Events</div><div class="stat-value" id="statPast">—</div><div class="stat-sub">Expired</div></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="controls-row">
+      <div class="filter-row">
+        <div class="filter-tab active" data-filter="all">All</div>
+        <div class="filter-tab" data-filter="upcoming">Upcoming</div>
+        <div class="filter-tab" data-filter="past">Past</div>
+        <div class="filter-tab" data-filter="Music">🎵 Music</div>
+        <div class="filter-tab" data-filter="Festivals">🎉 Festivals</div>
+        <div class="filter-tab" data-filter="Markets">🛍 Markets</div>
+        <div class="filter-tab" data-filter="Food">🍴 Food</div>
+        <div class="filter-tab" data-filter="Arts">🎨 Arts</div>
+        <div class="filter-tab" data-filter="Business">🏢 Business</div>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <span class="table-title">All Events</span>
+        <span class="table-count" id="tableCount">Loading…</span>
+      </div>
+      <div id="eventsList">
+        <!-- skeleton -->
+        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="modal-backdrop">
+  <div class="confirm-modal">
+    <div class="confirm-modal-header">
+      <h3>Delete Event</h3>
+      <p>This action cannot be undone</p>
+      <button class="confirm-modal-close" id="cancelDeleteBtn">&times;</button>
+    </div>
+    <div class="confirm-modal-body">
+      <div class="confirm-event-name" id="deleteEventName">—</div>
+      <div class="confirm-warning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p>Deleting this event permanently removes it from VendHub. Vendor applications linked to this event will remain in the database but will lose their event reference.</p>
+      </div>
+      <div class="confirm-actions">
+        <button class="btn-confirm-cancel" id="cancelDeleteBtn2">Cancel</button>
+        <button class="btn-confirm-delete" id="confirmDeleteBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+          <span class="del-btn-text">Delete Event</span>
+          <div class="del-spinner"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, deleteDoc, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
+  authDomain: "vendors-de792.firebaseapp.com",
+  projectId: "vendors-de792",
+};
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+function showToast(msg, type = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove("show"), 3400);
+}
+function el(id) { return document.getElementById(id); }
+function esc(str) {
+  return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+let allEvents    = [];
+let activeFilter = "all";
+let pendingDeleteId = null;
+
+// ════════════════════════════════════════════════════
+//  DATE UTILITIES  (shared with index / edit pages)
+// ════════════════════════════════════════════════════
+
+/** Collect all dates from an event doc — new array or legacy fields. */
+function collectDates(ev) {
+  if (Array.isArray(ev.event_dates) && ev.event_dates.length)
+    return ev.event_dates.filter(Boolean);
+  return [ev.date1, ev.date2, ev.date3, ev.date4].filter(Boolean);
+}
+
+/** Parse "Mar 15, 2026 • 9:00 AM" or "Feb 20 • 9:00 AM" → { dateStr, timeStr } */
+function parseDateStr(raw) {
+  if (!raw) return null;
+  const s = raw.trim();
+  if (s.includes("•")) {
+    const [dateStr, timeStr] = s.split("•").map(p => p.trim());
+    return { dateStr, timeStr };
+  }
+  return { dateStr: s, timeStr: null };
+}
+
+/**
+ * Try to produce a real JS Date from the raw string for past/upcoming logic.
+ * Handles both "Mar 15, 2026 • 9:00 AM" and old legacy formats.
+ */
+function toJSDate(raw) {
+  if (!raw) return null;
+  try {
+    const p = parseDateStr(raw);
+    // Try direct parse (works for "Mar 15, 2026")
+    let d = new Date(p.dateStr);
+    if (!isNaN(d)) return d;
+    // Try appending current year (for "Feb 20" style)
+    d = new Date(`${p.dateStr} ${new Date().getFullYear()}`);
+    if (!isNaN(d)) return d;
+  } catch(e) {}
+  return null;
+}
+
+/** Build the professional date badge row HTML for an event list row. */
+function buildDateRowHTML(dates) {
+  if (!dates.length) return "";
+
+  const calSVG   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`;
+  const clockSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+
+  const first = parseDateStr(dates[0]);
+  if (!first) return "";
+
+  let html = `<div class="event-dates-row">
+    <div class="event-date-first">${calSVG} ${esc(first.dateStr)}</div>`;
+
+  if (first.timeStr) {
+    html += `<div class="event-date-time">${clockSVG} ${esc(first.timeStr)}</div>`;
+  }
+
+  if (dates.length > 1) {
+    html += `<span class="event-date-more">+${dates.length - 1} more day${dates.length > 2 ? "s" : ""}</span>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+// ════════════════════════════════════════════════════
+//  LOAD + RENDER
+// ════════════════════════════════════════════════════
+
+async function loadEvents() {
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Try ordered query; fall back gracefully if index missing
+  let snap;
+  try {
+    snap = await getDocs(query(collection(db, "events"), orderBy("created_at", "desc")));
+  } catch(e) {
+    snap = await getDocs(collection(db, "events"));
+  }
+
+  allEvents = [];
+  snap.forEach(d => {
+    const ev    = d.data();
+    const dates = collectDates(ev);
+
+    // Use the LAST date to decide if the event has fully passed
+    const lastRaw  = dates.length ? dates[dates.length - 1] : null;
+    const lastDate = toJSDate(lastRaw);
+    const isPast   = lastDate ? lastDate < today : false;
+
+    allEvents.push({ id: d.id, ...ev, _isPast: isPast, _dates: dates });
+  });
+
+  // Sort: upcoming first, then by first date ascending
+  allEvents.sort((a, b) => {
+    if (a._isPast !== b._isPast) return a._isPast ? 1 : -1;
+    const da = toJSDate(a._dates[0]), db2 = toJSDate(b._dates[0]);
+    if (!da && !db2) return 0;
+    if (!da) return 1; if (!db2) return -1;
+    return da - db2;
+  });
+
+  const upcoming   = allEvents.filter(e => !e._isPast).length;
+  const past       = allEvents.filter(e =>  e._isPast).length;
+  const categories = new Set(allEvents.map(e => e.category).filter(Boolean)).size;
+
+  el("statTotal").textContent      = allEvents.length;
+  el("statUpcoming").textContent   = upcoming;
+  el("statPast").textContent       = past;
+  el("statCategories").textContent = categories;
+  renderEvents();
+}
+
+function renderEvents() {
+  const searchVal = el("searchInput").value.toLowerCase();
+  const list      = el("eventsList");
+
+  const filtered = allEvents.filter(e => {
+    const matchFilter =
+      activeFilter === "all"      ? true :
+      activeFilter === "upcoming" ? !e._isPast :
+      activeFilter === "past"     ?  e._isPast :
+      e.category === activeFilter;
+
+    const matchSearch = !searchVal ||
+      [e.title, e.location, e.state, e.category, e.address]
+        .some(f => (f || "").toLowerCase().includes(searchVal));
+
+    return matchFilter && matchSearch;
+  });
+
+  el("tableCount").textContent = `${filtered.length} event${filtered.length !== 1 ? "s" : ""}`;
+
+  if (!filtered.length) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <h3>No events found</h3>
+        <p>Try a different filter, or <a href="upload.html" style="color:var(--gold-dark);font-weight:600;">upload a new event</a>.</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = "";
+  filtered.forEach((e, idx) => {
+    const row = document.createElement("div");
+    row.className = "event-row";
+    row.style.animationDelay = `${idx * 0.04}s`;
+
+    // Thumbnail — support both http URLs and local paths like images/name.jpg
+    const thumbHtml = e.image
+      ? `<img class="event-thumb" src="${esc(e.image)}" alt="${esc(e.title)}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+         <div class="event-thumb-placeholder" style="display:none;">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+         </div>`
+      : `<div class="event-thumb-placeholder">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+         </div>`;
+
+    const statusBadge = e._isPast
+      ? `<span class="badge-expired">Expired</span>`
+      : `<span class="badge-active">Active</span>`;
+
+    const dateRowHTML = buildDateRowHTML(e._dates);
+
+    row.innerHTML = `
+      ${thumbHtml}
+      <div class="event-info">
+        <div class="event-title">${esc(e.title || "Untitled")}</div>
+        <div class="event-meta">
+          ${e.location ? `<span class="event-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+            ${esc(e.location)}${e.state ? ", " + esc(e.state) : ""}</span>` : ""}
+          ${e.category ? `<span class="cat-badge">${esc(e.category)}</span>` : ""}
+          ${statusBadge}
+          ${e.price ? `<span class="event-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            ${esc(e.price)}</span>` : ""}
+        </div>
+        ${dateRowHTML}
+      </div>
+      <div class="event-actions">
+        <button class="btn-edit edit-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="btn-delete delete-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          Delete
+        </button>
+      </div>`;
+
+    row.querySelector(".edit-btn").onclick   = () => location.href = `upload.html?edit=${e.id}`;
+    row.querySelector(".delete-btn").onclick = () => openDelete(e.id, e.title);
+    list.appendChild(row);
+  });
+}
+
+// ── Delete modal ──────────────────────────────────────
+function openDelete(id, title) {
+  pendingDeleteId = id;
+  el("deleteEventName").textContent = title || "Untitled Event";
+  el("deleteModal").classList.add("open");
+}
+function closeDelete() {
+  pendingDeleteId = null;
+  el("deleteModal").classList.remove("open");
+  el("confirmDeleteBtn").classList.remove("loading");
+}
+
+el("cancelDeleteBtn").onclick  = closeDelete;
+el("cancelDeleteBtn2").onclick = closeDelete;
+el("deleteModal").addEventListener("click", e => { if (e.target === el("deleteModal")) closeDelete(); });
+
+el("confirmDeleteBtn").onclick = async () => {
+  if (!pendingDeleteId) return;
+  const btn = el("confirmDeleteBtn");
+  btn.classList.add("loading");
+  try {
+    await deleteDoc(doc(db, "events", pendingDeleteId));
+    showToast("Event deleted.", "success");
+    closeDelete();
+    loadEvents();
+  } catch (err) {
+    showToast("Delete failed: " + err.message, "error");
+    btn.classList.remove("loading");
+  }
+};
+
+// ── Filters + search ──────────────────────────────────
+document.querySelectorAll(".filter-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeFilter = tab.dataset.filter;
+    renderEvents();
+  });
+});
+el("searchInput").addEventListener("input", renderEvents);
+
+// ── Sign out ──────────────────────────────────────────
+el("sidebarLogout").onclick = () => signOut(auth).then(() => location.href = "index.html");
+el("logoutBtn").onclick     = () => signOut(auth).then(() => location.href = "index.html");
+
+// ── Auth guard ────────────────────────────────────────
+onAuthStateChanged(auth, user => {
+  if (!user || user.email !== "admin@grandbazaar.com") {
+    location.href = "index.html";
+    return;
+  }
+  // Personalise sidebar avatar
+  const name = user.displayName || user.email || "A";
+  el("sidebarAvatarEl").textContent  = name.charAt(0).toUpperCase();
+  el("sidebarAdminName").textContent = user.displayName || user.email;
+  loadEvents();
+});
+</script>
+</body>
+</html>
