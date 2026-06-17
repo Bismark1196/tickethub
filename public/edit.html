@@ -16,6 +16,7 @@
   --shadow-lg:0 20px 60px rgba(0,0,0,0.18);
   --radius:14px; --radius-sm:9px;
   --transition:0.25s cubic-bezier(0.4,0,0.2,1);
+  --ticket-purple:#6366f1;
 }
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--black); min-height:100vh; display:flex; -webkit-font-smoothing:antialiased; }
@@ -31,6 +32,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .sidebar-item.active { background:rgba(201,168,76,0.1); color:var(--gold-light); border-left-color:var(--gold); }
 .sidebar-item svg { width:16px; height:16px; flex-shrink:0; opacity:0.7; }
 .sidebar-item.active svg { opacity:1; }
+.sidebar-item.ticket-item.active { background:rgba(99, 102, 241, 0.1); color:var(--ticket-purple); border-left-color:var(--ticket-purple); }
+.sidebar-item.ticket-item.active svg { opacity:1; }
 .sidebar-footer { margin-top:auto; padding:20px 24px; border-top:1px solid rgba(255,255,255,0.08); }
 .sidebar-admin-row { display:flex; align-items:center; gap:10px; }
 .sidebar-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:900; font-size:14px; color:var(--black); flex-shrink:0; }
@@ -56,6 +59,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .add-btn svg { width:14px; height:14px; }
 .page-body { padding:28px 32px; flex:1; overflow-y:auto; }
 
+/* ── TABS ── */
+.tab-row { display:flex; gap:4px; margin-bottom:24px; border-bottom:1px solid var(--border); }
+.tab-btn { padding:10px 18px; border:none; background:none; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:var(--transition); }
+.tab-btn:hover { color:var(--black); }
+.tab-btn.active { color:var(--black); border-bottom-color:var(--gold); }
+.tab-btn.tickets-active { color:var(--ticket-purple); border-bottom-color:var(--ticket-purple); }
+
 /* ── STATS ── */
 .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; margin-bottom:28px; }
 .stat-card { background:var(--white); border-radius:var(--radius); padding:18px 20px; border:1px solid var(--border); box-shadow:var(--shadow-sm); position:relative; overflow:hidden; }
@@ -64,6 +74,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .stat-card.blue::after { background:#3b82f6; }
 .stat-card.green::after { background:#22c55e; }
 .stat-card.red::after { background:#ef4444; }
+.stat-card.purple::after { background:var(--ticket-purple); }
 .stat-label { font-size:11px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
 .stat-value { font-family:'Playfair Display',serif; font-size:30px; font-weight:900; color:var(--black); line-height:1; }
 .stat-sub { font-size:12px; color:var(--muted); margin-top:4px; }
@@ -80,7 +91,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .table-header { display:flex; align-items:center; justify-content:space-between; padding:16px 22px; border-bottom:1px solid var(--border); }
 .table-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:var(--black); }
 .table-count { font-size:12px; color:var(--muted); font-weight:500; }
-#eventsList { display:flex; flex-direction:column; }
+#eventsList, #ticketsList { display:flex; flex-direction:column; }
 
 /* ── EVENT ROW ── */
 .event-row { display:flex; align-items:center; gap:16px; padding:16px 22px; border-bottom:1px solid #f5f5f5; transition:background var(--transition); animation:fadeIn 0.2s ease both; }
@@ -99,6 +110,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .cat-badge { display:inline-flex; align-items:center; gap:4px; background:var(--cream); border:1px solid #e0ddd6; color:var(--slate); font-size:11px; font-weight:600; padding:2px 10px; border-radius:12px; }
 .badge-active  { background:#d1fae5; border:1px solid #a7f3d0; color:#065f46; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
 .badge-expired { background:#fee2e2; border:1px solid #fecaca; color:#991b1b; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
+.badge-pending { background:#fff7ed; border:1px solid #fed7aa; color:#ea580c; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
+.badge-approved { background:#d1fae5; border:1px solid #a7f3d0; color:#065f46; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
 
 /* professional date row */
 .event-dates-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
@@ -112,6 +125,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .btn-edit { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:var(--radius-sm); border:none; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:var(--transition); background:var(--black); color:var(--white); }
 .btn-edit:hover { background:var(--charcoal); transform:translateY(-1px); }
 .btn-edit svg { width:13px; height:13px; }
+.btn-approve { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:var(--radius-sm); border:none; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:var(--transition); background:#22c55e; color:var(--white); }
+.btn-approve:hover { background:#16a34a; transform:translateY(-1px); }
+.btn-approve svg { width:13px; height:13px; }
 .btn-delete { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:var(--radius-sm); border:none; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:var(--transition); background:#fee2e2; color:#991b1b; }
 .btn-delete:hover { background:#fecaca; transform:translateY(-1px); }
 .btn-delete svg { width:13px; height:13px; }
@@ -157,7 +173,32 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .del-spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:var(--white); border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
 .btn-confirm-delete.loading .del-spinner { display:block; }
 .btn-confirm-delete.loading .del-btn-text { display:none; }
-@keyframes spin { to { transform:rotate(360deg); } }
+
+/* TICKET EDIT MODAL */
+.ticket-edit-modal { background:var(--white); width:100%; max-width:600px; border-radius:20px; overflow:hidden; box-shadow:var(--shadow-lg); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+.ticket-edit-header { background:linear-gradient(135deg, #6366f1, #4f46e5); padding:22px 26px 18px; position:relative; overflow:hidden; color:var(--white); }
+.ticket-edit-header h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; position:relative; z-index:1; }
+.ticket-edit-close { position:absolute; top:14px; right:16px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.2); border:none; cursor:pointer; color:var(--white); font-size:16px; display:flex; align-items:center; justify-content:center; transition:var(--transition); z-index:5; }
+.ticket-edit-close:hover { background:rgba(255,255,255,0.3); }
+.ticket-edit-body { padding:22px 26px 26px; max-height:70vh; overflow-y:auto; }
+.ticket-edit-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.ticket-edit-field { margin-bottom:14px; }
+.ticket-edit-label { display:block; font-size:11.5px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:var(--slate); margin-bottom:7px; }
+.ticket-edit-input { width:100%; padding:11px 14px; border-radius:var(--radius-sm); border:1.5px solid var(--border); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--black); background:var(--cream); outline:none; transition:var(--transition); }
+.ticket-edit-input:focus { border-color:var(--ticket-purple); background:var(--white); box-shadow:0 0 0 3px rgba(99, 102, 241, 0.13); }
+.ticket-edit-select { width:100%; padding:11px 14px; border-radius:var(--radius-sm); border:1.5px solid var(--border); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--black); background:var(--cream); outline:none; transition:var(--transition); appearance:none; -webkit-appearance:none; }
+.ticket-edit-select:focus { border-color:var(--ticket-purple); background:var(--white); box-shadow:0 0 0 3px rgba(99, 102, 241, 0.13); }
+.ticket-edit-actions { display:flex; gap:10px; margin-top:20px; }
+.btn-ticket-save { flex:1; padding:13px; border-radius:var(--radius-sm); border:none; background:var(--ticket-purple); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:7px; }
+.btn-ticket-save:hover { background:#5856eb; transform:translateY(-1px); box-shadow:0 4px 14px rgba(99, 102, 241, 0.25); }
+.btn-ticket-save svg { width:15px; height:15px; }
+.btn-ticket-cancel { flex:1; padding:13px; border-radius:var(--radius-sm); border:1.5px solid var(--border); background:transparent; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--slate); cursor:pointer; transition:var(--transition); }
+.btn-ticket-cancel:hover { background:var(--cream); }
+.ticket-preview-wrap { margin-top:16px; border-radius:var(--radius-sm); overflow:hidden; border:1.5px solid var(--border); background:var(--cream); height:160px; display:flex; align-items:center; justify-content:center; position:relative; }
+.ticket-preview-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+.ticket-preview-placeholder { display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--muted); }
+.ticket-preview-placeholder svg { width:28px; height:28px; opacity:0.4; }
+.ticket-preview-placeholder span { font-size:12.5px; }
 
 /* ── TOAST ── */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--charcoal); color:var(--white); padding:11px 22px; border-radius:30px; font-size:14px; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,0.3); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
@@ -167,6 +208,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 @keyframes slideUp { from{opacity:0;transform:translateY(28px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes spin { to { transform:rotate(360deg); } }
 
 /* ── RESPONSIVE ── */
 @media(max-width:768px) {
@@ -178,6 +220,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
   .event-actions { width:100%; justify-content:flex-end; }
   .search-wrap input { width:140px; }
   .search-wrap input:focus { width:180px; }
+  .ticket-edit-grid { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -189,7 +232,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 
   <div class="sidebar-label">Management</div>
   <div class="sidebar-item" onclick="location.href='admin.html'">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/></svg>
     Applications
   </div>
   <div class="sidebar-item" onclick="location.href='upload.html'">
@@ -199,6 +242,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
   <div class="sidebar-item active">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     Edit Events
+  </div>
+  <div class="sidebar-item ticket-item" id="sidebarTickets">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M19.5 12c0 4.14-3.36 7.5-7.5 7.5S4.5 16.14 4.5 12 7.86 4.5 12 4.5c2.38 0 4.5.91 6.24 2.42"/></svg>
+    Manage Tickets
   </div>
 
   <div class="sidebar-label">Settings</div>
@@ -224,11 +271,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 <!-- MAIN -->
 <div class="main">
   <header class="topbar">
-    <div class="topbar-title">Manage <span>Events</span></div>
+    <div class="topbar-title">Manage <span id="topbarTitle">Events</span></div>
     <div class="topbar-right">
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="searchInput" placeholder="Search events…"
+        <input type="text" id="searchInput" placeholder="Search..."
           autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')"/>
       </div>
       <button class="add-btn" onclick="location.href='upload.html'">
@@ -239,45 +286,92 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
   </header>
 
   <div class="page-body">
-
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-card gold"><div class="stat-label">Total Events</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">Published</div></div>
-      <div class="stat-card blue"><div class="stat-label">Upcoming</div><div class="stat-value" id="statUpcoming">—</div><div class="stat-sub">Future dates</div></div>
-      <div class="stat-card green"><div class="stat-label">Categories</div><div class="stat-value" id="statCategories">—</div><div class="stat-sub">Active types</div></div>
-      <div class="stat-card red"><div class="stat-label">Past Events</div><div class="stat-value" id="statPast">—</div><div class="stat-sub">Expired</div></div>
+    <!-- TABS -->
+    <div class="tab-row">
+      <button class="tab-btn active" id="tabEvents" data-tab="events">Events</button>
+      <button class="tab-btn" id="tabTickets" data-tab="tickets">Tickets</button>
     </div>
 
-    <!-- Filters -->
-    <div class="controls-row">
-      <div class="filter-row">
-        <div class="filter-tab active" data-filter="all">All</div>
-        <div class="filter-tab" data-filter="upcoming">Upcoming</div>
-        <div class="filter-tab" data-filter="past">Past</div>
-        <div class="filter-tab" data-filter="Music">🎵 Music</div>
-        <div class="filter-tab" data-filter="Festivals">🎉 Festivals</div>
-        <div class="filter-tab" data-filter="Markets">🛍 Markets</div>
-        <div class="filter-tab" data-filter="Food">🍴 Food</div>
-        <div class="filter-tab" data-filter="Arts">🎨 Arts</div>
-        <div class="filter-tab" data-filter="Business">🏢 Business</div>
+    <!-- EVENTS TAB -->
+    <div id="eventsTab">
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card gold"><div class="stat-label">Total Events</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">Published</div></div>
+        <div class="stat-card blue"><div class="stat-label">Upcoming</div><div class="stat-value" id="statUpcoming">—</div><div class="stat-sub">Future dates</div></div>
+        <div class="stat-card green"><div class="stat-label">Categories</div><div class="stat-value" id="statCategories">—</div><div class="stat-sub">Active types</div></div>
+        <div class="stat-card red"><div class="stat-label">Past Events</div><div class="stat-value" id="statPast">—</div><div class="stat-sub">Expired</div></div>
+      </div>
+
+      <!-- Filters -->
+      <div class="controls-row">
+        <div class="filter-row">
+          <div class="filter-tab active" data-filter="all">All</div>
+          <div class="filter-tab" data-filter="upcoming">Upcoming</div>
+          <div class="filter-tab" data-filter="past">Past</div>
+          <div class="filter-tab" data-filter="Music">🎵 Music</div>
+          <div class="filter-tab" data-filter="Festivals">🎉 Festivals</div>
+          <div class="filter-tab" data-filter="Markets">🛍 Markets</div>
+          <div class="filter-tab" data-filter="Food">🍴 Food</div>
+          <div class="filter-tab" data-filter="Arts">🎨 Arts</div>
+          <div class="filter-tab" data-filter="Business">🏢 Business</div>
+        </div>
+      </div>
+
+      <!-- List -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">All Events</span>
+          <span class="table-count" id="tableCount">Loading…</span>
+        </div>
+        <div id="eventsList">
+          <!-- skeleton -->
+          <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+          <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+          <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+          <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+        </div>
       </div>
     </div>
 
-    <!-- List -->
-    <div class="table-wrap">
-      <div class="table-header">
-        <span class="table-title">All Events</span>
-        <span class="table-count" id="tableCount">Loading…</span>
+    <!-- TICKETS TAB -->
+    <div id="ticketsTab" style="display:none;">
+      <!-- Tickets Stats -->
+      <div class="stats-row">
+        <div class="stat-card purple"><div class="stat-label">Total Tickets</div><div class="stat-value" id="statTotalTickets">—</div><div class="stat-sub">Uploaded</div></div>
+        <div class="stat-card gold"><div class="stat-label">Pending</div><div class="stat-value" id="statPendingTickets">—</div><div class="stat-sub">Awaiting Approval</div></div>
+        <div class="stat-card green"><div class="stat-label">Approved</div><div class="stat-value" id="statApprovedTickets">—</div><div class="stat-sub">Published</div></div>
+        <div class="stat-card red"><div class="stat-label">Rejected</div><div class="stat-value" id="statRejectedTickets">—</div><div class="stat-sub">Declined</div></div>
       </div>
-      <div id="eventsList">
-        <!-- skeleton -->
-        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
-        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
-        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
-        <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+
+      <!-- Tickets Filters -->
+      <div class="controls-row">
+        <div class="filter-row">
+          <div class="filter-tab active" data-ticket-filter="all">All</div>
+          <div class="filter-tab" data-ticket-filter="pending">Pending</div>
+          <div class="filter-tab" data-ticket-filter="approved">Approved</div>
+          <div class="filter-tab" data-ticket-filter="rejected">Rejected</div>
+          <div class="filter-tab" data-ticket-filter="worldcup">⚽ World Cup</div>
+          <div class="filter-tab" data-ticket-filter="mlb">⚾ MLB</div>
+          <div class="filter-tab" data-ticket-filter="nba">🏀 NBA</div>
+          <div class="filter-tab" data-ticket-filter="nfl">🏈 NFL</div>
+          <div class="filter-tab" data-ticket-filter="concert">🎤 Concerts</div>
+        </div>
+      </div>
+
+      <!-- Tickets List -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">All Tickets</span>
+          <span class="table-count" id="ticketsTableCount">Loading…</span>
+        </div>
+        <div id="ticketsList">
+          <!-- skeleton -->
+          <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+          <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+          <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
+        </div>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -285,7 +379,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 <div id="deleteModal" class="modal-backdrop">
   <div class="confirm-modal">
     <div class="confirm-modal-header">
-      <h3>Delete Event</h3>
+      <h3 id="deleteModalTitle">Delete Event</h3>
       <p>This action cannot be undone</p>
       <button class="confirm-modal-close" id="cancelDeleteBtn">&times;</button>
     </div>
@@ -293,16 +387,126 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
       <div class="confirm-event-name" id="deleteEventName">—</div>
       <div class="confirm-warning">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <p>Deleting this event permanently removes it from VendHub. Vendor applications linked to this event will remain in the database but will lose their event reference.</p>
+        <p id="deleteModalMessage">Deleting this event permanently removes it from VendHub. Vendor applications linked to this event will remain in the database but will lose their event reference.</p>
       </div>
       <div class="confirm-actions">
         <button class="btn-confirm-cancel" id="cancelDeleteBtn2">Cancel</button>
         <button class="btn-confirm-delete" id="confirmDeleteBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-          <span class="del-btn-text">Delete Event</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          <span class="del-btn-text" id="deleteBtnText">Delete</span>
           <div class="del-spinner"></div>
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKET EDIT MODAL -->
+<div id="ticketEditModal" class="modal-backdrop">
+  <div class="ticket-edit-modal">
+    <div class="ticket-edit-header">
+      <h3>Edit Ticket</h3>
+      <button class="ticket-edit-close" id="closeTicketEditBtn">&times;</button>
+    </div>
+    <div class="ticket-edit-body">
+      <form id="ticketEditForm">
+        <input type="hidden" id="editTicketId">
+
+        <div class="ticket-edit-grid">
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Sport Category</label>
+            <select id="editTicketSport" class="ticket-edit-select">
+              <option value="worldcup">FIFA World Cup 2026</option>
+              <option value="mlb">MLB Baseball</option>
+              <option value="nba">NBA Basketball</option>
+              <option value="nfl">NFL Football</option>
+              <option value="nhl">NHL Hockey</option>
+              <option value="concert">Concert</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Event Name</label>
+            <input type="text" id="editTicketTitle" class="ticket-edit-input" placeholder="Event name">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Venue / Stadium</label>
+            <input type="text" id="editTicketVenue" class="ticket-edit-input" placeholder="Venue">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">City</label>
+            <input type="text" id="editTicketCity" class="ticket-edit-input" placeholder="City">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Date</label>
+            <input type="date" id="editTicketDate" class="ticket-edit-input">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Time</label>
+            <input type="time" id="editTicketTime" class="ticket-edit-input">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Price ($)</label>
+            <input type="number" id="editTicketPrice" class="ticket-edit-input" min="0" step="0.01" placeholder="0.00">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Quantity</label>
+            <input type="number" id="editTicketQty" class="ticket-edit-input" min="1" placeholder="1">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Seat Section</label>
+            <input type="text" id="editTicketSeat" class="ticket-edit-input" placeholder="Section, Row">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Seller Name</label>
+            <input type="text" id="editTicketSeller" class="ticket-edit-input" placeholder="Seller name">
+          </div>
+
+          <div class="ticket-edit-field">
+            <label class="ticket-edit-label">Seller Contact</label>
+            <input type="text" id="editTicketSellerContact" class="ticket-edit-input" placeholder="Email or phone">
+          </div>
+
+          <div class="ticket-edit-field" style="grid-column:1/-1;">
+            <label class="ticket-edit-label">Notes</label>
+            <textarea id="editTicketNotes" class="ticket-edit-input" rows="3" placeholder="Additional notes"></textarea>
+          </div>
+        </div>
+
+        <div class="ticket-edit-field" style="margin-top:16px;">
+          <label class="ticket-edit-label">Status</label>
+          <select id="editTicketStatus" class="ticket-edit-select">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div class="ticket-preview-wrap" id="ticketPreviewWrap">
+          <img id="editTicketImagePreview" alt="Preview">
+          <div class="ticket-preview-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>No image</span>
+          </div>
+        </div>
+
+        <div class="ticket-edit-actions">
+          <button type="button" class="btn-ticket-cancel" id="cancelTicketEditBtn">Cancel</button>
+          <button type="submit" class="btn-ticket-save" id="saveTicketEditBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -311,7 +515,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, deleteDoc, query, orderBy }
+import { getFirestore, collection, getDocs, doc, deleteDoc, query, orderBy, updateDoc }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -320,6 +524,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
   authDomain: "vendors-de792.firebaseapp.com",
   projectId: "vendors-de792",
+  storageBucket: "vendors-de792.firebasestorage.app",
+  messagingSenderId: "116481257939",
+  appId: "1:116481257939:web:0b3a9590e8b735a5f77f26",
+  measurementId: "G-7C4967TPXN"
 };
 const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
@@ -337,22 +545,24 @@ function esc(str) {
   return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
-let allEvents    = [];
+let allEvents = [];
+let allTickets = [];
 let activeFilter = "all";
+let activeTicketFilter = "all";
 let pendingDeleteId = null;
+let pendingDeleteType = null;
+let editingTicketId = null;
 
 // ════════════════════════════════════════════════════
-//  DATE UTILITIES  (shared with index / edit pages)
+//  DATE UTILITIES
 // ════════════════════════════════════════════════════
 
-/** Collect all dates from an event doc — new array or legacy fields. */
 function collectDates(ev) {
   if (Array.isArray(ev.event_dates) && ev.event_dates.length)
     return ev.event_dates.filter(Boolean);
   return [ev.date1, ev.date2, ev.date3, ev.date4].filter(Boolean);
 }
 
-/** Parse "Mar 15, 2026 • 9:00 AM" or "Feb 20 • 9:00 AM" → { dateStr, timeStr } */
 function parseDateStr(raw) {
   if (!raw) return null;
   const s = raw.trim();
@@ -363,25 +573,18 @@ function parseDateStr(raw) {
   return { dateStr: s, timeStr: null };
 }
 
-/**
- * Try to produce a real JS Date from the raw string for past/upcoming logic.
- * Handles both "Mar 15, 2026 • 9:00 AM" and old legacy formats.
- */
 function toJSDate(raw) {
   if (!raw) return null;
   try {
     const p = parseDateStr(raw);
-    // Try direct parse (works for "Mar 15, 2026")
     let d = new Date(p.dateStr);
     if (!isNaN(d)) return d;
-    // Try appending current year (for "Feb 20" style)
     d = new Date(`${p.dateStr} ${new Date().getFullYear()}`);
     if (!isNaN(d)) return d;
   } catch(e) {}
   return null;
 }
 
-/** Build the professional date badge row HTML for an event list row. */
 function buildDateRowHTML(dates) {
   if (!dates.length) return "";
 
@@ -407,13 +610,12 @@ function buildDateRowHTML(dates) {
 }
 
 // ════════════════════════════════════════════════════
-//  LOAD + RENDER
+//  LOAD + RENDER EVENTS
 // ════════════════════════════════════════════════════
 
 async function loadEvents() {
   const today = new Date(); today.setHours(0,0,0,0);
 
-  // Try ordered query; fall back gracefully if index missing
   let snap;
   try {
     snap = await getDocs(query(collection(db, "events"), orderBy("created_at", "desc")));
@@ -426,7 +628,6 @@ async function loadEvents() {
     const ev    = d.data();
     const dates = collectDates(ev);
 
-    // Use the LAST date to decide if the event has fully passed
     const lastRaw  = dates.length ? dates[dates.length - 1] : null;
     const lastDate = toJSDate(lastRaw);
     const isPast   = lastDate ? lastDate < today : false;
@@ -434,7 +635,6 @@ async function loadEvents() {
     allEvents.push({ id: d.id, ...ev, _isPast: isPast, _dates: dates });
   });
 
-  // Sort: upcoming first, then by first date ascending
   allEvents.sort((a, b) => {
     if (a._isPast !== b._isPast) return a._isPast ? 1 : -1;
     const da = toJSDate(a._dates[0]), db2 = toJSDate(b._dates[0]);
@@ -454,6 +654,254 @@ async function loadEvents() {
   renderEvents();
 }
 
+// ════════════════════════════════════════════════════
+//  LOAD + RENDER TICKETS
+// ════════════════════════════════════════════════════
+
+async function loadTickets() {
+  let snap;
+  try {
+    snap = await getDocs(query(collection(db, "ticket_listings"), orderBy("submittedAt", "desc")));
+  } catch(e) {
+    snap = await getDocs(collection(db, "ticket_listings"));
+  }
+
+  allTickets = [];
+  snap.forEach(d => {
+    const ticket = d.data();
+    allTickets.push({ id: d.id, ...ticket });
+  });
+
+  const pending = allTickets.filter(t => t.approvalStatus === 'pending').length;
+  const approved = allTickets.filter(t => t.approvalStatus === 'approved').length;
+  const rejected = allTickets.filter(t => t.approvalStatus === 'rejected').length;
+
+  el("statTotalTickets").textContent = allTickets.length;
+  el("statPendingTickets").textContent = pending;
+  el("statApprovedTickets").textContent = approved;
+  el("statRejectedTickets").textContent = rejected;
+
+  renderTickets();
+}
+
+function getStatusBadge(status) {
+  switch(status) {
+    case 'approved': return '<span class="badge-approved">✓ Approved</span>';
+    case 'rejected': return '<span class="badge-expired">✗ Rejected</span>';
+    case 'pending': return '<span class="badge-pending">⏳ Pending</span>';
+    default: return '<span class="badge-pending">⏳ Pending</span>';
+  }
+}
+
+function getSportIcon(sport) {
+  const icons = {
+    worldcup: '⚽',
+    mlb: '⚾',
+    nba: '🏀',
+    nfl: '🏈',
+    nhl: '🏒',
+    concert: '🎤',
+    other: '🎟️'
+  };
+  return icons[sport] || '🎟️';
+}
+
+function renderTickets() {
+  const searchVal = el("searchInput").value.toLowerCase();
+  const list = el("ticketsList");
+
+  const filtered = allTickets.filter(t => {
+    const matchFilter =
+      activeTicketFilter === "all" ? true :
+      activeTicketFilter === t.approvalStatus ? true :
+      activeTicketFilter === t.sport ? true : false;
+
+    const matchSearch = !searchVal ||
+      [t.title, t.venue, t.city, t.seller, t.sport].some(f => (f || "").toLowerCase().includes(searchVal));
+
+    return matchFilter && matchSearch;
+  });
+
+  el("ticketsTableCount").textContent = `${filtered.length} ticket${filtered.length !== 1 ? "s" : ""}`;
+
+  if (!filtered.length) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <h3>No tickets found</h3>
+        <p>No tickets match your filters. <a href="upload.html" style="color:var(--ticket-purple);font-weight:600;">Upload new tickets</a> to get started.</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = "";
+  filtered.forEach((t, idx) => {
+    const row = document.createElement("div");
+    row.className = "event-row";
+    row.style.animationDelay = `${idx * 0.04}s`;
+
+    const sportIcon = getSportIcon(t.sport);
+
+    const thumbHtml = t.image
+      ? `<img class="event-thumb" src="${esc(t.image)}" alt="${esc(t.title)}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+         <div class="event-thumb-placeholder" style="display:none;">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+         </div>`
+      : `<div class="event-thumb-placeholder">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+         </div>`;
+
+    const statusBadge = getStatusBadge(t.approvalStatus);
+
+    row.innerHTML = `
+      ${thumbHtml}
+      <div class="event-info">
+        <div class="event-title">${sportIcon} ${esc(t.title || "Untitled Ticket")}</div>
+        <div class="event-meta">
+          <span class="event-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            ${esc(t.date || "TBD")} ${t.time ? `• ${esc(t.time)}` : ''}
+          </span>
+          <span class="event-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+            ${esc(t.venue || "TBD")}, ${esc(t.city || "TBD")}
+          </span>
+          <span class="cat-badge">${sportIcon} ${esc(t.sport || "Other")}</span>
+          ${statusBadge}
+        </div>
+        <div class="event-meta" style="margin-top:4px;">
+          <span class="event-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            $${t.price || '0'} × ${t.qty || '1'}
+          </span>
+          <span class="event-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            ${esc(t.seller || "Anonymous")}
+          </span>
+          ${t.seat ? `<span class="event-meta-item">${esc(t.seat)}</span>` : ''}
+        </div>
+      </div>
+      <div class="event-actions">
+        <button class="btn-edit edit-ticket-btn" title="Edit ticket">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        ${t.approvalStatus === 'pending' ? `
+        <button class="btn-approve approve-ticket-btn" title="Approve ticket">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Approve
+        </button>` : ''}
+        <button class="btn-delete delete-ticket-btn" title="Delete ticket">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          Delete
+        </button>
+      </div>`;
+
+    row.querySelector(".edit-ticket-btn").onclick = () => openTicketEdit(t.id);
+    row.querySelector(".approve-ticket-btn").onclick = () => approveTicket(t.id);
+    row.querySelector(".delete-ticket-btn").onclick = () => openDelete(t.id, t.title || "Untitled Ticket", "ticket");
+    list.appendChild(row);
+  });
+}
+
+// ════════════════════════════════════════════════════
+//  TICKET EDIT MODAL
+// ════════════════════════════════════════════════════
+
+function openTicketEdit(id) {
+  const ticket = allTickets.find(t => t.id === id);
+  if (!ticket) return;
+
+  editingTicketId = id;
+  el("editTicketId").value = id;
+  el("editTicketSport").value = ticket.sport || "worldcup";
+  el("editTicketTitle").value = ticket.title || "";
+  el("editTicketVenue").value = ticket.venue || "";
+  el("editTicketCity").value = ticket.city || "";
+  el("editTicketDate").value = ticket.date || "";
+  el("editTicketTime").value = ticket.time || "";
+  el("editTicketPrice").value = ticket.price || 0;
+  el("editTicketQty").value = ticket.qty || 1;
+  el("editTicketSeat").value = ticket.seat || "";
+  el("editTicketSeller").value = ticket.seller || "";
+  el("editTicketSellerContact").value = ticket.sellerContact || "";
+  el("editTicketNotes").value = ticket.notes || "";
+  el("editTicketStatus").value = ticket.approvalStatus || "pending";
+
+  // Preview image
+  const preview = el("editTicketImagePreview");
+  if (ticket.image) {
+    preview.src = ticket.image;
+    preview.style.display = "block";
+    el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder").style.display = "none";
+  } else {
+    preview.style.display = "none";
+    el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder").style.display = "flex";
+  }
+
+  el("ticketEditModal").classList.add("open");
+}
+
+function closeTicketEdit() {
+  editingTicketId = null;
+  el("ticketEditModal").classList.remove("open");
+  el("ticketEditForm").reset();
+  el("editTicketImagePreview").style.display = "none";
+  el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder").style.display = "flex";
+}
+
+async function saveTicketEdit(e) {
+  if (e) e.preventDefault();
+  if (!editingTicketId) return;
+
+  const btn = el("saveTicketEditBtn");
+  btn.disabled = true;
+
+  const ticketData = {
+    sport: el("editTicketSport").value,
+    title: el("editTicketTitle").value.trim(),
+    venue: el("editTicketVenue").value.trim(),
+    city: el("editTicketCity").value.trim(),
+    date: el("editTicketDate").value,
+    time: el("editTicketTime").value,
+    price: parseFloat(el("editTicketPrice").value) || 0,
+    qty: parseInt(el("editTicketQty").value) || 1,
+    seat: el("editTicketSeat").value.trim(),
+    seller: el("editTicketSeller").value.trim(),
+    sellerContact: el("editTicketSellerContact").value.trim(),
+    notes: el("editTicketNotes").value.trim(),
+    approvalStatus: el("editTicketStatus").value,
+    image: allTickets.find(t => t.id === editingTicketId)?.image || null
+  };
+
+  try {
+    await updateDoc(doc(db, "ticket_listings", editingTicketId), ticketData);
+    showToast("Ticket updated successfully!", "success");
+    closeTicketEdit();
+    loadTickets();
+  } catch(err) {
+    showToast("Error updating ticket: " + err.message, "error");
+    btn.disabled = false;
+  }
+}
+
+async function approveTicket(id) {
+  try {
+    await updateDoc(doc(db, "ticket_listings", id), {
+      approvalStatus: 'approved'
+    });
+    showToast("Ticket approved and published!", "success");
+    loadTickets();
+  } catch(err) {
+    showToast("Error approving ticket: " + err.message, "error");
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  RENDER EVENTS
+// ════════════════════════════════════════════════════
+
 function renderEvents() {
   const searchVal = el("searchInput").value.toLowerCase();
   const list      = el("eventsList");
@@ -466,8 +914,7 @@ function renderEvents() {
       e.category === activeFilter;
 
     const matchSearch = !searchVal ||
-      [e.title, e.location, e.state, e.category, e.address]
-        .some(f => (f || "").toLowerCase().includes(searchVal));
+      [e.title, e.location, e.state, e.category, e.address].some(f => (f || "").toLowerCase().includes(searchVal));
 
     return matchFilter && matchSearch;
   });
@@ -490,7 +937,6 @@ function renderEvents() {
     row.className = "event-row";
     row.style.animationDelay = `${idx * 0.04}s`;
 
-    // Thumbnail — support both http URLs and local paths like images/name.jpg
     const thumbHtml = e.image
       ? `<img class="event-thumb" src="${esc(e.image)}" alt="${esc(e.title)}" loading="lazy"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
@@ -535,19 +981,30 @@ function renderEvents() {
       </div>`;
 
     row.querySelector(".edit-btn").onclick   = () => location.href = `upload.html?edit=${e.id}`;
-    row.querySelector(".delete-btn").onclick = () => openDelete(e.id, e.title);
+    row.querySelector(".delete-btn").onclick = () => openDelete(e.id, e.title, "event");
     list.appendChild(row);
   });
 }
 
-// ── Delete modal ──────────────────────────────────────
-function openDelete(id, title) {
+// ════════════════════════════════════════════════════
+//  DELETE MODAL
+// ════════════════════════════════════════════════════
+
+function openDelete(id, title, type = "event") {
   pendingDeleteId = id;
-  el("deleteEventName").textContent = title || "Untitled Event";
+  pendingDeleteType = type;
+  el("deleteModalTitle").textContent = type === "ticket" ? "Delete Ticket" : "Delete Event";
+  el("deleteEventName").textContent = title || "Untitled";
+  el("deleteModalMessage").textContent = type === "ticket" 
+    ? "Deleting this ticket permanently removes it from the marketplace." 
+    : "Deleting this event permanently removes it from VendHub. Vendor applications linked to this event will remain in the database but will lose their event reference.";
+  el("deleteBtnText").textContent = type === "ticket" ? "Delete Ticket" : "Delete Event";
   el("deleteModal").classList.add("open");
 }
+
 function closeDelete() {
   pendingDeleteId = null;
+  pendingDeleteType = null;
   el("deleteModal").classList.remove("open");
   el("confirmDeleteBtn").classList.remove("loading");
 }
@@ -557,21 +1014,34 @@ el("cancelDeleteBtn2").onclick = closeDelete;
 el("deleteModal").addEventListener("click", e => { if (e.target === el("deleteModal")) closeDelete(); });
 
 el("confirmDeleteBtn").onclick = async () => {
-  if (!pendingDeleteId) return;
+  if (!pendingDeleteId || !pendingDeleteType) return;
   const btn = el("confirmDeleteBtn");
   btn.classList.add("loading");
+
   try {
-    await deleteDoc(doc(db, "events", pendingDeleteId));
-    showToast("Event deleted.", "success");
+    if (pendingDeleteType === "ticket") {
+      await deleteDoc(doc(db, "ticket_listings", pendingDeleteId));
+      showToast("Ticket deleted.", "success");
+    } else {
+      await deleteDoc(doc(db, "events", pendingDeleteId));
+      showToast("Event deleted.", "success");
+    }
     closeDelete();
-    loadEvents();
+    if (pendingDeleteType === "ticket") {
+      loadTickets();
+    } else {
+      loadEvents();
+    }
   } catch (err) {
     showToast("Delete failed: " + err.message, "error");
     btn.classList.remove("loading");
   }
 };
 
-// ── Filters + search ──────────────────────────────────
+// ════════════════════════════════════════════════════
+//  FILTERS + SEARCH
+// ════════════════════════════════════════════════════
+
 document.querySelectorAll(".filter-tab").forEach(tab => {
   tab.addEventListener("click", () => {
     document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
@@ -580,22 +1050,113 @@ document.querySelectorAll(".filter-tab").forEach(tab => {
     renderEvents();
   });
 });
-el("searchInput").addEventListener("input", renderEvents);
 
-// ── Sign out ──────────────────────────────────────────
+el("searchInput").addEventListener("input", () => {
+  if (el("ticketsTab").style.display !== "none") {
+    renderTickets();
+  } else {
+    renderEvents();
+  }
+});
+
+// Ticket filters
+document.querySelectorAll("[data-ticket-filter]").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll("[data-ticket-filter]").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeTicketFilter = tab.dataset.ticketFilter;
+    renderTickets();
+  });
+});
+
+// ════════════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════════════
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // Hide all tabs
+    el("eventsTab").style.display = "none";
+    el("ticketsTab").style.display = "none";
+
+    // Show selected tab
+    if (btn.dataset.tab === "events") {
+      el("eventsTab").style.display = "block";
+      el("topbarTitle").textContent = "Events";
+      el("searchInput").placeholder = "Search events...";
+      activeFilter = "all";
+      document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+      document.querySelector("[data-filter='all']").classList.add("active");
+      if (allEvents.length === 0) loadEvents();
+      else renderEvents();
+    } else if (btn.dataset.tab === "tickets") {
+      el("ticketsTab").style.display = "block";
+      el("topbarTitle").textContent = "Tickets";
+      el("searchInput").placeholder = "Search tickets...";
+      activeTicketFilter = "all";
+      document.querySelectorAll("[data-ticket-filter]").forEach(t => t.classList.remove("active"));
+      document.querySelector("[data-ticket-filter='all']").classList.add("active");
+      if (allTickets.length === 0) loadTickets();
+      else renderTickets();
+    }
+  });
+});
+
+// ════════════════════════════════════════════════════
+//  TICKET EDIT MODAL EVENTS
+// ════════════════════════════════════════════════════
+
+el("closeTicketEditBtn").onclick = closeTicketEdit;
+el("cancelTicketEditBtn").onclick = closeTicketEdit;
+el("ticketEditModal").addEventListener("click", e => { if (e.target === el("ticketEditModal")) closeTicketEdit(); });
+el("ticketEditForm").addEventListener("submit", saveTicketEdit);
+
+// ════════════════════════════════════════════════════
+//  SIDEBAR NAVIGATION
+// ════════════════════════════════════════════════════
+
+el("sidebarTickets").onclick = () => {
+  // Switch to tickets tab
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  el("tabTickets").classList.add("active");
+  el("eventsTab").style.display = "none";
+  el("ticketsTab").style.display = "block";
+  el("topbarTitle").textContent = "Tickets";
+  el("searchInput").placeholder = "Search tickets...";
+
+  // Update sidebar active state
+  document.querySelectorAll(".sidebar-item").forEach(item => item.classList.remove("active"));
+  el("sidebarTickets").classList.add("active");
+
+  if (allTickets.length === 0) loadTickets();
+  else renderTickets();
+};
+
+// ════════════════════════════════════════════════════
+//  SIGN OUT
+// ════════════════════════════════════════════════════
+
 el("sidebarLogout").onclick = () => signOut(auth).then(() => location.href = "index.html");
 el("logoutBtn").onclick     = () => signOut(auth).then(() => location.href = "index.html");
 
-// ── Auth guard ────────────────────────────────────────
+// ════════════════════════════════════════════════════
+//  AUTH GUARD
+// ════════════════════════════════════════════════════
+
 onAuthStateChanged(auth, user => {
   if (!user || user.email !== "admin@grandbazaar.com") {
     location.href = "index.html";
     return;
   }
-  // Personalise sidebar avatar
+
   const name = user.displayName || user.email || "A";
   el("sidebarAvatarEl").textContent  = name.charAt(0).toUpperCase();
   el("sidebarAdminName").textContent = user.displayName || user.email;
+
+  // Load initial data
   loadEvents();
 });
 </script>

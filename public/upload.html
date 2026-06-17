@@ -25,6 +25,8 @@
   --transition: 0.27s cubic-bezier(0.4,0,0.2,1);
   --eb-orange: #f05537;
   --eb-orange-light: #fff0ed;
+  --ticket-purple: #6366f1;
+  --ticket-purple-light: #eef2ff;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -78,7 +80,7 @@ body::after {
 .google-btn:hover { background: var(--cream); border-color: #ccc; transform: translateY(-1px); }
 .google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-/* ═══ MODE SWITCHER (Eventbrite vs Manual) ═══ */
+/* MODE SWITCHER */
 .mode-switcher {
   width: 100%; display: flex; gap: 0;
   background: rgba(255,255,255,0.07);
@@ -95,12 +97,14 @@ body::after {
   transition: var(--transition); position: relative;
 }
 .mode-btn:first-child { border-right: 1px solid rgba(255,255,255,0.10); }
+.mode-btn:nth-child(2) { border-right: 1px solid rgba(255,255,255,0.10); }
 .mode-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
 .mode-btn.active {
   background: var(--white); color: var(--black);
   border-radius: 12px; margin: 4px; box-shadow: var(--shadow-md);
 }
 .mode-btn.active.eb-mode { background: var(--eb-orange); color: var(--white); }
+.mode-btn.active.ticket-mode { background: var(--ticket-purple); color: var(--white); }
 .mode-btn:not(.active):hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
 .mode-badge {
   background: var(--gold); color: var(--black);
@@ -108,8 +112,49 @@ body::after {
   padding: 2px 7px; border-radius: 20px;
 }
 .mode-btn.active.eb-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
+.mode-btn.active.ticket-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
 
-/* ═══ EVENTBRITE IMPORT CARD ═══ */
+/* TICKET UPLOAD CARD */
+.ticket-card {
+  width: 100%; background: var(--white); border-radius: 24px; overflow: hidden;
+  box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+  display: none;
+}
+.ticket-header {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  padding: 26px 36px 22px; position: relative; overflow: hidden;
+}
+.ticket-header::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 85% 20%, rgba(255,255,255,0.12) 0%, transparent 55%);
+}
+.ticket-header-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+.ticket-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.35);
+  color: var(--white); font-size: 10.5px; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; padding: 4px 13px; border-radius: 20px; margin-bottom: 10px;
+}
+.ticket-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(20px,4vw,26px); font-weight: 900; color: var(--white); margin-bottom: 4px; }
+.ticket-header-sub { font-size: 13px; color: rgba(255,255,255,0.65); }
+.ticket-logo-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.ticket-body { padding: 28px 36px 36px; }
+
+.ticket-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.ticket-image-preview-wrap { margin-top: 10px; border-radius: var(--radius-sm); overflow: hidden; border: 1.5px solid var(--border); background: var(--cream); height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
+.ticket-image-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.ticket-image-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); }
+.ticket-image-placeholder svg { width: 28px; height: 28px; opacity: 0.4; }
+.ticket-image-placeholder span { font-size: 12.5px; }
+.ticket-filename-badge { display: none; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(10,10,10,0.72); backdrop-filter: blur(6px); color: var(--white); font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 20px; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis; }
+.ticket-image-preview-wrap:has(img[style*="block"]) .ticket-filename-badge { display: block; }
+.ticket-clear-btn { display: none; position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(10,10,10,0.65); border: none; cursor: pointer; color: var(--white); font-size: 14px; line-height: 1; align-items: center; justify-content: center; transition: background 0.15s; }
+.ticket-clear-btn:hover { background: #ef4444; }
+
+.btn-submit-ticket { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+.btn-submit-ticket:hover { box-shadow: 0 10px 28px rgba(79, 70, 229, 0.35); }
+
+/* EVENTBRITE IMPORT CARD */
 .eb-card {
   width: 100%; background: var(--white); border-radius: 24px; overflow: hidden;
   box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
@@ -120,8 +165,7 @@ body::after {
   padding: 26px 36px 22px; position: relative; overflow: hidden;
 }
 .eb-header::before {
-  content: "";
-  position: absolute; inset: 0;
+  content: ""; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 85% 20%, rgba(255,255,255,0.12) 0%, transparent 55%);
 }
 .eb-header-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
@@ -263,7 +307,7 @@ body::after {
 .eb-empty-icon { font-size: 36px; }
 .eb-empty-msg { font-size: 14px; color: var(--muted); }
 
-/* ═══ FORM CARD (Manual) ═══ */
+/* FORM CARD (Manual) */
 .form-card { width: 100%; background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; display: none; }
 .form-header { background: var(--black); padding: 26px 36px 22px; position: relative; overflow: hidden; }
 .form-header::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.14) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, rgba(201,168,76,0.07) 0%, transparent 50%); pointer-events: none; }
@@ -426,14 +470,12 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 @media (max-width: 640px) {
   .page { padding: 20px 12px 48px; }
   .form-header { padding: 22px 20px 18px; }
-  .form-body, .eb-body { padding: 22px 18px 28px; }
+  .form-body, .eb-body, .ticket-body { padding: 22px 18px 28px; }
   .field-row { grid-template-columns: 1fr; gap: 0; }
   .category-grid { grid-template-columns: repeat(3, 1fr); }
   .nav-link-gold span { display: none; }
   .mode-btn span.mode-label { display: none; }
-  .eb-action-bar { flex-direction: column; }
-  .eb-search-row { flex-direction: column; }
-  .eb-url-row { flex-direction: column; }
+  .ticket-form-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -474,7 +516,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     </button>
   </div>
 
-  <!-- MODE SWITCHER (shown after login) -->
+  <!-- MODE SWITCHER -->
   <div class="mode-switcher" id="modeSwitcher" style="display:none;">
     <button class="mode-btn active" id="modeManual">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -485,11 +527,14 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
       <span class="mode-label">Import from Eventbrite</span>
       <span class="mode-badge">AUTO</span>
     </button>
+    <button class="mode-btn" id="modeTickets">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M19.5 12c0 4.14-3.36 7.5-7.5 7.5S4.5 16.14 4.5 12 7.86 4.5 12 4.5c2.38 0 4.5.91 6.24 2.42"/></svg>
+      <span class="mode-label">Upload Tickets</span>
+      <span class="mode-badge">NEW</span>
+    </button>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
-       EVENTBRITE IMPORT CARD
-  ═══════════════════════════════════════════════ -->
+  <!-- EVENTBRITE IMPORT CARD -->
   <div class="eb-card" id="ebCard">
     <div class="eb-header">
       <div class="eb-header-top">
@@ -501,10 +546,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
         <div class="eb-logo-icon">🎟️</div>
       </div>
     </div>
-
     <div class="eb-body">
-
-      <!-- API Key Setup -->
       <div class="eb-setup-section" id="ebSetupSection">
         <div class="eb-setup-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
@@ -522,8 +564,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
           <span id="ebKeyMsg">No API key saved</span>
         </div>
       </div>
-
-      <!-- Search by keyword -->
       <div class="section-label" style="margin-top:0;">Search Your Eventbrite Events</div>
       <div class="eb-search-row">
         <input type="text" id="ebSearchInput" placeholder="Search by event name, city, keyword…" autocomplete="off">
@@ -532,10 +572,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
           Search
         </button>
       </div>
-
       <div class="eb-divider">or paste an Eventbrite event URL</div>
-
-      <!-- Paste URL -->
       <div class="eb-url-row">
         <input type="text" id="ebUrlInput" placeholder="https://www.eventbrite.com/e/your-event-name-tickets-123456789" autocomplete="off">
         <button class="eb-fetch-btn" id="ebFetchBtn">
@@ -543,20 +580,14 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
           Fetch Event
         </button>
       </div>
-
-      <!-- Loading -->
       <div class="eb-loading" id="ebLoading">
         <div class="eb-spinner"></div>
         <div class="eb-loading-text" id="ebLoadingText">Searching Eventbrite…</div>
       </div>
-
-      <!-- Empty state -->
       <div class="eb-empty" id="ebEmpty">
         <div class="eb-empty-icon">🔍</div>
         <div class="eb-empty-msg">No events found. Try a different keyword.</div>
       </div>
-
-      <!-- Results -->
       <div class="eb-results" id="ebResults">
         <div class="eb-results-header">
           <span class="eb-results-title">Results</span>
@@ -564,8 +595,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
         </div>
         <div class="eb-event-grid" id="ebEventGrid"></div>
       </div>
-
-      <!-- Action bar -->
       <div class="eb-action-bar" id="ebActionBar">
         <div class="eb-selected-info"><strong id="ebSelectedCount">0</strong> event(s) selected</div>
         <button class="eb-import-btn" id="ebImportBtn">
@@ -573,20 +602,206 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
           Import to Form
         </button>
       </div>
-
-      <!-- Import log -->
       <div class="eb-import-status" id="ebImportStatus">
         <div class="eb-import-log" id="ebImportLog"></div>
       </div>
-
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
-       MANUAL FORM CARD
-  ═══════════════════════════════════════════════ -->
-  <div class="form-card" id="formCard">
+  <!-- TICKET UPLOAD CARD -->
+  <div class="ticket-card" id="ticketCard">
+    <div class="ticket-header">
+      <div class="ticket-header-top">
+        <div>
+          <div class="ticket-eyebrow">🎟️ Resale Tickets</div>
+          <h1>Upload Tickets</h1>
+          <p class="ticket-header-sub">Upload individual resale tickets for sports events</p>
+        </div>
+        <div class="ticket-logo-icon">⚽</div>
+      </div>
+    </div>
+    <div class="ticket-body">
+      <div class="prefill-notice" id="ticketPrefillNotice">
+        <div class="prefill-notice-icon">✨</div>
+        <div class="prefill-notice-text">
+          Tickets will be saved with <strong>pending</strong> status for admin approval.
+        </div>
+      </div>
 
+      <form id="ticketForm" novalidate>
+        <div class="section-label">Ticket Details</div>
+
+        <div class="ticket-form-grid">
+          <div class="field-group">
+            <label class="field-label">Sport Category <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              <select id="ticketSport" required>
+                <option value="">Select Sport</option>
+                <option value="worldcup">FIFA World Cup 2026</option>
+                <option value="mlb">MLB Baseball</option>
+                <option value="nba">NBA Basketball</option>
+                <option value="nfl">NFL Football</option>
+                <option value="nhl">NHL Hockey</option>
+                <option value="concert">Concert</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Event Name <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+              <input id="ticketTitle" type="text" placeholder="e.g., FIFA World Cup 2026 - Group Stage" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Venue / Stadium <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+              <input id="ticketVenue" type="text" placeholder="e.g., MetLife Stadium" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">City <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <input id="ticketCity" type="text" placeholder="e.g., East Rutherford, NJ" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Date <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <input id="ticketDate" type="date" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Time <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <input id="ticketTime" type="time" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Price per Ticket ($) <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <input id="ticketPrice" type="number" min="0" step="0.01" placeholder="e.g., 150.00" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Quantity Available <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 01-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              <input id="ticketQty" type="number" min="1" placeholder="e.g., 2" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Seat Section <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              <input id="ticketSeat" type="text" placeholder="e.g., Section 101, Row A" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Seller Name <span class="req">*</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/></svg>
+              <input id="ticketSeller" type="text" placeholder="Your name or company" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Seller Contact <span class="opt">(optional)</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+              <input id="ticketSellerContact" type="text" placeholder="Email or phone number" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group" style="grid-column: 1 / -1;">
+            <label class="field-label">Additional Notes <span class="opt">(optional)</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon top" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <textarea id="ticketNotes" rows="3" placeholder="Any special conditions, restrictions, or additional information"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-label">Ticket Proof Image <span class="req">*</span></div>
+        <div class="img-tabs">
+          <button type="button" class="img-tab active" id="ticketTabUpload">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload File
+          </button>
+          <button type="button" class="img-tab" id="ticketTabUrl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            Paste URL
+          </button>
+        </div>
+        <div id="ticketUploadPanel">
+          <div class="img-upload-zone" id="ticketImgDropZone">
+            <input type="file" id="ticketImgFileInput" accept="image/jpeg,image/png,image/webp,image/gif" />
+            <div class="img-upload-zone-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="img-upload-zone-title"><strong>Click to upload</strong> or drag & drop</div>
+            <div class="img-upload-zone-sub">JPG, PNG, WEBP, GIF · Max 5 MB</div>
+          </div>
+          <div class="img-upload-progress" id="ticketImgUploadProgress">
+            <div class="img-upload-progress-track">
+              <div class="img-upload-progress-fill" id="ticketImgProgressFill"></div>
+            </div>
+            <div class="img-upload-progress-label">
+              <span id="ticketImgProgressName">Uploading…</span>
+              <span id="ticketImgProgressPct">0%</span>
+            </div>
+          </div>
+        </div>
+        <div class="img-url-panel" id="ticketUrlPanel">
+          <div class="field-wrap has-icon">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <input id="ticketImageUrl" type="text" placeholder="https://example.com/image.jpg" autocomplete="off">
+          </div>
+        </div>
+        <input type="hidden" id="ticketImage">
+        <div class="ticket-image-preview-wrap" id="ticketImagePreviewWrap">
+          <img id="ticketImagePreview" alt="Preview">
+          <div class="ticket-image-placeholder" id="ticketImagePlaceholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Ticket image preview</span>
+          </div>
+          <div class="ticket-filename-badge" id="ticketImgFilenameBadge"></div>
+          <button type="button" class="ticket-clear-btn" id="ticketImgClearBtn" title="Remove image" style="display:flex;">×</button>
+        </div>
+
+        <div class="submit-area">
+          <button type="submit" class="btn-submit btn-submit-ticket" id="ticketSubmitBtn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="btn-label">Upload Ticket</span>
+            <div class="spinner"></div>
+          </button>
+          <button type="button" class="btn-secondary-action" id="ticketResetBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            Clear Form
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FORM CARD (Manual) -->
+  <div class="form-card" id="formCard">
     <div class="form-header">
       <div class="form-header-top">
         <div>
@@ -606,8 +821,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     </div>
 
     <div class="form-body">
-
-      <!-- Pre-fill notice -->
       <div class="prefill-notice" id="prefillNotice">
         <div class="prefill-notice-icon">✨</div>
         <div class="prefill-notice-text">
@@ -617,10 +830,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
       </div>
 
       <form id="eventForm" novalidate>
-
-        <!-- Basic Info -->
         <div class="section-label">Basic Information</div>
-
         <div class="field-group">
           <label class="field-label">Event Title <span class="req">*</span></label>
           <div class="field-wrap has-icon">
@@ -628,7 +838,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             <input id="title" type="text" placeholder="e.g. Baltimore Springs Craft Fair" required autocomplete="off">
           </div>
         </div>
-
         <div class="field-row">
           <div class="field-group">
             <label class="field-label">Venue / Location <span class="req">*</span></label>
@@ -645,7 +854,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             </div>
           </div>
         </div>
-
         <div class="field-group">
           <label class="field-label">Full Address <span class="req">*</span></label>
           <div class="field-wrap has-icon">
@@ -653,13 +861,10 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             <input id="address" type="text" placeholder="123 Main St, Baltimore, MD 21201" required autocomplete="off">
           </div>
         </div>
-
-        <!-- Event Dates -->
         <div class="section-label">Event Dates</div>
         <p class="field-hint" style="margin-bottom:14px;">
           Click dates to select them. Click again to deselect. Set a start time per day below. At least <strong>one date</strong> is required.
         </p>
-
         <div class="cal-wrapper" id="calWrapper">
           <div class="cal-header">
             <span class="cal-month-label" id="calMonthLabel">— —</span>
@@ -691,10 +896,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             <div class="cal-chips" id="calChips"><span class="cal-empty-hint">No dates selected yet</span></div>
           </div>
         </div>
-
-        <!-- Media & Pricing -->
         <div class="section-label">Media &amp; Pricing</div>
-
         <div class="field-row">
           <div class="field-group">
             <label class="field-label">Event Image <span class="req">*</span></label>
@@ -744,7 +946,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
               <button type="button" class="img-clear-btn" id="imgClearBtn" title="Remove image" style="display:flex;">×</button>
             </div>
           </div>
-
           <div class="field-group">
             <label class="field-label">Vendor Price / Fee <span class="req">*</span></label>
             <div class="field-wrap has-icon">
@@ -754,7 +955,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             <div style="margin-top:14px;">
               <label class="field-label">Max Vendor Spots <span class="opt">(optional)</span></label>
               <div class="field-wrap has-icon">
-                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 01-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                 <input id="maxSpots" type="number" min="1" placeholder="e.g. 50" autocomplete="off">
               </div>
             </div>
@@ -774,8 +975,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             </div>
           </div>
         </div>
-
-        <!-- Category -->
         <div class="section-label">Category</div>
         <div class="category-grid">
           <div class="cat-chip" data-value="Music"><span class="cat-chip-icon">🎵</span>Music</div>
@@ -786,8 +985,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
           <div class="cat-chip" data-value="Food"><span class="cat-chip-icon">🍴</span>Food</div>
         </div>
         <select id="category"></select>
-
-        <!-- Description -->
         <div class="section-label">Event Description</div>
         <div class="field-group">
           <label class="field-label">Description <span class="req">*</span></label>
@@ -797,8 +994,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
           </div>
           <div class="field-hint" id="charCount">0 / 5000 characters</div>
         </div>
-
-        <!-- Links -->
         <div class="section-label">Links <span style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted);margin-left:4px;">(optional)</span></div>
         <div class="field-row">
           <div class="field-group">
@@ -816,8 +1011,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             </div>
           </div>
         </div>
-
-        <!-- Submit -->
         <div class="submit-area">
           <button type="submit" class="btn-submit" id="submitBtn">
             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -829,11 +1022,9 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             Clear Form
           </button>
         </div>
-
       </form>
     </div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -866,7 +1057,7 @@ function showToast(msg, type = "") {
 }
 function el(id) { return document.getElementById(id); }
 
-// ── Edit mode ──────────────────────────────────────────
+// Edit mode
 const params = new URLSearchParams(window.location.search);
 const editId = params.get("edit") || null;
 let editingEventId = editId;
@@ -878,7 +1069,7 @@ if (editId) {
   el("submitBtn").querySelector(".btn-label").textContent = "Update Event";
 }
 
-// ── Auth ───────────────────────────────────────────────
+// Auth
 async function doLogin() {
   try { await setPersistence(auth, browserLocalPersistence); await signInWithPopup(auth, provider); }
   catch (err) { showToast("Login failed: " + err.message, "error"); }
@@ -891,7 +1082,7 @@ onAuthStateChanged(auth, async user => {
     el("loginCard").style.display  = "none";
     el("loginBtn").style.display   = "none";
     el("modeSwitcher").style.display = "flex";
-    el("formCard").style.display   = "block";    // default to manual
+    el("formCard").style.display   = "block";
     el("headerUserRow").style.display = "flex";
     el("headerAvatar").textContent = (user.displayName || user.email || "A").charAt(0).toUpperCase();
     el("headerEmail").textContent  = user.displayName || user.email;
@@ -904,26 +1095,31 @@ onAuthStateChanged(auth, async user => {
     el("modeSwitcher").style.display = "none";
     el("formCard").style.display  = "none";
     el("ebCard").style.display    = "none";
+    el("ticketCard").style.display = "none";
   }
 });
 
-// ── Mode switcher ──────────────────────────────────────
+// Mode switcher
 let currentMode = "manual";
 el("modeManual").addEventListener("click", () => setMode("manual"));
 el("modeEventbrite").addEventListener("click", () => setMode("eventbrite"));
+el("modeTickets").addEventListener("click", () => setMode("tickets"));
 
 function setMode(mode) {
   currentMode = mode;
   el("modeManual").classList.toggle("active", mode === "manual");
   el("modeEventbrite").classList.toggle("active", mode === "eventbrite");
+  el("modeTickets").classList.toggle("active", mode === "tickets");
+
   el("modeEventbrite").classList.toggle("eb-mode", mode === "eventbrite");
+  el("modeTickets").classList.toggle("ticket-mode", mode === "tickets");
+
   el("formCard").style.display = mode === "manual" ? "block" : "none";
   el("ebCard").style.display   = mode === "eventbrite" ? "block" : "none";
+  el("ticketCard").style.display = mode === "tickets" ? "block" : "none";
 }
 
-// ═══════════════════════════════════════════════════════
-//  EVENTBRITE INTEGRATION
-// ═══════════════════════════════════════════════════════
+// EVENTBRITE INTEGRATION
 const EB_KEY_STORAGE = "vhub_eb_private_token";
 let ebToken = "";
 let ebSelectedEvents = new Set();
@@ -955,7 +1151,6 @@ el("ebSaveKey").addEventListener("click", () => {
   showToast("API key saved!", "success");
 });
 
-// ── Eventbrite search ──────────────────────────────────
 el("ebSearchBtn").addEventListener("click", doEbSearch);
 el("ebSearchInput").addEventListener("keydown", e => { if (e.key === "Enter") doEbSearch(); });
 
@@ -966,9 +1161,6 @@ async function doEbSearch() {
   clearEbResults();
 
   try {
-    // Use Eventbrite v3 API — search own events by organizer
-    // Note: Eventbrite's API has CORS restrictions from browsers.
-    // We'll use a CORS proxy for client-side requests.
     const url = q
       ? `https://www.eventbriteapi.com/v3/events/search/?q=${encodeURIComponent(q)}&token=${ebToken}&expand=venue,logo,ticket_availability`
       : `https://www.eventbriteapi.com/v3/users/me/events/?token=${ebToken}&status=live,draft&expand=venue,logo,ticket_availability&order_by=start_desc`;
@@ -991,7 +1183,6 @@ async function doEbSearch() {
   }
 }
 
-// ── Fetch single event by URL ──────────────────────────
 el("ebFetchBtn").addEventListener("click", doEbFetchUrl);
 
 async function doEbFetchUrl() {
@@ -999,9 +1190,6 @@ async function doEbFetchUrl() {
   const raw = el("ebUrlInput").value.trim();
   if (!raw) { showToast("Please paste an Eventbrite event URL.", "error"); return; }
 
-  // Extract event ID from URL patterns like:
-  // https://www.eventbrite.com/e/event-name-tickets-123456789
-  // https://www.eventbrite.com/e/123456789
   const idMatch = raw.match(/(?:tickets-|\/e\/)(\d{8,})/);
   if (!idMatch) { showToast("Couldn't extract an event ID from that URL.", "error"); return; }
   const eventId = idMatch[1];
@@ -1026,22 +1214,15 @@ async function doEbFetchUrl() {
   }
 }
 
-// ── CORS proxy helper ──────────────────────────────────
-// Eventbrite API blocks direct browser requests. We use a public
-// CORS proxy. For production, use your own server-side proxy.
 async function fetchWithProxy(url) {
-  // Try direct first (works if CORS is open or from server)
   try {
     const direct = await fetch(url, { headers: { Authorization: `Bearer ${ebToken}` } });
     if (direct.ok || direct.status !== 0) return direct;
   } catch (_) { /* fall through to proxy */ }
-
-  // Fallback: allorigins proxy
   const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
   return fetch(proxyUrl);
 }
 
-// ── Render Eventbrite results ──────────────────────────
 function renderEbResults(events) {
   ebFetchedEvents = events;
   el("ebResults").classList.add("show");
@@ -1102,7 +1283,6 @@ function toggleEbSelect(idx, card) {
     ebSelectedEvents.delete(idx);
     card.classList.remove("selected");
   } else {
-    // Single-select for now: only one event populates form at a time
     ebSelectedEvents.clear();
     document.querySelectorAll(".eb-event-card").forEach(c => c.classList.remove("selected"));
     ebSelectedEvents.add(idx);
@@ -1136,7 +1316,6 @@ function hideEbLoading() {
 }
 function showEbEmpty() { el("ebEmpty").classList.add("show"); }
 
-// ── Import selected event into form ───────────────────
 el("ebImportBtn").addEventListener("click", doEbImport);
 
 async function doEbImport() {
@@ -1158,7 +1337,6 @@ async function doEbImport() {
   logEl.innerHTML = "";
   log("⏳", "Starting import…");
 
-  // ── Map Eventbrite fields → VendHub form ──
   const name     = ev.name?.text || "";
   const desc     = ev.description?.text || ev.summary || "";
   const venue    = ev.venue;
@@ -1170,10 +1348,7 @@ async function doEbImport() {
   const orgEmail = ev.organizer?.email || "";
   const cap      = ev.capacity || null;
 
-  // Title
   if (name) { el("title").value = name; log("✅", `Title: "${name.slice(0, 50)}${name.length > 50 ? "…" : ""}"`); }
-
-  // Location
   if (venue) {
     el("locationField").value = venue.name || "";
     el("state").value = venue.address?.region || venue.address?.city || "";
@@ -1188,8 +1363,6 @@ async function doEbImport() {
     el("address").value = addrParts.join(", ");
     log("✅", `Location: ${venue.name || "venue"}`);
   }
-
-  // Date & time
   if (start) {
     const y = start.getFullYear(), m = start.getMonth(), d = start.getDate();
     const key = dateKey(y, m, d);
@@ -1200,25 +1373,13 @@ async function doEbImport() {
     renderCalendar();
     log("✅", `Date: ${start.toDateString()} at ${timeStr}`);
   }
-
-  // Price
   const priceStr = isFree ? "Free" : (ticketMin ? `From $${ticketMin}` : "Paid");
   el("price").value = priceStr;
   log("✅", `Price: ${priceStr}`);
-
-  // Description
   if (desc) { el("description").value = desc.slice(0, 5000); updateCharCount(); log("✅", "Description imported"); }
-
-  // Website
   if (website) { el("website").value = website; log("✅", "Website linked"); }
-
-  // Contact email
   if (orgEmail) { el("contactEmail").value = orgEmail; log("✅", `Organiser email: ${orgEmail}`); }
-
-  // Capacity
   if (cap) { el("maxSpots").value = cap; log("✅", `Capacity: ${cap}`); }
-
-  // Image
   if (thumb) {
     el("image").value   = thumb;
     el("imageUrl").value = thumb;
@@ -1229,7 +1390,6 @@ async function doEbImport() {
     log("⚠️", "No image found — please upload one manually");
   }
 
-  // Auto-detect category from tags/format
   const lowerName = name.toLowerCase() + " " + desc.toLowerCase();
   const catMap = [
     { val: "Music",     terms: ["music", "concert", "band", "festival", "dj", "live"] },
@@ -1250,7 +1410,6 @@ async function doEbImport() {
   log("🎉", "Import complete! Review the form below.");
   el("ebImportBtn").disabled = false;
 
-  // Switch to manual form to review
   setTimeout(() => {
     setMode("manual");
     el("prefillNotice").classList.add("show");
@@ -1262,12 +1421,10 @@ async function doEbImport() {
 el("prefillDismiss").addEventListener("click", () => el("prefillNotice").classList.remove("show"));
 
 function escHtml(str) {
-  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");
 }
 
-// ═══════════════════════════════════════════════════════
-//  IMAGE UPLOAD ENGINE
-// ═══════════════════════════════════════════════════════
+// IMAGE UPLOAD ENGINE
 const tabUpload     = el("tabUpload");
 const tabUrl        = el("tabUrl");
 const uploadPanel   = el("uploadPanel");
@@ -1395,9 +1552,7 @@ function previewImage(url) {
   imgPreview.src = url;
 }
 
-// ═══════════════════════════════════════════════════════
-//  MULTI-DATE CALENDAR ENGINE
-// ═══════════════════════════════════════════════════════
+// MULTI-DATE CALENDAR ENGINE
 const MONTHS   = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DAYS_S   = ["Su","Mo","Tu","We","Th","Fr","Sa"];
@@ -1503,7 +1658,7 @@ renderCalendar();
 
 function getSelectedDateLabels() { return sortedKeys().map(k => formatLabel(selectedDates.get(k))); }
 
-// ── Load event for editing ─────────────────────────────
+// Load event for editing
 async function loadEvent(id) {
   try {
     const snap = await getDoc(doc(db, "events", id));
@@ -1540,7 +1695,7 @@ async function loadEvent(id) {
   } catch (err) { showToast("Error loading event: " + err.message, "error"); }
 }
 
-// ── Category ───────────────────────────────────────────
+// Category
 let selectedCategory = "";
 function setCategory(val) {
   selectedCategory = val;
@@ -1548,7 +1703,7 @@ function setCategory(val) {
 }
 document.querySelectorAll(".cat-chip").forEach(chip => chip.addEventListener("click", () => setCategory(chip.dataset.value)));
 
-// ── Char count ─────────────────────────────────────────
+// Char count
 function updateCharCount() {
   const len = el("description").value.length;
   el("charCount").textContent = `${len} / 5000 characters`;
@@ -1556,7 +1711,7 @@ function updateCharCount() {
 }
 el("description").addEventListener("input", updateCharCount);
 
-// ── Form submit ────────────────────────────────────────
+// Form submit
 el("eventForm").addEventListener("submit", async e => {
   e.preventDefault();
   if (!auth.currentUser) { showToast("Please sign in first.", "error"); return; }
@@ -1639,6 +1794,252 @@ function resetForm() {
 el("resetBtn").onclick = () => {
   if (!confirm("Clear all fields?")) return;
   resetForm(); showToast("Form cleared.");
+};
+
+// =============================================
+// TICKET UPLOAD FUNCTIONALITY
+// =============================================
+
+// Ticket form elements
+const ticketTabUpload = el("ticketTabUpload");
+const ticketTabUrl = el("ticketTabUrl");
+const ticketUploadPanel = el("ticketUploadPanel");
+const ticketUrlPanel = el("ticketUrlPanel");
+const ticketImgDropZone = el("ticketImgDropZone");
+const ticketImgFileInput = el("ticketImgFileInput");
+const ticketImgUploadProgress = el("ticketImgUploadProgress");
+const ticketImgProgressFill = el("ticketImgProgressFill");
+const ticketImgProgressName = el("ticketImgProgressName");
+const ticketImgProgressPct = el("ticketImgProgressPct");
+const ticketImageHidden = el("ticketImage");
+const ticketImgPreview = el("ticketImagePreview");
+const ticketImgPlaceholder = el("ticketImagePlaceholder");
+const ticketImgFilenameBadge = el("ticketImgFilenameBadge");
+const ticketImgClearBtn = el("ticketImgClearBtn");
+
+let ticketActiveTab = "upload";
+
+function ticketSwitchTab(tab) {
+  ticketActiveTab = tab;
+  ticketTabUpload.classList.toggle("active", tab === "upload");
+  ticketTabUrl.classList.toggle("active", tab === "url");
+  ticketUploadPanel.style.display = tab === "upload" ? "" : "none";
+  ticketUrlPanel.classList.toggle("show", tab === "url");
+}
+
+ticketTabUpload.addEventListener("click", () => ticketSwitchTab("upload"));
+ticketTabUrl.addEventListener("click", () => ticketSwitchTab("url"));
+
+el("ticketImageUrl").addEventListener("input", e => {
+  const v = e.target.value.trim();
+  ticketImageHidden.value = v;
+  ticketPreviewImage(v);
+  ticketImgFilenameBadge.textContent = "";
+});
+
+ticketImgDropZone.addEventListener("dragover", e => { 
+  e.preventDefault(); 
+  ticketImgDropZone.classList.add("drag-over"); 
+});
+ticketImgDropZone.addEventListener("dragleave", () => ticketImgDropZone.classList.remove("drag-over"));
+ticketImgDropZone.addEventListener("drop", e => {
+  e.preventDefault(); 
+  ticketImgDropZone.classList.remove("drag-over");
+  const file = e.dataTransfer.files[0];
+  if (file) handleTicketImageFile(file);
+});
+
+ticketImgFileInput.addEventListener("change", () => {
+  if (ticketImgFileInput.files[0]) handleTicketImageFile(ticketImgFileInput.files[0]);
+  ticketImgFileInput.value = "";
+});
+
+function ticketPreviewImage(url) {
+  if (!url) { 
+    ticketImgPreview.style.display = "none"; 
+    ticketImgPlaceholder.style.display = "flex"; 
+    return; 
+  }
+  ticketImgPreview.onload = () => { 
+    ticketImgPreview.style.display = "block"; 
+    ticketImgPlaceholder.style.display = "none"; 
+  };
+  ticketImgPreview.onerror = () => { 
+    ticketImgPreview.style.display = "none";  
+    ticketImgPlaceholder.style.display = "flex"; 
+  };
+  ticketImgPreview.src = url;
+}
+
+ticketImgClearBtn.addEventListener("click", () => {
+  ticketImageHidden.value = "";
+  el("ticketImageUrl").value = "";
+  ticketImgPreview.style.display = "none";
+  ticketImgPlaceholder.style.display = "flex";
+  ticketImgFilenameBadge.textContent = "";
+  ticketImgFileInput.value = "";
+  ticketImgUploadProgress.classList.remove("show");
+});
+
+async function handleTicketImageFile(file) {
+  if (!file.type.startsWith("image/")) { 
+    showToast("Please select an image file.", "error"); 
+    return; 
+  }
+  if (file.size > 5 * 1024 * 1024) { 
+    showToast("Image must be under 5 MB.", "error");  
+    return; 
+  }
+  if (!auth.currentUser) { 
+    showToast("Please sign in first.", "error"); 
+    return; 
+  }
+
+  ticketImgUploadProgress.classList.add("show");
+  ticketImgProgressFill.style.width = "0%";
+  ticketImgProgressName.textContent = file.name;
+  ticketImgProgressPct.textContent = "0%";
+  ticketImgDropZone.style.pointerEvents = "none";
+
+  const safeName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
+  const path = `ticket_images/${safeName}`;
+
+  async function tryTicketUpload(bucketUrl) {
+    const storageInstance = bucketUrl ? getStorage(app, `gs://${bucketUrl}`) : storage;
+    const ref = storageRef(storageInstance, path);
+    const task = uploadBytesResumable(ref, file);
+    return new Promise((resolve, reject) => {
+      task.on("state_changed",
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          ticketImgProgressFill.style.width = pct + "%";
+          ticketImgProgressPct.textContent = pct + "%";
+        },
+        err => reject(err),
+        async () => { 
+          try { 
+            resolve(await getDownloadURL(task.snapshot.ref)); 
+          } catch(e) { 
+            reject(e); 
+          } 
+        }
+      );
+    });
+  }
+
+  try {
+    let downloadURL;
+    try { 
+      downloadURL = await tryTicketUpload(null); 
+    } catch (primaryErr) {
+      const isNotFound = primaryErr?.code === "storage/unknown" || primaryErr?.message?.includes("404");
+      if (isNotFound) {
+        ticketImgProgressName.textContent = "Retrying with legacy bucket…";
+        downloadURL = await tryTicketUpload("vendors-de792.appspot.com");
+      } else { 
+        throw primaryErr; 
+      }
+    }
+    ticketImageHidden.value = downloadURL;
+    ticketPreviewImage(downloadURL);
+    ticketImgFilenameBadge.textContent = file.name;
+    ticketImgUploadProgress.classList.remove("show");
+    ticketImgDropZone.style.pointerEvents = "";
+    showToast("Ticket image uploaded!", "success");
+  } catch (err) {
+    console.error("Ticket storage upload error:", err);
+    ticketImgUploadProgress.classList.remove("show");
+    ticketImgDropZone.style.pointerEvents = "";
+    showToast(friendlyStorageError(err), "error");
+  }
+}
+
+// Ticket form submission
+el("ticketForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!auth.currentUser) { 
+    showToast("Please sign in first.", "error"); 
+    return; 
+  }
+
+  const required = [
+    { id: "ticketSport", label: "Sport Category" },
+    { id: "ticketTitle", label: "Event Name" },
+    { id: "ticketVenue", label: "Venue" },
+    { id: "ticketCity", label: "City" },
+    { id: "ticketDate", label: "Date" },
+    { id: "ticketTime", label: "Time" },
+    { id: "ticketPrice", label: "Price" },
+    { id: "ticketQty", label: "Quantity" },
+    { id: "ticketSeat", label: "Seat Section" },
+    { id: "ticketSeller", label: "Seller Name" },
+  ];
+
+  for (const f of required) {
+    if (!el(f.id).value.trim()) {
+      showToast(`Please fill in: ${f.label}`, "error");
+      el(f.id).focus();
+      el(f.id).scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+  }
+
+  if (!ticketImageHidden.value) {
+    showToast("Please add a ticket proof image.", "error");
+    return;
+  }
+
+  const btn = el("ticketSubmitBtn");
+  btn.disabled = true;
+  btn.classList.add("loading");
+
+  const ticketData = {
+    sport: el("ticketSport").value,
+    title: el("ticketTitle").value.trim(),
+    venue: el("ticketVenue").value.trim(),
+    city: el("ticketCity").value.trim(),
+    date: el("ticketDate").value,
+    time: el("ticketTime").value,
+    price: parseFloat(el("ticketPrice").value),
+    qty: parseInt(el("ticketQty").value),
+    seat: el("ticketSeat").value.trim(),
+    notes: el("ticketNotes").value.trim() || "",
+    image: ticketImageHidden.value,
+    seller: el("ticketSeller").value.trim(),
+    sellerContact: el("ticketSellerContact").value.trim() || null,
+    approvalStatus: 'pending',
+    user_id: auth.currentUser.uid,
+    user_email: auth.currentUser.email,
+    submittedAt: serverTimestamp()
+  };
+
+  try {
+    await addDoc(collection(db, "ticket_listings"), ticketData);
+    showToast("Ticket uploaded successfully! Waiting for admin approval.", "success");
+    resetTicketForm();
+  } catch (err) {
+    showToast("Error uploading ticket: " + err.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove("loading");
+  }
+});
+
+function resetTicketForm() {
+  el("ticketForm").reset();
+  ticketImageHidden.value = "";
+  el("ticketImageUrl").value = "";
+  ticketImgPreview.style.display = "none";
+  ticketImgPlaceholder.style.display = "flex";
+  ticketImgFilenameBadge.textContent = "";
+  ticketImgUploadProgress.classList.remove("show");
+  ticketSwitchTab("upload");
+}
+
+el("ticketResetBtn").onclick = () => {
+  if (!confirm("Clear all ticket fields?")) return;
+  resetTicketForm();
+  showToast("Ticket form cleared.");
 };
 </script>
 </body>
