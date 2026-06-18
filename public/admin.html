@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard — VendHub</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink:#0c0c0c; --ink-80:rgba(12,12,12,0.80); --ink-50:rgba(12,12,12,0.50);
+  --ink:#0c0c0c; --ink-80:rgba(12,12,12,0.80); --ink-60:rgba(12,12,12,0.60); --ink-50:rgba(12,12,12,0.50);
   --ink-24:rgba(12,12,12,0.24); --ink-10:rgba(12,12,12,0.10); --ink-05:rgba(12,12,12,0.05);
   --paper:#f8f6f2; --paper-alt:#f0ede7; --paper-deep:#e8e4dc; --white:#ffffff;
   --gold:#b8962e; --gold-lt:#d4b466; --gold-pale:#f5edd8; --gold-dk:#8a6e1e;
@@ -16,6 +16,7 @@
   --teal:#0f766e; --teal-lt:#ccfbf1;
   --green:#166534; --green-lt:#dcfce7; --green-md:#16a34a;
   --red:#991b1b; --red-lt:#fee2e2; --amber:#92400e; --amber-lt:#fef3c7;
+  --blue:#1d4ed8; --blue-lt:#dbeafe;
   --r-xs:4px; --r-sm:8px; --r-md:12px; --r-lg:18px; --r-xl:24px; --r-2xl:32px; --r-pill:999px;
   --sh-xs:0 1px 3px rgba(0,0,0,0.07);
   --sh-sm:0 2px 8px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
@@ -23,691 +24,342 @@
   --sh-lg:0 12px 40px rgba(0,0,0,0.12),0 4px 12px rgba(0,0,0,0.06);
   --sh-xl:0 24px 64px rgba(0,0,0,0.16),0 8px 24px rgba(0,0,0,0.08);
   --dur:0.22s; --ease:cubic-bezier(0.4,0,0.2,1); --spring:cubic-bezier(0.34,1.56,0.64,1);
-  --page-max:1300px; --pad-h:52px;
-  --t-xs:10px; --t-sm:12px; --t-base:14px; --t-md:16px;
-  --t-lg:18px; --t-xl:22px; --t-2xl:28px; --t-3xl:36px;
+  --page-max:1360px; --pad-h:48px;
+  --sidebar-w:64px;
 }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
 
-*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body { font-family:'Instrument Sans',sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased; display:flex; flex-direction:column; }
+/* ===== TOP HEADER ===== */
+.admin-header{background:var(--ink);position:sticky;top:0;z-index:200;flex-shrink:0;}
+.header-ledger{height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold-lt) 50%,var(--gold) 70%,transparent 100%);opacity:0.7;}
+.header-inner{max-width:100%;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.header-logo{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--white);letter-spacing:0.12em;text-transform:uppercase;display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none;}
+.header-logo-mark{width:30px;height:30px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--ink);box-shadow:0 2px 8px rgba(184,150,46,0.4);}
+.header-logo-text span{color:var(--gold-lt);}
+.header-logo-badge{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(184,150,46,0.18);border:1px solid rgba(184,150,46,0.35);color:var(--gold-lt);padding:2px 9px;border-radius:var(--r-pill);}
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.header-search-wrap{position:relative;}
+.header-search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:rgba(255,255,255,0.40);pointer-events:none;}
+.header-search-wrap input{padding:7px 14px 7px 32px;border-radius:var(--r-pill);border:1.5px solid rgba(255,255,255,0.12);font-family:'Instrument Sans',sans-serif;font-size:13px;color:var(--white);background:rgba(255,255,255,0.07);outline:none;width:190px;transition:all var(--dur) var(--ease);}
+.header-search-wrap input::placeholder{color:rgba(255,255,255,0.30);}
+.header-search-wrap input:focus{border-color:rgba(184,150,46,0.50);background:rgba(255,255,255,0.10);width:230px;box-shadow:0 0 0 3px rgba(184,150,46,0.12);}
+.header-admin-pill{display:flex;align-items:center;gap:8px;padding:5px 5px 5px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:var(--r-pill);position:relative;}
+.header-unread-badge{position:absolute;top:-4px;right:-4px;background:var(--gold);color:var(--ink);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--r-pill);min-width:16px;text-align:center;font-family:'Syne',sans-serif;display:none;}
+.header-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dk),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:var(--ink);flex-shrink:0;}
+.header-admin-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,0.65);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.header-logout-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.30);padding:5px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;transition:all var(--dur) var(--ease);}
+.header-logout-btn:hover{color:#ef4444;background:rgba(239,68,68,0.10);}
+.header-logout-btn svg{width:13px;height:13px;}
 
-.t-display { font-family:'Cormorant Garamond',serif; }
-.t-ui { font-family:'Syne',sans-serif; }
-.t-label { font-family:'Syne',sans-serif; font-size:var(--t-xs); font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-50); }
+/* ===== LAYOUT: SIDEBAR + CONTENT ===== */
+.app-body{flex:1;display:flex;min-height:0;}
 
-.admin-header {
-  background:var(--ink); position:sticky; top:0; z-index:200; flex-shrink:0;
-}
-.header-ledger {
-  height:2px;
-  background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold-lt) 50%,var(--gold) 70%,transparent 100%);
-  opacity:0.7;
-}
-.header-inner {
-  max-width:var(--page-max); margin:0 auto; padding:0 var(--pad-h); height:60px;
-  display:flex; align-items:center; justify-content:space-between; gap:20px; position:relative;
-}
-.header-inner::before {
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse at 8% 50%,rgba(184,150,46,0.10) 0%,transparent 45%);
-  pointer-events:none;
-}
-.header-logo {
-  font-family:'Syne',sans-serif; font-size:17px; font-weight:800;
-  color:var(--white); letter-spacing:0.12em; text-transform:uppercase;
-  display:flex; align-items:center; gap:10px; flex-shrink:0; text-decoration:none; position:relative; z-index:1;
-}
-.header-logo-mark {
-  width:30px; height:30px; border-radius:var(--r-sm);
-  background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));
-  display:flex; align-items:center; justify-content:center;
-  font-size:14px; font-weight:900; color:var(--ink); box-shadow:0 2px 8px rgba(184,150,46,0.4);
-}
-.header-logo-text span { color:var(--gold-lt); }
-.header-logo-badge {
-  font-family:'Syne',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
-  background:rgba(184,150,46,0.18); border:1px solid rgba(184,150,46,0.35);
-  color:var(--gold-lt); padding:2px 9px; border-radius:var(--r-pill);
-}
-.header-nav { display:flex; align-items:center; gap:2px; position:relative; z-index:1; }
-.nav-tab {
-  display:inline-flex; align-items:center; gap:6px; padding:7px 13px;
-  border-radius:var(--r-pill); font-family:'Syne',sans-serif; font-size:var(--t-xs);
-  font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
-  color:rgba(255,255,255,0.50); cursor:pointer; border:none; background:none;
-  transition:all var(--dur) var(--ease); white-space:nowrap;
-}
-.nav-tab svg { width:13px; height:13px; flex-shrink:0; opacity:0.7; }
-.nav-tab:hover { background:rgba(255,255,255,0.08); color:var(--white); }
-.nav-tab.active {
-  background:rgba(184,150,46,0.14); color:var(--gold-lt); border:1px solid rgba(184,150,46,0.25);
-}
-.nav-tab.active svg { opacity:1; }
-.header-right { display:flex; align-items:center; gap:10px; position:relative; z-index:1; flex-shrink:0; }
-.header-search-wrap { position:relative; }
-.header-search-wrap svg {
-  position:absolute; left:11px; top:50%; transform:translateY(-50%);
-  width:13px; height:13px; color:rgba(255,255,255,0.40); pointer-events:none;
-}
-.header-search-wrap input {
-  padding:7px 14px 7px 32px; border-radius:var(--r-pill);
-  border:1.5px solid rgba(255,255,255,0.12); font-family:'Instrument Sans',sans-serif;
-  font-size:13px; color:var(--white); background:rgba(255,255,255,0.07);
-  outline:none; width:190px; transition:all var(--dur) var(--ease);
-}
-.header-search-wrap input::placeholder { color:rgba(255,255,255,0.30); }
-.header-search-wrap input:focus {
-  border-color:rgba(184,150,46,0.50); background:rgba(255,255,255,0.10);
-  width:230px; box-shadow:0 0 0 3px rgba(184,150,46,0.12);
-}
-.header-admin-pill {
-  display:flex; align-items:center; gap:8px; padding:5px 5px 5px 12px;
-  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);
-  border-radius:var(--r-pill); position:relative;
-}
-.header-unread-badge {
-  position:absolute; top:-4px; right:-4px;
-  background:var(--gold); color:var(--ink); font-size:9px; font-weight:700;
-  padding:2px 6px; border-radius:var(--r-pill); min-width:16px; text-align:center;
-  font-family:'Syne',sans-serif; pointer-events:none;
-}
-.header-avatar {
-  width:28px; height:28px; border-radius:50%;
-  background:linear-gradient(135deg,var(--gold-dk),var(--gold));
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Syne',sans-serif; font-weight:800; font-size:12px; color:var(--ink); flex-shrink:0;
-}
-.header-admin-name {
-  font-family:'Syne',sans-serif; font-size:12px; font-weight:600;
-  color:rgba(255,255,255,0.65); max-width:110px; overflow:hidden;
-  text-overflow:ellipsis; white-space:nowrap;
-}
-.header-logout-btn {
-  background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.30);
-  padding:5px; border-radius:var(--r-sm); display:flex;
-  align-items:center; justify-content:center; transition:all var(--dur) var(--ease);
-}
-.header-logout-btn:hover { color:#ef4444; background:rgba(239,68,68,0.10); }
-.header-logout-btn svg { width:13px; height:13px; }
+/* ===== LEFT SIDEBAR NAV ===== */
+.sidebar{width:220px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;z-index:100;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.10);border-radius:3px;}
+.sidebar-section-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:20px 18px 8px;}
+.sidebar-nav-btn{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all var(--dur) var(--ease);position:relative;border-radius:0;}
+.sidebar-nav-btn svg{width:15px;height:15px;flex-shrink:0;opacity:0.5;transition:opacity var(--dur);}
+.sidebar-nav-btn .nav-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:0.04em;transition:color var(--dur);}
+.sidebar-nav-btn .nav-badge{margin-left:auto;background:var(--gold);color:var(--ink);font-size:9px;font-weight:700;padding:1px 6px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;min-width:16px;text-align:center;display:none;}
+.sidebar-nav-btn:hover{background:rgba(255,255,255,0.06);}
+.sidebar-nav-btn:hover svg{opacity:0.8;}
+.sidebar-nav-btn:hover .nav-label{color:rgba(255,255,255,0.75);}
+.sidebar-nav-btn.active{background:rgba(184,150,46,0.12);}
+.sidebar-nav-btn.active svg{opacity:1;color:var(--gold-lt);}
+.sidebar-nav-btn.active .nav-label{color:var(--gold-lt);}
+.sidebar-nav-btn.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--gold);border-radius:0 3px 3px 0;}
+.sidebar-divider{height:1px;background:rgba(255,255,255,0.06);margin:8px 0;}
+.sidebar-bottom{margin-top:auto;padding:16px 18px;border-top:1px solid rgba(255,255,255,0.06);}
+.sidebar-bottom-info{font-family:'Syne',sans-serif;font-size:10px;color:rgba(255,255,255,0.20);letter-spacing:0.06em;}
 
-.main { flex:1; display:flex; flex-direction:column; min-width:0; }
-.page-body {
-  padding:32px var(--pad-h); flex:1; max-width:var(--page-max);
-  margin:0 auto; width:100%;
-}
+/* ===== MAIN CONTENT ===== */
+.main-content{flex:1;min-width:0;overflow-y:auto;}
+.page-body{padding:28px 36px;max-width:1100px;}
 
-.tab-pane { display:none; }
-.tab-pane.active { display:block; animation:fadeIn 0.20s var(--ease); }
+.tab-pane{display:none;}
+.tab-pane.active{display:block;animation:fadeIn 0.18s var(--ease);}
 
-.stats-row {
-  display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px;
-}
-.stat-card {
-  background:var(--white); border-radius:var(--r-lg); padding:20px 22px;
-  border:1px solid var(--ink-10); box-shadow:var(--sh-sm);
-  position:relative; overflow:hidden; transition:all var(--dur) var(--ease);
-}
-.stat-card:hover { transform:translateY(-2px); box-shadow:var(--sh-md); }
-.stat-card-accent {
-  position:absolute; top:0; right:0; width:52px; height:52px;
-  border-radius:0 var(--r-lg) 0 52px; opacity:0.08;
-}
-.stat-card.gold .stat-card-accent { background:var(--gold); }
-.stat-card.blue .stat-card-accent { background:#3b82f6; }
-.stat-card.green .stat-card-accent { background:#22c55e; }
-.stat-card.violet .stat-card-accent { background:var(--violet-md); }
-.stat-label {
-  font-family:'Syne',sans-serif; font-size:9.5px; font-weight:700;
-  letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-50); margin-bottom:10px;
-}
-.stat-value {
-  font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:600;
-  color:var(--ink); line-height:1;
-}
-.stat-sub { font-size:12px; color:var(--ink-50); margin-top:5px; }
+/* ===== PAGE HEADER ===== */
+.page-header{margin-bottom:24px;}
+.page-header-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:var(--ink);line-height:1;}
+.page-subtitle{font-size:13px;color:var(--ink-50);margin-top:4px;}
 
-.quick-actions {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:14px; margin-bottom:28px;
-}
-.quick-action-card {
-  background:var(--white); border-radius:var(--r-lg); padding:20px;
-  border:1px solid var(--ink-10); box-shadow:var(--sh-sm); cursor:pointer;
-  transition:all var(--dur) var(--ease); display:flex; flex-direction:column;
-  gap:10px; position:relative;
-}
-.quick-action-card .unread-badge {
-  position:absolute; top:8px; right:8px;
-  background:var(--gold); color:var(--ink); font-size:10px; font-weight:700;
-  padding:2px 6px; border-radius:var(--r-pill); min-width:16px; text-align:center;
-  font-family:'Syne',sans-serif;
-}
-.quick-action-card:hover {
-  transform:translateY(-2px); box-shadow:var(--sh-md);
-  border-color:rgba(184,150,46,0.35);
-}
-.quick-action-icon {
-  width:38px; height:38px; border-radius:var(--r-md);
-  display:flex; align-items:center; justify-content:center; font-size:17px;
-}
-.quick-action-icon.add { background:rgba(22,163,74,0.10); }
-.quick-action-icon.view { background:rgba(59,130,246,0.10); }
-.quick-action-icon.chat { background:rgba(184,150,46,0.12); }
-.quick-action-icon.purchases { background:rgba(124,58,237,0.12); }
-.quick-action-label {
-  font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--ink);
-}
-.quick-action-sub { font-size:11.5px; color:var(--ink-50); }
+/* ===== STATS ===== */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--white);border-radius:var(--r-lg);padding:18px 20px;border:1px solid var(--ink-10);box-shadow:var(--sh-sm);position:relative;overflow:hidden;transition:all var(--dur) var(--ease);}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md);}
+.stat-card-accent{position:absolute;top:0;right:0;width:50px;height:50px;border-radius:0 var(--r-lg) 0 50px;opacity:0.09;}
+.stat-card.gold .stat-card-accent{background:var(--gold);}
+.stat-card.blue .stat-card-accent{background:#3b82f6;}
+.stat-card.green .stat-card-accent{background:#22c55e;}
+.stat-card.violet .stat-card-accent{background:var(--violet-md);}
+.stat-label{font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-50);margin-bottom:8px;}
+.stat-value{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--ink);line-height:1;}
+.stat-sub{font-size:11.5px;color:var(--ink-50);margin-top:4px;}
 
-.controls-row {
-  display:flex; align-items:center; justify-content:space-between;
-  gap:10px; margin-bottom:16px; flex-wrap:wrap;
-}
-.filter-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.filter-tab {
-  padding:5px 14px; border-radius:var(--r-pill);
-  font-family:'Syne',sans-serif; font-size:var(--t-sm); font-weight:600;
-  cursor:pointer; border:1.5px solid var(--ink-10); background:var(--white);
-  color:var(--ink-50); transition:all var(--dur) var(--ease);
-  white-space:nowrap; letter-spacing:0.03em;
-}
-.filter-tab:hover { background:var(--paper-alt); color:var(--ink); }
-.filter-tab.active { background:var(--ink); color:var(--white); border-color:var(--ink); }
-.table-count {
-  font-family:'Syne',sans-serif; font-size:11px; font-weight:600;
-  color:var(--ink-50); letter-spacing:0.06em; text-transform:uppercase;
-}
+/* ===== QUICK ACTIONS ===== */
+.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px;}
+.quick-action-card{background:var(--white);border-radius:var(--r-lg);padding:18px;border:1px solid var(--ink-10);box-shadow:var(--sh-sm);cursor:pointer;transition:all var(--dur) var(--ease);display:flex;flex-direction:column;gap:8px;position:relative;}
+.quick-action-card .unread-badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--ink);font-size:10px;font-weight:700;padding:2px 6px;border-radius:var(--r-pill);min-width:16px;text-align:center;font-family:'Syne',sans-serif;display:none;}
+.quick-action-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md);border-color:rgba(184,150,46,0.35);}
+.quick-action-icon{width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.quick-action-icon.add{background:rgba(22,163,74,0.10);}
+.quick-action-icon.view{background:rgba(59,130,246,0.10);}
+.quick-action-icon.chat{background:rgba(184,150,46,0.12);}
+.quick-action-icon.purchases{background:rgba(124,58,237,0.12);}
+.quick-action-label{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--ink);}
+.quick-action-sub{font-size:11px;color:var(--ink-50);}
 
-.table-wrap {
-  background:var(--white); border-radius:var(--r-lg);
-  border:1px solid var(--ink-10); overflow:hidden; box-shadow:var(--sh-sm);
-}
-.table-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:16px 20px; border-bottom:1px solid var(--ink-05);
-}
-.table-title {
-  font-family:'Cormorant Garamond',serif; font-size:20px;
-  font-weight:500; color:var(--ink);
-}
-.desktop-table { width:100%; border-collapse:collapse; }
-.desktop-table thead { background:var(--ink); }
-.desktop-table th {
-  padding:11px 16px; font-family:'Syne',sans-serif; font-size:9px;
-  font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
-  color:rgba(255,255,255,0.40); text-align:left; white-space:nowrap;
-}
-.desktop-table th:first-child { color:var(--gold-lt); }
-.desktop-table td {
-  padding:13px 16px; font-size:13.5px; border-bottom:1px solid var(--ink-05);
-  color:var(--ink-80); vertical-align:middle;
-}
-.desktop-table tr:last-child td { border-bottom:none; }
-.desktop-table tr:hover td { background:var(--paper); }
-.td-event {
-  font-family:'Syne',sans-serif; font-weight:700; color:var(--ink);
-  font-size:13px; max-width:180px; overflow:hidden; text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.td-biz-name {
-  font-family:'Syne',sans-serif; font-weight:700; color:var(--ink);
-  font-size:13px;
-}
-.td-biz-sub {
-  font-size:11.5px; color:var(--ink-50); font-weight:400;
-  font-family:'Instrument Sans',sans-serif; margin-top:2px;
-}
-.td-email { font-size:12.5px; color:var(--ink-50); }
-.td-price {
-  font-family:'Cormorant Garamond',serif; font-weight:600;
-  font-size:16px; color:var(--ink);
-}
-.td-date { font-size:12px; color:var(--ink-50); }
+/* ===== CONTROLS ===== */
+.controls-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.filter-tab{padding:5px 13px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--ink-10);background:var(--white);color:var(--ink-50);transition:all var(--dur) var(--ease);white-space:nowrap;letter-spacing:0.03em;}
+.filter-tab:hover{background:var(--paper-alt);color:var(--ink);}
+.filter-tab.active{background:var(--ink);color:var(--white);border-color:var(--ink);}
+.table-count{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--ink-50);letter-spacing:0.06em;text-transform:uppercase;}
 
-.status-badge {
-  display:inline-flex; align-items:center; gap:4px; padding:3px 10px;
-  border-radius:var(--r-pill); font-family:'Syne',sans-serif; font-size:9.5px;
-  font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
-  white-space:nowrap;
-}
-.status-pending, .status-submitted { background:var(--amber-lt); color:var(--amber); }
-.status-approved { background:var(--green-lt); color:var(--green); }
-.status-rejected { background:var(--red-lt); color:var(--red); }
-.status-sold { background:var(--violet-lt); color:var(--violet); }
-.status-available { background:var(--green-lt); color:var(--green); }
+/* ===== TABLE ===== */
+.table-wrap{background:var(--white);border-radius:var(--r-lg);border:1px solid var(--ink-10);overflow:hidden;box-shadow:var(--sh-sm);}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--ink-05);}
+.table-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;color:var(--ink);}
+.desktop-table{width:100%;border-collapse:collapse;}
+.desktop-table thead{background:var(--ink);}
+.desktop-table th{padding:10px 14px;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.40);text-align:left;white-space:nowrap;}
+.desktop-table th:first-child{color:var(--gold-lt);}
+.desktop-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--ink-05);color:var(--ink-80);vertical-align:middle;}
+.desktop-table tr:last-child td{border-bottom:none;}
+.desktop-table tr:hover td{background:var(--paper);}
+.td-biz-name{font-family:'Syne',sans-serif;font-weight:700;color:var(--ink);font-size:12.5px;}
+.td-biz-sub{font-size:11px;color:var(--ink-50);font-weight:400;margin-top:2px;}
+.td-email{font-size:12px;color:var(--ink-50);}
+.td-price{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;color:var(--ink);}
+.td-date{font-size:11.5px;color:var(--ink-50);}
+.td-event{font-family:'Syne',sans-serif;font-weight:700;color:var(--ink);font-size:12.5px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-.btn-row { display:flex; align-items:center; gap:5px; position:relative; }
-.btn-icon {
-  width:28px; height:28px; border-radius:var(--r-sm);
-  display:flex; align-items:center; justify-content:center;
-  border:1px solid var(--ink-10); background:var(--white);
-  cursor:pointer; transition:all var(--dur) var(--ease);
-  color:var(--ink-50); flex-shrink:0;
-}
-.btn-icon .chat-unread {
-  position:absolute; top:-2px; right:-2px; width:16px; height:16px;
-  border-radius:50%; background:var(--gold); color:var(--ink);
-  font-size:8px; font-weight:700; display:flex; align-items:center;
-  justify-content:center; font-family:'Syne',sans-serif;
-  border:1px solid var(--white);
-}
-.btn-icon:hover {
-  background:var(--paper-alt); border-color:rgba(184,150,46,0.40);
-  color:var(--gold-dk);
-}
-.btn-icon.danger:hover {
-  background:var(--red-lt); border-color:rgba(153,27,27,0.25);
-  color:var(--red);
-}
-.btn-icon svg { width:12px; height:12px; }
-.btn-text {
-  display:inline-flex; align-items:center; gap:6px; padding:6px 14px;
-  border-radius:var(--r-pill); font-family:'Syne',sans-serif;
-  font-size:var(--t-xs); font-weight:700; letter-spacing:0.05em;
-  cursor:pointer; border:none; transition:all var(--dur) var(--ease);
-  white-space:nowrap;
-}
-.btn-text-gold {
-  background:linear-gradient(135deg,var(--gold-dk),var(--gold));
-  color:var(--ink);
-}
-.btn-text-gold:hover {
-  transform:translateY(-1px); box-shadow:0 4px 14px rgba(184,150,46,0.40);
-}
-.btn-text-ghost {
-  background:var(--paper); border:1.5px solid var(--ink-10);
-  color:var(--ink-50);
-}
-.btn-text-ghost:hover {
-  background:var(--paper-alt); color:var(--ink);
-  border-color:var(--ink-24);
-}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;}
+.status-pending,.status-submitted{background:var(--amber-lt);color:var(--amber);}
+.status-approved{background:var(--green-lt);color:var(--green);}
+.status-rejected{background:var(--red-lt);color:var(--red);}
+.status-sold{background:var(--violet-lt);color:var(--violet);}
+.status-available{background:var(--green-lt);color:var(--green);}
+.status-paid{background:var(--blue-lt);color:var(--blue);}
+.status-unpaid{background:var(--amber-lt);color:var(--amber);}
 
-.empty-state {
-  text-align:center; padding:64px 24px; display:flex;
-  flex-direction:column; align-items:center; gap:12px;
-}
-.empty-state-icon { font-size:42px; opacity:0.22; }
-.empty-state-title {
-  font-family:'Cormorant Garamond',serif; font-size:22px;
-  font-weight:500; color:var(--ink);
-}
-.empty-state-sub {
-  font-size:13.5px; color:var(--ink-50); max-width:240px;
-  line-height:1.65;
-}
+.btn-row{display:flex;align-items:center;gap:4px;position:relative;}
+.btn-icon{width:27px;height:27px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;border:1px solid var(--ink-10);background:var(--white);cursor:pointer;transition:all var(--dur) var(--ease);color:var(--ink-50);flex-shrink:0;position:relative;}
+.btn-icon .chat-unread{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--gold);color:var(--ink);font-size:7.5px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;border:1.5px solid var(--white);}
+.btn-icon:hover{background:var(--paper-alt);border-color:rgba(184,150,46,0.40);color:var(--gold-dk);}
+.btn-icon.danger:hover{background:var(--red-lt);border-color:rgba(153,27,27,0.25);color:var(--red);}
+.btn-icon.approve:hover{background:var(--green-lt);border-color:rgba(22,163,74,0.25);color:var(--green);}
+.btn-icon svg{width:11px;height:11px;}
 
-.mobile-list {
-  display:none; flex-direction:column; gap:10px; padding:14px;
-}
-.mobile-card {
-  background:var(--paper); border-radius:var(--r-md); padding:14px 16px;
-  border:1px solid var(--ink-05); display:flex; gap:12px;
-  align-items:flex-start; position:relative;
-}
-.mobile-card .unread-badge {
-  position:absolute; top:4px; right:4px;
-  background:var(--gold); color:var(--ink); font-size:9px;
-  font-weight:700; padding:2px 5px; border-radius:var(--r-pill);
-  min-width:14px; text-align:center; font-family:'Syne',sans-serif;
-  display:none;
-}
-.mobile-card-thumb {
-  width:42px; height:42px; border-radius:var(--r-md);
-  object-fit:cover; background:var(--paper-deep); flex-shrink:0;
-}
-.mobile-card-info { flex:1; min-width:0; }
-.mobile-card-title {
-  font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
-  color:var(--ink); white-space:nowrap; overflow:hidden;
-  text-overflow:ellipsis; margin-bottom:3px;
-}
-.mobile-card-sub {
-  font-size:11.5px; color:var(--ink-50); white-space:nowrap;
-  overflow:hidden; text-overflow:ellipsis; margin-bottom:6px;
-}
-.mobile-card-meta {
-  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-}
-.mobile-card-price {
-  font-family:'Cormorant Garamond',serif; font-size:16px;
-  font-weight:600; color:var(--ink);
-}
-.mobile-card-actions {
-  display:flex; gap:5px; flex-shrink:0;
-}
+.btn-text{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.05em;cursor:pointer;border:none;transition:all var(--dur) var(--ease);white-space:nowrap;}
+.btn-text-gold{background:linear-gradient(135deg,var(--gold-dk),var(--gold));color:var(--ink);}
+.btn-text-gold:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(184,150,46,0.40);}
+.btn-text-ghost{background:var(--paper);border:1.5px solid var(--ink-10);color:var(--ink-50);}
+.btn-text-ghost:hover{background:var(--paper-alt);color:var(--ink);border-color:var(--ink-24);}
+.btn-text-red{background:var(--red-lt);border:1.5px solid rgba(153,27,27,0.20);color:var(--red);}
+.btn-text-red:hover{background:#fecaca;}
 
-.modal-overlay {
-  position:fixed; inset:0; background:rgba(12,12,12,0.68);
-  backdrop-filter:blur(14px); display:flex; align-items:center;
-  justify-content:center; z-index:1000; padding:20px;
-  opacity:0; visibility:hidden;
-  transition:opacity var(--dur) var(--ease), visibility var(--dur) var(--ease);
-}
-.modal-overlay.active { opacity:1; visibility:visible; }
-.modal-box {
-  background:var(--white); border-radius:var(--r-2xl); width:100%;
-  max-width:700px; max-height:90vh; overflow:hidden;
-  display:flex; flex-direction:column; box-shadow:var(--sh-xl);
-  transform:translateY(18px) scale(0.98);
-  transition:transform 0.32s var(--spring);
-}
-.modal-overlay.active .modal-box { transform:translateY(0) scale(1); }
-.modal-header {
-  padding:20px 26px; border-bottom:1px solid var(--ink-05);
-  display:flex; align-items:center; justify-content:space-between;
-  flex-shrink:0;
-}
-.modal-title {
-  font-family:'Cormorant Garamond',serif; font-size:22px;
-  font-weight:500; color:var(--ink);
-}
-.modal-close {
-  width:30px; height:30px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  border:1px solid var(--ink-10); background:var(--paper);
-  cursor:pointer; color:var(--ink-50);
-  transition:all var(--dur) var(--ease); flex-shrink:0;
-}
-.modal-close:hover { background:var(--paper-deep); color:var(--ink); }
-.modal-close svg { width:14px; height:14px; }
-.modal-body {
-  overflow-y:auto; padding:24px 26px; flex:1;
-}
-.modal-body::-webkit-scrollbar { width:4px; }
-.modal-body::-webkit-scrollbar-thumb {
-  background:var(--paper-deep); border-radius:4px;
-}
+/* ===== EMPTY STATE ===== */
+.empty-state{text-align:center;padding:56px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.empty-state-icon{font-size:38px;opacity:0.20;}
+.empty-state-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--ink);}
+.empty-state-sub{font-size:13px;color:var(--ink-50);max-width:220px;line-height:1.65;}
 
-.modal-section { margin-bottom:22px; }
-.modal-section-label {
-  font-family:'Syne',sans-serif; font-size:9px; font-weight:700;
-  letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-50);
-  display:flex; align-items:center; gap:10px; margin-bottom:14px;
-}
-.modal-section-label::after {
-  content:''; flex:1; height:1px; background:var(--ink-05);
-}
-.field-group { margin-bottom:14px; }
-.field-label {
-  display:block; font-family:'Syne',sans-serif;
-  font-size:var(--t-xs); font-weight:700; letter-spacing:0.12em;
-  text-transform:uppercase; color:var(--ink-50); margin-bottom:6px;
-}
-.field-input, .field-select, .field-textarea {
-  width:100%; padding:10px 13px; border-radius:var(--r-md);
-  border:1.5px solid var(--ink-10);
-  font-family:'Instrument Sans',sans-serif; font-size:14px;
-  color:var(--ink); background:var(--paper); outline:none;
-  transition:all var(--dur) var(--ease); display:block;
-}
-.field-input:focus, .field-select:focus, .field-textarea:focus {
-  border-color:var(--gold); background:var(--white);
-  box-shadow:0 0 0 3px var(--gold-glow);
-}
-.field-input:read-only {
-  color:var(--ink-50); cursor:default;
-}
-.field-input:read-only:focus {
-  border-color:var(--ink-10); box-shadow:none; background:var(--paper);
-}
-.field-textarea { resize:vertical; min-height:80px; line-height:1.6; }
-.field-select {
-  appearance:none; cursor:pointer; padding-right:36px;
-  background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%230c0c0c' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 13px center;
-}
-.field-price {
-  font-family:'Cormorant Garamond',serif; font-size:26px;
-  font-weight:600; color:var(--ink);
-}
-.field-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+/* ===== MODALS ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(12,12,12,0.68);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;opacity:0;visibility:hidden;transition:opacity var(--dur) var(--ease),visibility var(--dur) var(--ease);}
+.modal-overlay.active{opacity:1;visibility:visible;}
+.modal-box{background:var(--white);border-radius:var(--r-2xl);width:100%;max-width:720px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh-xl);transform:translateY(16px) scale(0.98);transition:transform 0.30s var(--spring);}
+.modal-overlay.active .modal-box{transform:translateY(0) scale(1);}
+.modal-header{padding:18px 24px;border-bottom:1px solid var(--ink-05);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--white);}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--ink);}
+.modal-close{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--ink-10);background:var(--paper);cursor:pointer;color:var(--ink-50);transition:all var(--dur) var(--ease);flex-shrink:0;}
+.modal-close:hover{background:var(--paper-deep);color:var(--ink);}
+.modal-close svg{width:13px;height:13px;}
+.modal-body{overflow-y:auto;padding:22px 24px;flex:1;}
+.modal-body::-webkit-scrollbar{width:4px;}
+.modal-body::-webkit-scrollbar-thumb{background:var(--paper-deep);border-radius:4px;}
 
-.vendor-detail-grid {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:12px;
-}
-.info-card {
-  background:var(--paper); border-radius:var(--r-md); padding:14px;
-  border:1px solid var(--ink-05); display:flex;
-  flex-direction:column; gap:8px;
-}
-.info-card-label {
-  font-family:'Syne',sans-serif; font-size:9px; font-weight:700;
-  letter-spacing:0.10em; text-transform:uppercase; color:var(--ink-50);
-}
-.info-card-value {
-  font-family:'Cormorant Garamond',serif; font-size:16px;
-  font-weight:500; color:var(--ink); line-height:1.4;
-}
-.info-card-value a {
-  color:var(--gold-dk); text-decoration:none;
-}
-.info-card-value a:hover { text-decoration:underline; }
+.modal-section{margin-bottom:20px;}
+.modal-section-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-50);display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.modal-section-label::after{content:'';flex:1;height:1px;background:var(--ink-05);}
 
-.modal-action-row { display:flex; gap:10px; margin-top:20px; }
-.vendor-gallery {
-  display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;
-}
-.vendor-gallery-img {
-  width:76px; height:76px; border-radius:var(--r-md);
-  object-fit:cover; cursor:pointer; border:2px solid transparent;
-  transition:border-color var(--dur) var(--ease);
-}
-.vendor-gallery-img:hover { border-color:var(--gold); }
-.proof-img {
-  width:100%; border-radius:var(--r-md); object-fit:cover;
-  max-height:200px; display:block; margin-top:6px; cursor:pointer;
-}
-.info-row {
-  display:flex; align-items:center; gap:10px; padding:11px 14px;
-  background:var(--paper); border-radius:var(--r-md);
-  border:1px solid var(--ink-05);
-}
-.info-row-label {
-  font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
-  letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-50);
-  flex-shrink:0; min-width:90px;
-}
-.info-row-val {
-  font-size:13.5px; color:var(--ink); font-weight:500; flex:1;
-}
+.field-group{margin-bottom:12px;}
+.field-label{display:block;font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-50);margin-bottom:5px;}
+.field-input,.field-select,.field-textarea{width:100%;padding:9px 12px;border-radius:var(--r-md);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:13.5px;color:var(--ink);background:var(--paper);outline:none;transition:all var(--dur) var(--ease);display:block;}
+.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--gold);background:var(--white);box-shadow:0 0 0 3px var(--gold-glow);}
+.field-input:read-only{color:var(--ink-60);cursor:default;background:var(--paper);}
+.field-input:read-only:focus{border-color:var(--ink-10);box-shadow:none;}
+.field-textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.field-select{appearance:none;cursor:pointer;padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%230c0c0c' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.field-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 
-.chat-modal-box {
-  background:var(--white); border-radius:var(--r-2xl); width:100%;
-  max-width:500px; height:640px; display:flex; flex-direction:column;
-  box-shadow:var(--sh-xl); overflow:hidden;
-  transform:translateY(18px) scale(0.98);
-  transition:transform 0.32s var(--spring);
-}
-.modal-overlay.active .chat-modal-box { transform:translateY(0) scale(1); }
-.chat-header {
-  background:var(--ink); padding:16px 20px;
-  display:flex; align-items:center; justify-content:space-between;
-  flex-shrink:0; position:relative;
-}
-.chat-header::after {
-  content:''; position:absolute; bottom:0; left:20px; right:20px;
-  height:1px; background:linear-gradient(90deg,transparent,rgba(184,150,46,0.30),transparent);
-}
-.chat-header-info { display:flex; align-items:center; gap:12px; }
-.chat-header-avatar {
-  width:36px; height:36px; border-radius:50%;
-  background:linear-gradient(135deg,var(--gold-dk),var(--gold));
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Cormorant Garamond',serif; font-size:16px;
-  font-weight:700; color:var(--ink); flex-shrink:0;
-}
-.chat-header-name {
-  font-family:'Syne',sans-serif; font-size:13.5px;
-  font-weight:700; color:var(--white);
-}
-.chat-header-label {
-  font-family:'Syne',sans-serif; font-size:9.5px;
-  font-weight:600; letter-spacing:0.10em; text-transform:uppercase;
-  color:var(--gold-lt); margin-top:2px;
-}
-.chat-close {
-  font-size:20px; cursor:pointer; color:rgba(255,255,255,0.50);
-  transition:color var(--dur) var(--ease); line-height:1;
-  flex-shrink:0; padding:2px;
-}
-.chat-close:hover { color:var(--white); }
-.chat-messages {
-  flex:1; padding:14px 16px; background:var(--paper);
-  overflow-y:auto; display:flex; flex-direction:column;
-  gap:10px; scroll-behavior:smooth;
-}
-.chat-messages::-webkit-scrollbar { width:4px; }
-.chat-messages::-webkit-scrollbar-thumb {
-  background:var(--paper-deep); border-radius:4px;
-}
-.chat-empty-msg {
-  text-align:center; color:var(--ink-50); font-size:13px;
-  margin:auto;
-}
-.chat-empty-msg-icon {
-  font-size:30px; margin-bottom:8px; opacity:0.30;
-}
-.msg-row {
-  display:flex; flex-direction:column; max-width:78%;
-}
-.msg-row.admin-row {
-  align-self:flex-end; align-items:flex-end;
-}
-.msg-row.vendor-row, .msg-row.buyer-row {
-  align-self:flex-start; align-items:flex-start;
-}
-.msg-bubble-admin {
-  background:var(--gold-pale); color:var(--ink); padding:10px 14px;
-  border-radius:17px 17px 4px 17px; font-size:13.5px;
-  line-height:1.55; border:1px solid rgba(184,150,46,0.22);
-}
-.msg-bubble-other {
-  background:var(--white); color:var(--ink); padding:10px 14px;
-  border-radius:17px 17px 17px 4px; font-size:13.5px;
-  line-height:1.55; box-shadow:var(--sh-xs);
-}
-.msg-time {
-  font-family:'Syne',sans-serif; font-size:9.5px;
-  color:var(--ink-50); margin-top:3px; font-weight:500;
-}
-.msg-row.admin-row .msg-time { text-align:right; }
-.chat-input-area {
-  padding:11px 14px; background:var(--white);
-  border-top:1px solid var(--ink-05); display:flex;
-  align-items:center; gap:8px; flex-shrink:0;
-}
-.chat-input {
-  flex:1; padding:9px 14px; border-radius:var(--r-pill);
-  border:1.5px solid var(--ink-10);
-  font-family:'Instrument Sans',sans-serif; font-size:13.5px;
-  outline:none; transition:all var(--dur) var(--ease);
-  background:var(--paper); color:var(--ink); min-width:0;
-}
-.chat-input:focus {
-  border-color:var(--gold); background:var(--white);
-  box-shadow:0 0 0 3px var(--gold-glow);
-}
-.chat-input::placeholder { color:var(--ink-50); }
-.chat-send-btn {
-  width:36px; height:36px; border-radius:50%;
-  background:var(--ink); color:var(--white); border:none;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:all var(--dur) var(--ease);
-  flex-shrink:0;
-}
-.chat-send-btn:hover {
-  background:#1c1c1e; transform:scale(1.05);
-}
-.chat-send-btn:disabled {
-  opacity:0.40; cursor:not-allowed; transform:none;
-}
-.chat-send-btn svg { width:14px; height:14px; }
+.vendor-detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.info-card{background:var(--paper);border-radius:var(--r-md);padding:12px 14px;border:1px solid var(--ink-05);display:flex;flex-direction:column;gap:6px;}
+.info-card-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-50);}
+.info-card-value{font-family:'Instrument Sans',sans-serif;font-size:13.5px;font-weight:500;color:var(--ink);line-height:1.4;}
+.info-card-value a{color:var(--gold-dk);text-decoration:none;}
+.info-card-value a:hover{text-decoration:underline;}
+.info-card-value.serif{font-family:'Cormorant Garamond',serif;font-size:16px;}
 
-.lightbox {
-  position:fixed; inset:0; background:rgba(12,12,12,0.90);
-  backdrop-filter:blur(20px); display:flex; align-items:center;
-  justify-content:center; z-index:2000; opacity:0;
-  visibility:hidden; transition:all var(--dur) var(--ease);
-}
-.lightbox.active { opacity:1; visibility:visible; }
-.lightbox img {
-  max-width:90%; max-height:90%; border-radius:var(--r-lg);
-}
-.lightbox-close {
-  position:absolute; top:20px; right:20px; width:38px;
-  height:38px; border-radius:50%; background:rgba(255,255,255,0.10);
-  border:none; color:var(--white); cursor:pointer;
-  transition:background var(--dur) var(--ease);
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px;
-}
-.lightbox-close:hover { background:rgba(255,255,255,0.20); }
+.modal-action-row{display:flex;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid var(--ink-05);}
+.vendor-gallery{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.vendor-gallery-img{width:72px;height:72px;border-radius:var(--r-md);object-fit:cover;cursor:pointer;border:2px solid transparent;transition:border-color var(--dur);}
+.vendor-gallery-img:hover{border-color:var(--gold);}
+.proof-img{width:100%;border-radius:var(--r-md);object-fit:cover;max-height:200px;display:block;margin-top:6px;cursor:pointer;}
 
-.toast-container {
-  position:fixed; top:16px; right:16px; z-index:3000;
-  display:flex; flex-direction:column; gap:8px;
-}
-.toast {
-  padding:11px 16px; border-radius:var(--r-md);
-  background:var(--white); box-shadow:var(--sh-lg);
-  display:flex; align-items:center; gap:10px;
-  font-size:13px; font-family:'Instrument Sans',sans-serif;
-  animation:slideIn 0.28s var(--spring);
-}
-.toast.success { background:var(--green-lt); color:var(--green); }
-.toast.error { background:var(--red-lt); color:var(--red); }
-.toast svg { width:14px; height:14px; flex-shrink:0; }
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--r-pill);background:var(--paper-alt);border:1px solid var(--ink-10);font-size:12px;color:var(--ink-80);}
 
-footer {
-  background:var(--ink); padding:24px 0; position:relative;
-}
-footer::before {
-  content:''; position:absolute; top:0; left:0; right:0;
-  height:1px; background:linear-gradient(90deg,transparent,rgba(184,150,46,0.30),transparent);
-}
-.footer-inner {
-  max-width:var(--page-max); margin:0 auto;
-  padding:0 var(--pad-h); display:flex;
-  align-items:center; justify-content:space-between; gap:20px;
-  flex-wrap:wrap;
-}
-.footer-logo {
-  font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
-  color:rgba(255,255,255,0.40); letter-spacing:0.10em;
-}
-.footer-logo span { color:var(--gold-lt); }
-.footer-copy {
-  font-family:'Syne',sans-serif; font-size:11px;
-  color:rgba(255,255,255,0.20); letter-spacing:0.06em;
-}
+/* ===== CHAT PANEL (slide-in from right) ===== */
+.chat-panel-overlay{position:fixed;inset:0;background:rgba(12,12,12,0.40);backdrop-filter:blur(6px);z-index:900;opacity:0;visibility:hidden;transition:all var(--dur) var(--ease);}
+.chat-panel-overlay.active{opacity:1;visibility:visible;}
+.chat-panel{position:fixed;right:0;top:60px;bottom:0;width:820px;max-width:100vw;background:var(--white);box-shadow:var(--sh-xl);display:flex;flex-direction:row;z-index:901;transform:translateX(100%);transition:transform 0.35s var(--spring);}
+.chat-panel-overlay.active .chat-panel{transform:translateX(0);}
 
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-@keyframes slideIn {
-  from{transform:translateX(80px);opacity:0}
-  to{transform:translateX(0);opacity:1}
-}
+/* Chat sidebar: list of conversations */
+.chat-list-pane{width:280px;border-right:1px solid var(--ink-10);display:flex;flex-direction:column;flex-shrink:0;background:var(--paper);}
+.chat-list-header{padding:16px 18px 12px;border-bottom:1px solid var(--ink-10);display:flex;align-items:center;justify-content:space-between;}
+.chat-list-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--ink);}
+.chat-list-close{width:28px;height:28px;border-radius:50%;background:none;border:1px solid var(--ink-10);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-50);transition:all var(--dur);}
+.chat-list-close:hover{background:var(--paper-deep);color:var(--ink);}
+.chat-list-close svg{width:12px;height:12px;}
+.chat-list-search{padding:8px 14px;border-bottom:1px solid var(--ink-05);}
+.chat-list-search input{width:100%;padding:7px 12px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:12.5px;outline:none;background:var(--white);color:var(--ink);transition:border-color var(--dur);}
+.chat-list-search input:focus{border-color:var(--gold);}
+.chat-list-tabs{display:flex;gap:2px;padding:8px 10px;border-bottom:1px solid var(--ink-05);}
+.chat-list-tab{flex:1;padding:5px 8px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.05em;cursor:pointer;border:none;background:none;color:var(--ink-50);transition:all var(--dur);text-align:center;}
+.chat-list-tab.active{background:var(--ink);color:var(--white);}
+.chat-list-items{flex:1;overflow-y:auto;}
+.chat-list-items::-webkit-scrollbar{width:3px;}
+.chat-list-items::-webkit-scrollbar-thumb{background:var(--paper-deep);border-radius:3px;}
+.chat-list-item{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--ink-05);transition:background var(--dur);position:relative;}
+.chat-list-item:hover{background:var(--paper-alt);}
+.chat-list-item.active-convo{background:var(--gold-pale);border-left:3px solid var(--gold);}
+.chat-list-item.has-unread{background:rgba(184,150,46,0.06);}
+.chat-list-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--ink);flex-shrink:0;}
+.chat-list-avatar.buyer{background:linear-gradient(135deg,var(--violet),var(--violet-md));}
+.chat-list-avatar.ticket{background:linear-gradient(135deg,var(--teal),#14b8a6);}
+.chat-list-info{flex:1;min-width:0;}
+.chat-list-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.chat-list-preview{font-size:11.5px;color:var(--ink-50);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;}
+.chat-list-time{font-family:'Syne',sans-serif;font-size:9.5px;color:var(--ink-50);flex-shrink:0;margin-top:2px;}
+.chat-list-unread{position:absolute;right:12px;bottom:12px;background:var(--gold);color:var(--ink);font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;}
+.chat-list-type-badge{font-family:'Syne',sans-serif;font-size:8px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:1px 6px;border-radius:var(--r-pill);margin-top:3px;display:inline-block;}
+.chat-list-type-badge.vendor{background:var(--gold-pale);color:var(--gold-dk);}
+.chat-list-type-badge.ticket{background:var(--teal-lt);color:var(--teal);}
+.chat-list-type-badge.purchase{background:var(--violet-lt);color:var(--violet);}
+.chat-list-empty{text-align:center;padding:40px 16px;color:var(--ink-50);font-size:13px;}
+.chat-list-empty-icon{font-size:28px;opacity:0.25;margin-bottom:8px;}
 
-@media(max-width:1024px) { :root { --pad-h:28px; } }
-@media(max-width:768px) {
-  :root { --pad-h:14px; }
-  .stats-row { grid-template-columns:repeat(2,1fr); }
-  .desktop-table { display:none; }
-  .mobile-list { display:flex; }
-  .nav-tab span { display:none; }
-  .header-search-wrap input { width:100px; }
-  .header-search-wrap input:focus { width:140px; }
-  .field-grid-2 { grid-template-columns:1fr; }
-  .modal-box, .chat-modal-box {
-    border-radius:var(--r-xl); max-height:100dvh;
-  }
+/* Chat message pane */
+.chat-msg-pane{flex:1;display:flex;flex-direction:column;min-width:0;}
+.chat-header{background:var(--ink);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.chat-header-info{display:flex;align-items:center;gap:12px;}
+.chat-header-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dk),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--ink);flex-shrink:0;}
+.chat-header-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+.chat-header-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--gold-lt);margin-top:2px;}
+.chat-header-actions{display:flex;align-items:center;gap:8px;}
+.chat-header-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-sm);padding:5px 10px;cursor:pointer;color:rgba(255,255,255,0.60);font-family:'Syne',sans-serif;font-size:10px;font-weight:600;display:flex;align-items:center;gap:5px;transition:all var(--dur);}
+.chat-header-btn:hover{background:rgba(255,255,255,0.14);color:var(--white);}
+.chat-header-btn svg{width:11px;height:11px;}
+.chat-no-convo{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper);gap:10px;color:var(--ink-50);}
+.chat-no-convo-icon{font-size:36px;opacity:0.18;}
+.chat-no-convo-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ink);}
+.chat-no-convo-sub{font-size:12.5px;max-width:200px;text-align:center;line-height:1.6;}
+.chat-messages{flex:1;padding:14px 16px;background:var(--paper);overflow-y:auto;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;}
+.chat-messages::-webkit-scrollbar{width:4px;}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--paper-deep);border-radius:4px;}
+.msg-row{display:flex;flex-direction:column;max-width:75%;}
+.msg-row.admin-row{align-self:flex-end;align-items:flex-end;}
+.msg-row.vendor-row,.msg-row.buyer-row,.msg-row.user-row{align-self:flex-start;align-items:flex-start;}
+.msg-bubble-admin{background:var(--gold-pale);color:var(--ink);padding:9px 13px;border-radius:16px 16px 3px 16px;font-size:13px;line-height:1.55;border:1px solid rgba(184,150,46,0.22);}
+.msg-bubble-other{background:var(--white);color:var(--ink);padding:9px 13px;border-radius:16px 16px 16px 3px;font-size:13px;line-height:1.55;box-shadow:var(--sh-xs);}
+.msg-sender{font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;color:var(--ink-50);margin-bottom:3px;}
+.msg-time{font-family:'Syne',sans-serif;font-size:9px;color:var(--ink-50);margin-top:3px;font-weight:500;}
+.msg-row.admin-row .msg-time{text-align:right;}
+.chat-input-area{padding:10px 14px;background:var(--white);border-top:1px solid var(--ink-05);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.chat-input{flex:1;padding:8px 13px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:13px;outline:none;transition:all var(--dur);background:var(--paper);color:var(--ink);min-width:0;}
+.chat-input:focus{border-color:var(--gold);background:var(--white);box-shadow:0 0 0 3px var(--gold-glow);}
+.chat-input::placeholder{color:var(--ink-50);}
+.chat-send-btn{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--white);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--dur);flex-shrink:0;}
+.chat-send-btn:hover{background:#1c1c1e;transform:scale(1.06);}
+.chat-send-btn:disabled{opacity:0.40;cursor:not-allowed;transform:none;}
+.chat-send-btn svg{width:13px;height:13px;}
+.chat-date-divider{text-align:center;font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;color:var(--ink-50);letter-spacing:0.08em;padding:4px 0;display:flex;align-items:center;gap:8px;}
+.chat-date-divider::before,.chat-date-divider::after{content:'';flex:1;height:1px;background:var(--ink-10);}
+
+/* ===== LIGHTBOX ===== */
+.lightbox{position:fixed;inset:0;background:rgba(12,12,12,0.90);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;z-index:2000;opacity:0;visibility:hidden;transition:all var(--dur);}
+.lightbox.active{opacity:1;visibility:visible;}
+.lightbox img{max-width:90%;max-height:90%;border-radius:var(--r-lg);}
+.lightbox-close{position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.10);border:none;color:var(--white);cursor:pointer;transition:background var(--dur);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.lightbox-close:hover{background:rgba(255,255,255,0.20);}
+
+/* ===== TOASTS ===== */
+.toast-container{position:fixed;top:16px;right:16px;z-index:3000;display:flex;flex-direction:column;gap:8px;}
+.toast{padding:10px 15px;border-radius:var(--r-md);background:var(--white);box-shadow:var(--sh-lg);display:flex;align-items:center;gap:10px;font-size:13px;font-family:'Instrument Sans',sans-serif;animation:slideIn 0.28s var(--spring);}
+.toast.success{background:var(--green-lt);color:var(--green);}
+.toast.error{background:var(--red-lt);color:var(--red);}
+
+/* ===== FOOTER ===== */
+footer{background:var(--ink);padding:20px 0;}
+footer::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(184,150,46,0.30),transparent);}
+.footer-inner{padding:0 36px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:20px;}
+.footer-logo{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.10em;}
+.footer-logo span{color:var(--gold-lt);}
+.footer-copy{font-family:'Syne',sans-serif;font-size:10.5px;color:rgba(255,255,255,0.18);letter-spacing:0.06em;}
+
+/* ===== MOBILE ===== */
+.mobile-list{display:none;flex-direction:column;gap:10px;padding:14px;}
+.mobile-card{background:var(--paper);border-radius:var(--r-md);padding:13px 15px;border:1px solid var(--ink-05);display:flex;gap:12px;align-items:flex-start;position:relative;}
+.mobile-card-thumb{width:40px;height:40px;border-radius:var(--r-md);object-fit:cover;background:var(--paper-deep);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.mobile-card-info{flex:1;min-width:0;}
+.mobile-card-title{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px;}
+.mobile-card-sub{font-size:11px;color:var(--ink-50);margin-bottom:5px;}
+.mobile-card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.mobile-card-actions{display:flex;gap:4px;flex-shrink:0;}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideIn{from{transform:translateX(80px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+@media(max-width:900px){
+  .sidebar{width:52px;}
+  .sidebar .nav-label,.sidebar-section-label,.sidebar-bottom-info{display:none;}
+  .sidebar-nav-btn{padding:10px;justify-content:center;}
+  .sidebar-nav-btn svg{width:18px;height:18px;}
+  .sidebar-nav-btn.active::before{display:none;}
+  .chat-panel{width:100vw;}
+  .chat-list-pane{width:240px;}
+}
+@media(max-width:768px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .desktop-table{display:none;}
+  .mobile-list{display:flex;}
+  .header-search-wrap input{width:100px;}
+  .header-search-wrap input:focus{width:140px;}
+  .field-grid-2,.field-grid-3{grid-template-columns:1fr;}
+  .modal-box{border-radius:var(--r-xl);}
+  .page-body{padding:18px 14px;}
+  .chat-list-pane{width:200px;}
+}
+@media(max-width:480px){
+  .chat-list-pane{display:none;}
+  .chat-panel.list-open .chat-list-pane{display:flex;position:absolute;inset:0;z-index:10;}
+  .chat-panel.list-open .chat-msg-pane{display:none;}
 }
 </style>
 </head>
 <body>
 
+<!-- TOP HEADER -->
 <header class="admin-header">
   <div class="header-ledger"></div>
   <div class="header-inner">
@@ -716,180 +368,230 @@ footer::before {
       <span class="header-logo-text">Vend<span>Hub</span></span>
       <span class="header-logo-badge">Admin</span>
     </a>
-
-    <nav class="header-nav">
-      <button class="nav-tab active" data-tab="vendors">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        <span>Vendors</span>
-      </button>
-      <button class="nav-tab" data-tab="tickets">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 12V22H4V12"/>
-          <path d="M22 7H2v5h20V7z"/>
-          <path d="M12 22V7"/>
-        </svg>
-        <span>Tickets</span>
-      </button>
-      <button class="nav-tab" data-tab="purchases">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2"/>
-          <path d="M8 21h8M12 17v4"/>
-        </svg>
-        <span>Purchases</span>
-      </button>
-    </nav>
-
     <div class="header-right">
       <div class="header-search-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input id="searchInput" type="text" placeholder="Search...">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="searchInput" type="text" placeholder="Search…">
       </div>
       <div class="header-admin-pill">
         <div class="header-avatar" id="headerAvatar">A</div>
         <span class="header-admin-name" id="headerAdminName">Admin</span>
         <button class="header-logout-btn" id="headerLogoutBtn" title="Sign out">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
-        <div class="header-unread-badge" id="globalUnreadBadge">0</div>
+        <div class="header-unread-badge" id="globalUnreadBadge"></div>
       </div>
     </div>
   </div>
 </header>
 
-<div class="main">
-  <div class="page-body">
+<div class="app-body">
 
-    <div class="quick-actions">
-      <div class="quick-action-card" onclick="showAddVendorModal()">
-        <div class="quick-action-icon add">➕</div>
-        <div class="quick-action-label">Add Vendor</div>
-        <div class="quick-action-sub">Register new vendor</div>
-      </div>
-      <div class="quick-action-card" onclick="switchTab('tickets')">
-        <div class="quick-action-icon view">🎟</div>
-        <div class="quick-action-label">View Tickets</div>
-        <div class="quick-action-sub">Manage ticket listings</div>
-      </div>
-      <div class="quick-action-card" onclick="switchTab('purchases')">
-        <div class="quick-action-icon purchases">💰</div>
-        <div class="quick-action-label">Purchases</div>
-        <div class="quick-action-sub">Track all sales</div>
-      </div>
-      <div class="quick-action-card" onclick="openChatForSelected()" id="chatQuickAction">
-        <div class="quick-action-icon chat">💬</div>
-        <div class="quick-action-label">Chat</div>
-        <div class="quick-action-sub">Message vendors & buyers</div>
-        <div class="unread-badge" id="chatQuickActionBadge">0</div>
-      </div>
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Main</div>
+    <button class="sidebar-nav-btn active" data-tab="overview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="nav-label">Overview</span>
+    </button>
+    <button class="sidebar-nav-btn" data-tab="vendors">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-label">Vendors</span>
+      <span class="nav-badge" id="sidebarVendorsBadge"></span>
+    </button>
+    <button class="sidebar-nav-btn" data-tab="tickets">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
+      <span class="nav-label">Tickets</span>
+    </button>
+    <button class="sidebar-nav-btn" data-tab="purchases">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <span class="nav-label">Purchases</span>
+    </button>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">Communication</div>
+    <button class="sidebar-nav-btn" id="openChatPanelBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span class="nav-label">Messages</span>
+      <span class="nav-badge" id="sidebarChatBadge"></span>
+    </button>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">Settings</div>
+    <button class="sidebar-nav-btn" onclick="showToast('Settings coming soon','success')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span class="nav-label">Settings</span>
+    </button>
+    <div class="sidebar-bottom">
+      <div class="sidebar-bottom-info">VendHub Admin v2.0</div>
     </div>
+  </aside>
 
-    <div class="stats-row">
-      <div class="stat-card gold">
-        <div class="stat-card-accent"></div>
-        <div class="stat-label">Total Vendors</div>
-        <div class="stat-value" id="statTotalVendors">0</div>
-        <div class="stat-sub">Registered vendors</div>
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="page-body">
+
+      <!-- OVERVIEW TAB -->
+      <div class="tab-pane active" id="overviewTab">
+        <div class="page-header">
+          <div class="page-header-row">
+            <div>
+              <h1 class="page-title">Dashboard Overview</h1>
+              <p class="page-subtitle">Welcome back — here's what's happening today.</p>
+            </div>
+            <button class="btn-text btn-text-gold" onclick="showAddVendorModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M12 5v14M5 12h14"/></svg>
+              Add Vendor
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card gold">
+            <div class="stat-card-accent"></div>
+            <div class="stat-label">Total Vendors</div>
+            <div class="stat-value" id="statTotalVendors">0</div>
+            <div class="stat-sub">Registered vendors</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-card-accent"></div>
+            <div class="stat-label">Ticket Listings</div>
+            <div class="stat-value" id="statTotalTickets">0</div>
+            <div class="stat-sub">Active listings</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-card-accent"></div>
+            <div class="stat-label">Purchases</div>
+            <div class="stat-value" id="statTotalPurchases">0</div>
+            <div class="stat-sub">Completed sales</div>
+          </div>
+          <div class="stat-card violet">
+            <div class="stat-card-accent"></div>
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value" id="statTotalRevenue">$0</div>
+            <div class="stat-sub">USD gross</div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <div class="quick-action-card" onclick="switchTab('vendors')">
+            <div class="quick-action-icon add">🏪</div>
+            <div class="quick-action-label">Manage Vendors</div>
+            <div class="quick-action-sub">View & approve vendors</div>
+          </div>
+          <div class="quick-action-card" onclick="switchTab('tickets')">
+            <div class="quick-action-icon view">🎟</div>
+            <div class="quick-action-label">Ticket Listings</div>
+            <div class="quick-action-sub">Manage listings</div>
+          </div>
+          <div class="quick-action-card" onclick="switchTab('purchases')">
+            <div class="quick-action-icon purchases">💰</div>
+            <div class="quick-action-label">Purchases</div>
+            <div class="quick-action-sub">Track all sales</div>
+          </div>
+          <div class="quick-action-card" id="chatQuickAction" onclick="openChatPanel()">
+            <div class="quick-action-icon chat">💬</div>
+            <div class="quick-action-label">Messages</div>
+            <div class="quick-action-sub">All conversations</div>
+            <div class="unread-badge" id="chatQuickActionBadge">0</div>
+          </div>
+          <div class="quick-action-card" onclick="showAddVendorModal()">
+            <div class="quick-action-icon add">➕</div>
+            <div class="quick-action-label">Add Vendor</div>
+            <div class="quick-action-sub">Register new vendor</div>
+          </div>
+        </div>
+
+        <!-- Pending approval section -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <h2 class="table-title">Pending Approvals</h2>
+            <span class="table-count" id="pendingCount">0 pending</span>
+          </div>
+          <table class="desktop-table">
+            <thead><tr><th>Business</th><th>Event</th><th>Category</th><th>Submitted</th><th>Actions</th></tr></thead>
+            <tbody id="pendingTableBody"></tbody>
+          </table>
+        </div>
       </div>
-      <div class="stat-card blue">
-        <div class="stat-card-accent"></div>
-        <div class="stat-label">Ticket Listings</div>
-        <div class="stat-value" id="statTotalTickets">0</div>
-        <div class="stat-sub">Active listings</div>
+
+      <!-- VENDORS TAB -->
+      <div class="tab-pane" id="vendorsTab">
+        <div class="page-header">
+          <div class="page-header-row">
+            <div>
+              <h1 class="page-title">Vendors</h1>
+              <p class="page-subtitle">All registered vendor applications</p>
+            </div>
+            <button class="btn-text btn-text-gold" onclick="showAddVendorModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M12 5v14M5 12h14"/></svg>
+              Add Vendor
+            </button>
+          </div>
+        </div>
+        <div class="controls-row">
+          <div class="filter-row">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="pending">Pending</button>
+            <button class="filter-tab" data-filter="submitted">Submitted</button>
+            <button class="filter-tab" data-filter="approved">Approved</button>
+            <button class="filter-tab" data-filter="rejected">Rejected</button>
+          </div>
+          <span class="table-count" id="vendorsCount">0 vendors</span>
+        </div>
+        <div class="table-wrap">
+          <table class="desktop-table">
+            <thead><tr><th>Business</th><th>Contact</th><th>Event / Location</th><th>Booth</th><th>Status</th><th>Paid</th><th>Actions</th></tr></thead>
+            <tbody id="vendorsTableBody"></tbody>
+          </table>
+          <div class="mobile-list" id="vendorsMobileList"></div>
+        </div>
       </div>
-      <div class="stat-card green">
-        <div class="stat-card-accent"></div>
-        <div class="stat-label">Purchases</div>
-        <div class="stat-value" id="statTotalPurchases">0</div>
-        <div class="stat-sub">Completed sales</div>
+
+      <!-- TICKETS TAB -->
+      <div class="tab-pane" id="ticketsTab">
+        <div class="page-header">
+          <h1 class="page-title">Ticket Listings</h1>
+          <p class="page-subtitle">All ticket listings from sellers</p>
+        </div>
+        <div class="controls-row">
+          <div class="filter-row">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="available">Available</button>
+            <button class="filter-tab" data-filter="sold">Sold</button>
+          </div>
+          <span class="table-count" id="ticketsCount">0 tickets</span>
+        </div>
+        <div class="table-wrap">
+          <table class="desktop-table">
+            <thead><tr><th>Event</th><th>Seller</th><th>Price</th><th>Qty</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="ticketsTableBody"></tbody>
+          </table>
+          <div class="mobile-list" id="ticketsMobileList"></div>
+        </div>
       </div>
-      <div class="stat-card violet">
-        <div class="stat-card-accent"></div>
-        <div class="stat-label">Total Revenue</div>
-        <div class="stat-value" id="statTotalRevenue">$0</div>
-        <div class="stat-sub">USD gross</div>
+
+      <!-- PURCHASES TAB -->
+      <div class="tab-pane" id="purchasesTab">
+        <div class="page-header">
+          <h1 class="page-title">Purchases</h1>
+          <p class="page-subtitle">All completed ticket sales</p>
+        </div>
+        <div class="controls-row">
+          <div class="filter-row">
+            <button class="filter-tab active" data-filter="all">All Purchases</button>
+          </div>
+          <span class="table-count" id="purchasesCount">0 purchases</span>
+        </div>
+        <div class="table-wrap">
+          <table class="desktop-table">
+            <thead><tr><th>Buyer</th><th>Email</th><th>Ticket / Event</th><th>Qty</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="purchasesTableBody"></tbody>
+          </table>
+          <div class="mobile-list" id="purchasesMobileList"></div>
+        </div>
       </div>
+
     </div>
-
-    <div class="tab-pane active" id="vendorsTab">
-      <div class="controls-row">
-        <div class="filter-row">
-          <button class="filter-tab active" data-filter="all">All Vendors</button>
-          <button class="filter-tab" data-filter="pending">Pending</button>
-          <button class="filter-tab" data-filter="submitted">Submitted</button>
-          <button class="filter-tab" data-filter="approved">Approved</button>
-          <button class="filter-tab" data-filter="rejected">Rejected</button>
-        </div>
-        <span class="table-count" id="vendorsCount">0 vendors</span>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <h2 class="table-title">Vendors</h2>
-        </div>
-        <table class="desktop-table">
-          <thead><tr>
-            <th>Business</th><th>Email</th><th>Category</th><th>Status</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="vendorsTableBody"></tbody>
-        </table>
-        <div class="mobile-list" id="vendorsMobileList"></div>
-      </div>
-    </div>
-
-    <div class="tab-pane" id="ticketsTab">
-      <div class="controls-row">
-        <div class="filter-row">
-          <button class="filter-tab active" data-filter="all">All Tickets</button>
-          <button class="filter-tab" data-filter="available">Available</button>
-          <button class="filter-tab" data-filter="sold">Sold</button>
-        </div>
-        <span class="table-count" id="ticketsCount">0 tickets</span>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <h2 class="table-title">Ticket Listings</h2>
-        </div>
-        <table class="desktop-table">
-          <thead><tr>
-            <th>Event</th><th>Seller</th><th>Price</th><th>Qty</th><th>Status</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="ticketsTableBody"></tbody>
-        </table>
-        <div class="mobile-list" id="ticketsMobileList"></div>
-      </div>
-    </div>
-
-    <div class="tab-pane" id="purchasesTab">
-      <div class="controls-row">
-        <div class="filter-row">
-          <button class="filter-tab active" data-filter="all">All Purchases</button>
-        </div>
-        <span class="table-count" id="purchasesCount">0 purchases</span>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <h2 class="table-title">Purchases</h2>
-        </div>
-        <table class="desktop-table">
-          <thead><tr>
-            <th>Buyer</th><th>Email</th><th>Ticket</th><th>Total</th><th>Date</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="purchasesTableBody"></tbody>
-        </table>
-        <div class="mobile-list" id="purchasesMobileList"></div>
-      </div>
-    </div>
-
-  </div>
+  </main>
 </div>
 
 <footer>
@@ -899,63 +601,95 @@ footer::before {
   </div>
 </footer>
 
+<!-- VENDOR MODAL -->
 <div class="modal-overlay" id="vendorModalOverlay">
   <div class="modal-box">
     <div class="modal-header">
       <h2 class="modal-title" id="vendorModalTitle">Vendor Details</h2>
       <button class="modal-close" id="closeVendorModal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
     <div class="modal-body" id="vendorModalBody"></div>
   </div>
 </div>
 
+<!-- TICKET MODAL -->
 <div class="modal-overlay" id="ticketModalOverlay">
   <div class="modal-box">
     <div class="modal-header">
       <h2 class="modal-title" id="ticketModalTitle">Ticket Details</h2>
       <button class="modal-close" id="closeTicketModal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
     <div class="modal-body" id="ticketModalBody"></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="chatModalOverlay">
-  <div class="chat-modal-box">
-    <div class="chat-header">
-      <div class="chat-header-info">
-        <div class="chat-header-avatar" id="chatAvatar">A</div>
-        <div>
-          <div class="chat-header-name" id="chatTitle">Chat</div>
-          <div class="chat-header-label" id="chatLabel">Admin</div>
+<!-- CHAT PANEL (slide-in) -->
+<div class="chat-panel-overlay" id="chatPanelOverlay">
+  <div class="chat-panel" id="chatPanel">
+    <!-- Conversation list -->
+    <div class="chat-list-pane">
+      <div class="chat-list-header">
+        <h3 class="chat-list-title">Messages</h3>
+        <button class="chat-list-close" id="closeChatPanel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="chat-list-search">
+        <input type="text" id="chatListSearch" placeholder="Search conversations…">
+      </div>
+      <div class="chat-list-tabs">
+        <button class="chat-list-tab active" data-chat-filter="all">All</button>
+        <button class="chat-list-tab" data-chat-filter="vendor">Vendors</button>
+        <button class="chat-list-tab" data-chat-filter="ticket">Tickets</button>
+        <button class="chat-list-tab" data-chat-filter="purchase">Buyers</button>
+      </div>
+      <div class="chat-list-items" id="chatListItems">
+        <div class="chat-list-empty">
+          <div class="chat-list-empty-icon">💬</div>
+          Loading conversations…
         </div>
       </div>
-      <span class="chat-close" id="closeChat">&times;</span>
     </div>
-    <div class="chat-messages" id="chatMsgs">
-      <div class="chat-empty-msg">
-        <div class="chat-empty-msg-icon">💬</div>No messages yet
+    <!-- Message pane -->
+    <div class="chat-msg-pane" id="chatMsgPane">
+      <div class="chat-no-convo" id="chatNoConvo">
+        <div class="chat-no-convo-icon">💬</div>
+        <div class="chat-no-convo-title">Select a conversation</div>
+        <div class="chat-no-convo-sub">Pick a vendor, ticket, or buyer from the list to start messaging.</div>
       </div>
-    </div>
-    <div class="chat-input-area">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." autocomplete="off">
-      <button class="chat-send-btn" id="sendChatBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="22" y1="2" x2="11" y2="13"/>
-          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-        </svg>
-      </button>
+      <div style="display:none;flex:1;flex-direction:column;" id="chatActivePane">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <div class="chat-header-avatar" id="chatAvatar">A</div>
+            <div>
+              <div class="chat-header-name" id="chatTitle">Chat</div>
+              <div class="chat-header-label" id="chatLabel">Admin</div>
+            </div>
+          </div>
+          <div class="chat-header-actions">
+            <button class="chat-header-btn" id="chatViewProfileBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              View Profile
+            </button>
+          </div>
+        </div>
+        <div class="chat-messages" id="chatMsgs"></div>
+        <div class="chat-input-area">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Type a message…" autocomplete="off">
+          <button class="chat-send-btn" id="sendChatBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" id="lightboxClose">&times;</button>
   <img id="lightboxImg" alt="Preview">
@@ -964,10 +698,9 @@ footer::before {
 <div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
-// ========== FIREBASE SETUP ==========
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, addDoc, updateDoc, orderBy, serverTimestamp, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, addDoc, updateDoc, orderBy, serverTimestamp, getDoc, deleteDoc, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
@@ -980,1051 +713,762 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN_EMAIL = 'admin@grandbazaar.com';
 
-// ========== CONSTANTS ==========
-const SPORT_LABEL = {
+const CAT_LABEL = {
   worldcup:'🏆 World Cup 2026', football:'⚽ Football', basketball:'🏀 Basketball',
-  music:'🎵 Music', tennis:'🎾 Tennis', boxing:'🥊 Boxing',
-  baseball:'⚾ Baseball', hockey:'🏒 Hockey', motorsport:'🏎 Motorsport', other:'🎟 Other'
+  music:'🎵 Music', tennis:'🎾 Tennis', boxing:'🥊 Boxing', baseball:'⚾ Baseball',
+  hockey:'🏒 Hockey', motorsport:'🏎 Motorsport', other:'🎟 Other',
+  'graphic tees':'👕 Graphic Tees', food:'🍔 Food', beverages:'🥤 Beverages',
+  accessories:'👜 Accessories', art:'🎨 Art'
 };
+const getCat = s => CAT_LABEL[s?.toLowerCase()] || s || '—';
 
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-
-// ========== STATE ==========
-let currentTab = 'vendors';
-let activeFilterVendors = 'all';
-let activeFilterTickets = 'all';
-let activeFilterPurchases = 'all';
-let allVendors = [];
-let allTickets = [];
-let allPurchases = [];
-let activeDocId = null;
-let activeDocType = null;
-let chatUnsubscribe = null;
-let unreadCounts = { vendors: {}, tickets: {}, purchases: {} };
-
-// ========== FIELD FALLBACK HELPER ==========
-const getField = (obj, ...fields) => {
-  for (const field of fields) {
-    if (obj && obj[field]) return obj[field];
-  }
-  return '—';
+const getField = (o,...k) => { for(const f of k){ if(o&&o[f]!==undefined&&o[f]!==''&&o[f]!==null)return o[f]; } return ''; };
+const fmtDate = ts => {
+  if(!ts) return '—';
+  let d;
+  if(ts.toMillis) d=new Date(ts.toMillis());
+  else if(ts.seconds) d=new Date(ts.seconds*1000);
+  else d=new Date(ts);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+};
+const fmtTime = ts => {
+  if(!ts) return '';
+  let d;
+  if(ts.toMillis) d=new Date(ts.toMillis());
+  else if(ts.seconds) d=new Date(ts.seconds*1000);
+  else d=new Date(ts);
+  return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 };
 
-// ========== INIT ==========
+// ===== STATE =====
+let currentTab = 'overview';
+let allVendors = [], allTickets = [], allPurchases = [];
+let activeFilterVendors = 'all', activeFilterTickets = 'all', activeFilterPurchases = 'all';
+let chatConvoFilter = 'all';
+let chatConvoSearch = '';
+let activeDocId = null, activeDocType = null, activeDocData = null;
+let chatUnsubscribe = null;
+let unreadCounts = { vendors:{}, tickets:{}, purchases:{} };
+let chatConvoList = []; // [{id, type, name, preview, time, unread, avatarClass}]
+
+// ===== AUTH =====
 onAuthStateChanged(auth, user => {
-  if (!user || user.email !== ADMIN_EMAIL) {
-    window.location.href = 'index.html';
-    return;
-  }
-  document.getElementById('headerAvatar').textContent = (user.displayName || user.email).charAt(0).toUpperCase();
-  document.getElementById('headerAdminName').textContent = user.displayName || user.email;
-  loadVendors();
-  loadTickets();
-  loadPurchases();
+  if(!user || user.email!==ADMIN_EMAIL){ window.location.href='index.html'; return; }
+  document.getElementById('headerAvatar').textContent=(user.displayName||user.email).charAt(0).toUpperCase();
+  document.getElementById('headerAdminName').textContent=user.displayName||user.email;
+  loadVendors(); loadTickets(); loadPurchases();
   setupEventListeners();
-  loadUnreadCounts();
 });
 
-// ========== LOAD UNREAD COUNTS ==========
-async function loadUnreadCounts() {
-  try {
-    // Vendors
-    const vendorsSnap = await getDocs(collection(db, 'vendors'));
-    for (const vDoc of vendorsSnap.docs) {
-      const convSnap = await getDocs(query(
-        collection(db, `vendors/${vDoc.id}/conversation`),
-        where('read_by_admin', '==', false)
-      ));
-      unreadCounts.vendors[vDoc.id] = convSnap.size;
-    }
-
-    // Tickets
-    const ticketsSnap = await getDocs(collection(db, 'ticket_listings'));
-    for (const tDoc of ticketsSnap.docs) {
-      const convSnap = await getDocs(query(
-        collection(db, `ticket_listings/${tDoc.id}/conversation`),
-        where('read_by_admin', '==', false)
-      ));
-      unreadCounts.tickets[tDoc.id] = convSnap.size;
-    }
-
-    // Purchases
-    const purchasesSnap = await getDocs(collection(db, 'purchases'));
-    for (const pDoc of purchasesSnap.docs) {
-      const convSnap = await getDocs(query(
-        collection(db, `purchases/${pDoc.id}/conversation`),
-        where('read_by_admin', '==', false)
-      ));
-      unreadCounts.purchases[pDoc.id] = convSnap.size;
-    }
-
-    updateUnreadBadges();
-  } catch (e) {
-    console.error('Error loading unread counts:', e);
-  }
-}
-
-// ========== UPDATE UNREAD BADGES ==========
-function updateUnreadBadges() {
-  const totalUnread = Object.values(unreadCounts.vendors).reduce((a, b) => a + b, 0) +
-                     Object.values(unreadCounts.tickets).reduce((a, b) => a + b, 0) +
-                     Object.values(unreadCounts.purchases).reduce((a, b) => a + b, 0);
-
-  const globalBadge = document.getElementById('globalUnreadBadge');
-  if (totalUnread > 0) {
-    globalBadge.textContent = totalUnread > 99 ? '99+' : totalUnread;
-    globalBadge.style.display = 'block';
-  } else {
-    globalBadge.style.display = 'none';
-  }
-
-  const chatBadge = document.getElementById('chatQuickActionBadge');
-  if (totalUnread > 0) {
-    chatBadge.textContent = totalUnread > 99 ? '99+' : totalUnread;
-    chatBadge.style.display = 'block';
-  } else {
-    chatBadge.style.display = 'none';
-  }
-
-  updateTableUnreadBadges();
-}
-
-function updateTableUnreadBadges() {
-  // Vendor table
-  document.querySelectorAll('#vendorsTableBody tr').forEach(row => {
-    const vendorId = row.querySelector('.btn-icon[onclick*="viewVendor"]')?.getAttribute('onclick')?.match(/viewVendor\('([^']+)'\)/)?.[1];
-    if (vendorId) {
-      const count = unreadCounts.vendors[vendorId] || 0;
-      const chatBtn = row.querySelector('.btn-icon[onclick*="openChat"]');
-      if (chatBtn && count > 0) {
-        let badge = chatBtn.querySelector('.chat-unread');
-        if (!badge) {
-          badge = document.createElement('span');
-          badge.className = 'chat-unread';
-          chatBtn.style.position = 'relative';
-          chatBtn.appendChild(badge);
-        }
-        badge.textContent = count > 99 ? '99+' : count;
-      }
-    }
-  });
-
-  // Ticket table
-  document.querySelectorAll('#ticketsTableBody tr').forEach(row => {
-    const ticketId = row.querySelector('.btn-icon[onclick*="viewTicket"]')?.getAttribute('onclick')?.match(/viewTicket\('([^']+)'\)/)?.[1];
-    if (ticketId) {
-      const count = unreadCounts.tickets[ticketId] || 0;
-      const chatBtn = row.querySelector('.btn-icon[onclick*="openChat"]');
-      if (chatBtn && count > 0) {
-        let badge = chatBtn.querySelector('.chat-unread');
-        if (!badge) {
-          badge = document.createElement('span');
-          badge.className = 'chat-unread';
-          chatBtn.style.position = 'relative';
-          chatBtn.appendChild(badge);
-        }
-        badge.textContent = count > 99 ? '99+' : count;
-      }
-    }
-  });
-
-  // Mobile cards
-  updateMobileUnreadBadges();
-}
-
-function updateMobileUnreadBadges() {
-  // Vendor mobile cards
-  document.querySelectorAll('#vendorsMobileList .mobile-card').forEach(card => {
-    const vendorId = card.querySelector('.btn-icon[onclick*="viewVendor"]')?.getAttribute('onclick')?.match(/viewVendor\('([^']+)'\)/)?.[1];
-    if (vendorId) {
-      const count = unreadCounts.vendors[vendorId] || 0;
-      let badge = card.querySelector('.unread-badge');
-      if (count > 0) {
-        if (!badge) {
-          badge = document.createElement('div');
-          badge.className = 'unread-badge';
-          card.appendChild(badge);
-        }
-        badge.textContent = count > 99 ? '99+' : count;
-        badge.style.display = 'block';
-      } else if (badge) {
-        badge.style.display = 'none';
-      }
-    }
-  });
-
-  // Ticket mobile cards
-  document.querySelectorAll('#ticketsMobileList .mobile-card').forEach(card => {
-    const ticketId = card.querySelector('.btn-icon[onclick*="viewTicket"]')?.getAttribute('onclick')?.match(/viewTicket\('([^']+)'\)/)?.[1];
-    if (ticketId) {
-      const count = unreadCounts.tickets[ticketId] || 0;
-      let badge = card.querySelector('.unread-badge');
-      if (count > 0) {
-        if (!badge) {
-          badge = document.createElement('div');
-          badge.className = 'unread-badge';
-          card.appendChild(badge);
-        }
-        badge.textContent = count > 99 ? '99+' : count;
-        badge.style.display = 'block';
-      } else if (badge) {
-        badge.style.display = 'none';
-      }
-    }
-  });
-}
-
-// ========== MARK MESSAGES AS READ ==========
-async function markMessagesAsRead(type, id) {
-  try {
-    const collPath = type==='vendor' ? `vendors/${id}/conversation` :
-                    type==='ticket' ? `ticket_listings/${id}/conversation` :
-                    `purchases/${id}/conversation`;
-
-    const q = query(collection(db, collPath), where('read_by_admin', '==', false));
-    const snap = await getDocs(q);
-
-    const batch = [];
-    snap.forEach(doc => {
-      batch.push(updateDoc(doc.ref, { read_by_admin: true }));
-    });
-
-    if (batch.length > 0) {
-      await Promise.all(batch);
-      const key = type + 's';
-      if (!unreadCounts[key]) unreadCounts[key] = {};
-      unreadCounts[key][id] = 0;
-      updateUnreadBadges();
-    }
-  } catch (e) {
-    console.error('Error marking messages as read:', e);
-  }
-}
-
-// ========== LOAD DATA ==========
-function loadVendors() {
-  onSnapshot(query(collection(db,'vendors')), snap => {
-    allVendors = snap.docs.map(d=>({id:d.id,...d.data()}));
+// ===== LOAD DATA =====
+function loadVendors(){
+  onSnapshot(collection(db,'vendors'), snap=>{
+    allVendors=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderVendors(activeFilterVendors);
+    renderPending();
     updateStats();
-    setTimeout(updateTableUnreadBadges, 100);
+    buildChatConvoList();
   });
 }
-
-function loadTickets() {
-  onSnapshot(query(collection(db,'ticket_listings')), snap => {
-    allTickets = snap.docs.map(d=>({id:d.id,...d.data()}));
+function loadTickets(){
+  onSnapshot(collection(db,'ticket_listings'), snap=>{
+    allTickets=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderTickets(activeFilterTickets);
     updateStats();
-    setTimeout(updateTableUnreadBadges, 100);
+    buildChatConvoList();
   });
 }
-
-function loadPurchases() {
-  onSnapshot(query(collection(db,'purchases'),orderBy('purchaseDate','desc')), snap => {
-    allPurchases = snap.docs.map(d=>({id:d.id,...d.data()}));
+function loadPurchases(){
+  onSnapshot(query(collection(db,'purchases'),orderBy('purchaseDate','desc')), snap=>{
+    allPurchases=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderPurchases(activeFilterPurchases);
     updateStats();
-    setTimeout(updateTableUnreadBadges, 100);
+    buildChatConvoList();
   });
 }
 
-function updateStats() {
-  document.getElementById('statTotalVendors').textContent = allVendors.length;
-  document.getElementById('statTotalTickets').textContent = allTickets.length;
-  document.getElementById('statTotalPurchases').textContent = allPurchases.length;
-  const rev = allPurchases.reduce((s,p) => s+(p.totalPrice||p.price||0), 0);
-  document.getElementById('statTotalRevenue').textContent = '$'+rev.toLocaleString('en-US',{minimumFractionDigits:2});
-  document.getElementById('vendorsCount').textContent = allVendors.length+' vendor'+(allVendors.length!==1?'s':'');;
-  document.getElementById('ticketsCount').textContent = allTickets.length+' ticket'+(allTickets.length!==1?'s':'');;
-  document.getElementById('purchasesCount').textContent = allPurchases.length+' purchase'+(allPurchases.length!==1?'s':'');;
+function updateStats(){
+  document.getElementById('statTotalVendors').textContent=allVendors.length;
+  document.getElementById('statTotalTickets').textContent=allTickets.length;
+  document.getElementById('statTotalPurchases').textContent=allPurchases.length;
+  const rev=allPurchases.reduce((s,p)=>s+(p.totalPrice||p.price||0),0);
+  document.getElementById('statTotalRevenue').textContent='$'+rev.toLocaleString('en-US',{minimumFractionDigits:2});
+  document.getElementById('vendorsCount').textContent=allVendors.length+' vendor'+(allVendors.length!==1?'s':'');
+  document.getElementById('ticketsCount').textContent=allTickets.length+' ticket'+(allTickets.length!==1?'s':'');
+  document.getElementById('purchasesCount').textContent=allPurchases.length+' purchase'+(allPurchases.length!==1?'s':'');
 }
 
-// ========== RENDER VENDORS ==========
-function renderVendors(filter=activeFilterVendors) {
-  const arr = filter==='all' ? allVendors : allVendors.filter(v=>
-    (v.status||v.approvalStatus||'').toLowerCase() === filter.toLowerCase()
-  );
-
-  const tbody = document.getElementById('vendorsTableBody');
-  const mlist = document.getElementById('vendorsMobileList');
-
-  if(!arr.length) {
-    const empty = `<div class="empty-state"><div class="empty-state-icon">🏪</div><div class="empty-state-title">No vendors found</div><div class="empty-state-sub">No vendor applications match this filter.</div></div>`;
-    tbody.innerHTML = `<tr><td colspan="5" style="padding:0">${empty}</td></tr>`;
-    mlist.innerHTML = empty;
-    return;
-  }
-
-  tbody.innerHTML = arr.map(v=>{
-    const bizName = getField(v, 'businessName', 'name', 'bizName', 'companyName', 'vendorName');
-    const ownerName = getField(v, 'ownerName', 'contactName', 'owner', 'name', 'fullName');
-    const email = getField(v, 'email', 'contactEmail', 'user_email', 'emailAddress');
-    const sport = getField(v, 'sport', 'category', 'eventType', 'type');
-    const status = v.status || v.approvalStatus || 'submitted';
-
-    return `
-    <tr>
-      <td>
-        <div class="td-biz-name">${esc(bizName)}</div>
-        <div class="td-biz-sub">${esc(ownerName)}</div>
-      </td>
-      <td class="td-email">${esc(email)}</td>
-      <td>${SPORT_LABEL[sport?.toLowerCase()] || esc(sport || '—')}</td>
-      <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
-      <td><div class="btn-row">
-        <button class="btn-icon" onclick="viewVendor('${v.id}')" title="View details">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-        <button class="btn-icon" onclick="openChat('vendor','${v.id}','${esc(bizName)}')" title="Chat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-        ${['pending','submitted'].includes(status.toLowerCase())?`
-        <button class="btn-icon" onclick="approveVendor('${v.id}')" title="Approve">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        </button>
-        <button class="btn-icon danger" onclick="rejectVendor('${v.id}')" title="Reject">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>`:''}
-      </div></td>
-    </tr>`;
-  }).join('');
-
-  mlist.innerHTML = arr.map(v=>{
-    const bizName = getField(v, 'businessName', 'name', 'bizName', 'companyName', 'vendorName');
-    const email = getField(v, 'email', 'contactEmail', 'user_email', 'emailAddress');
-    const sport = getField(v, 'sport', 'category', 'eventType', 'type');
-    const status = v.status || v.approvalStatus || 'submitted';
-    const logoUrl = getField(v, 'logoUrl', 'logo', 'image', 'imageUrl');
-
-    return `
-    <div class="mobile-card">
-      <div class="mobile-card-thumb" style="${
-        logoUrl ? `background:url(${esc(logoUrl)}) center/cover` :
-        'background:var(--paper-deep)'
-      }"></div>
-      <div class="mobile-card-info">
-        <div class="mobile-card-title">${esc(bizName)}</div>
-        <div class="mobile-card-sub">${esc(email)}</div>
-        <div class="mobile-card-meta">
-          <span class="status-badge status-${status.toLowerCase()}">${status}</span>
-        </div>
-      </div>
-      <div class="mobile-card-actions">
-        <button class="btn-icon" onclick="viewVendor('${v.id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-        <button class="btn-icon" onclick="openChat('vendor','${v.id}','${esc(bizName)}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-
-  setTimeout(updateTableUnreadBadges, 100);
-}
-
-// ========== RENDER TICKETS ==========
-function renderTickets(filter=activeFilterTickets) {
-  const arr = filter==='all' ? allTickets : allTickets.filter(t=>
-    (t.status||t.approvalStatus||'available').toLowerCase() === filter.toLowerCase()
-  );
-
-  const tbody = document.getElementById('ticketsTableBody');
-  const mlist = document.getElementById('ticketsMobileList');
-
-  if(!arr.length) {
-    const empty = `<div class="empty-state"><div class="empty-state-icon">🎟</div><div class="empty-state-title">No tickets found</div><div class="empty-state-sub">No ticket listings match this filter.</div></div>`;
-    tbody.innerHTML = `<tr><td colspan="6" style="padding:0">${empty}</td></tr>`;
-    mlist.innerHTML = empty;
-    return;
-  }
-
-  tbody.innerHTML = arr.map(t=>{
-    const title = getField(t, 'title', 'eventName', 'name', 'eventTitle');
-    const sellerName = getField(t, 'sellerName', 'seller?.name', 'user_name', 'ownerName', 'vendorName');
-    const sellerEmail = getField(t, 'sellerEmail', 'user_email', 'email', 'contactEmail');
-    const sport = getField(t, 'sport', 'category', 'eventType', 'type');
-    const price = getField(t, 'price', 'unitPrice', 'cost', 'amount');
-    const qty = getField(t, 'qty', 'quantity', 'ticketsAvailable', 'stock', 'available');
-    const status = t.status || t.approvalStatus || 'available';
-
-    return `
-    <tr>
-      <td class="td-event">${esc(title)}</td>
-      <td>
-        <div class="td-biz-name">${esc(sellerName)}</div>
-        <div class="td-biz-sub">${esc(sellerEmail)}</div>
-      </td>
-      <td class="td-price">$${Number(price||0).toLocaleString()}</td>
-      <td>${qty||1}</td>
-      <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
-      <td><div class="btn-row">
-        <button class="btn-icon" onclick="viewTicket('${t.id}')" title="View">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-        <button class="btn-icon" onclick="openChat('ticket','${t.id}','${esc(title)}')" title="Chat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-        ${['pending','submitted'].includes(status.toLowerCase())?`
-        <button class="btn-icon" onclick="approveTicket('${t.id}')" title="Approve">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        </button>
-        <button class="btn-icon danger" onclick="rejectTicket('${t.id}')" title="Reject">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>`:''}
-        ${status.toLowerCase()!=='sold'?`
-        <button class="btn-icon danger" onclick="deleteTicket('${t.id}')" title="Delete">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-            <path d="M10 11v6M14 11v6"/>
-          </svg>
-        </button>`:''}
-      </div></td>
-    </tr>`;
-  }).join('');
-
-  mlist.innerHTML = arr.map(t=>{
-    const title = getField(t, 'title', 'eventName', 'name', 'eventTitle');
-    const sellerName = getField(t, 'sellerName', 'seller?.name', 'user_name', 'ownerName', 'vendorName');
-    const sport = getField(t, 'sport', 'category', 'eventType', 'type');
-    const price = getField(t, 'price', 'unitPrice', 'cost', 'amount');
-    const qty = getField(t, 'qty', 'quantity', 'ticketsAvailable', 'stock', 'available');
-    const status = t.status || t.approvalStatus || 'available';
-    const imageUrl = getField(t, 'image', 'imageUrl', 'proofImageURL', 'ticketImage');
-
-    return `
-    <div class="mobile-card">
-      <div class="mobile-card-thumb" style="${
-        imageUrl ? `background:url(${esc(imageUrl)}) center/cover` :
-        'background:var(--paper-deep)'
-      }"></div>
-      <div class="mobile-card-info">
-        <div class="mobile-card-title">${esc(title)}</div>
-        <div class="mobile-card-sub">${esc(sellerName)}</div>
-        <div class="mobile-card-meta">
-          <span class="mobile-card-price">$${Number(price||0).toLocaleString()}</span>
-          <span class="status-badge status-${status.toLowerCase()}">${status}</span>
-        </div>
-      </div>
-      <div class="mobile-card-actions">
-        <button class="btn-icon" onclick="viewTicket('${t.id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-        <button class="btn-icon" onclick="openChat('ticket','${t.id}','${esc(title)}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-
-  setTimeout(updateTableUnreadBadges, 100);
-}
-
-// ========== RENDER PURCHASES ==========
-function renderPurchases(filter=activeFilterPurchases) {
-  const arr = filter==='all' ? allPurchases : allPurchases.filter(p=>
-    (p.status||'').toLowerCase() === filter.toLowerCase()
-  );
-
-  const tbody = document.getElementById('purchasesTableBody');
-  const mlist = document.getElementById('purchasesMobileList');
-
-  if(!arr.length) {
-    const empty = `<div class="empty-state"><div class="empty-state-icon">🛒</div><div class="empty-state-title">No purchases yet</div><div class="empty-state-sub">Completed ticket purchases will appear here.</div></div>`;
-    tbody.innerHTML = `<tr><td colspan="6" style="padding:0">${empty}</td></tr>`;
-    mlist.innerHTML = empty;
-    return;
-  }
-
-  tbody.innerHTML = arr.map(p=>{
-    const buyerName = getField(p, 'buyerName', 'name', 'fullName', 'customerName');
-    const buyerEmail = getField(p, 'buyerEmail', 'email', 'user_email', 'contactEmail');
-    const ticketName = getField(p, 'ticketName', 'eventName', 'title', 'listingTitle');
-    const totalPrice = getField(p, 'totalPrice', 'price', 'amount', 'total');
-    const date = p.purchaseDate ? (p.purchaseDate.toMillis ?
-      new Date(p.purchaseDate.toMillis()).toLocaleDateString() :
-      new Date(p.purchaseDate).toLocaleDateString()) : '—';
-
-    return `
-    <tr>
-      <td><div class="td-biz-name">${esc(buyerName)}</div></td>
-      <td class="td-email">${esc(buyerEmail)}</td>
-      <td class="td-event">${esc(ticketName)}</td>
-      <td class="td-price">$${Number(totalPrice||0).toFixed(2)}</td>
-      <td class="td-date">${date}</td>
-      <td><div class="btn-row">
-        <button class="btn-icon" onclick="openPurchaseChat('${p.id}','${p.listingId||''}')" title="Chat with buyer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-        ${buyerEmail?`
-        <button class="btn-icon" onclick="window.location.href='mailto:${esc(buyerEmail)}'" title="Email buyer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-        </button>`:''}
-      </div></td>
-    </tr>`;
-  }).join('');
-
-  mlist.innerHTML = arr.map(p=>{
-    const buyerName = getField(p, 'buyerName', 'name', 'fullName', 'customerName');
-    const buyerEmail = getField(p, 'buyerEmail', 'email', 'user_email', 'contactEmail');
-    const ticketName = getField(p, 'ticketName', 'eventName', 'title', 'listingTitle');
-    const totalPrice = getField(p, 'totalPrice', 'price', 'amount', 'total');
-    const date = p.purchaseDate ? (p.purchaseDate.toMillis ?
-      new Date(p.purchaseDate.toMillis()).toLocaleDateString() :
-      new Date(p.purchaseDate).toLocaleDateString()) : '—';
-
-    return `
-    <div class="mobile-card">
-      <div class="mobile-card-thumb" style="background:linear-gradient(135deg,var(--gold-dk),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--ink);">🎟</div>
-      <div class="mobile-card-info">
-        <div class="mobile-card-title">${esc(buyerName)}</div>
-        <div class="mobile-card-sub">${esc(buyerEmail)} · ${date}</div>
-        <div class="mobile-card-meta">
-          <span class="mobile-card-price">$${Number(totalPrice||0).toFixed(2)}</span>
-        </div>
-      </div>
-      <div class="mobile-card-actions">
-        <button class="btn-icon" onclick="openPurchaseChat('${p.id}','${p.listingId||''}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-
-  setTimeout(updateTableUnreadBadges, 100);
-}
-
-// ========== VIEW VENDOR MODAL ==========
-window.viewVendor = function(id) {
-  const v = allVendors.find(x=>x.id===id);
-  if (!v) return;
-
-  markMessagesAsRead('vendor', id);
-
-  const bizName = getField(v, 'businessName', 'name', 'bizName', 'companyName', 'vendorName');
-  const ownerName = getField(v, 'ownerName', 'contactName', 'owner', 'name', 'fullName');
-  const email = getField(v, 'email', 'contactEmail', 'user_email', 'emailAddress');
-  const phone = getField(v, 'phone', 'contactPhone', 'mobile', 'telephone');
-  const website = getField(v, 'website', 'site', 'url', 'webAddress');
-  const sport = getField(v, 'sport', 'category', 'eventType', 'type');
-  const status = v.status || v.approvalStatus || 'submitted';
-  const description = getField(v, 'description', 'bio', 'about', 'details', 'notes');
-  const address = getField(v, 'address', 'location', 'businessAddress', 'physicalAddress');
-  const createdAt = getField(v, 'createdAt', 'dateCreated', 'timestamp', 'joinedAt');
-  const imageUrls = v.imageUrls || v.images || v.gallery || [];
-  const logoUrl = getField(v, 'logoUrl', 'logo', 'image', 'imageUrl');
-
-  document.getElementById('vendorModalTitle').textContent = bizName || 'Vendor Details';
-
-  document.getElementById('vendorModalBody').innerHTML = `
-    <div class="modal-section">
-      <div class="modal-section-label">Business Profile</div>
-
-      <div class="vendor-detail-grid">
-        <div class="info-card">
-          <div class="info-card-label">Business Name</div>
-          <div class="info-card-value">${esc(bizName)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Category</div>
-          <div class="info-card-value">${SPORT_LABEL[sport?.toLowerCase()] || esc(sport)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Status</div>
-          <div class="info-card-value">
-            <span class="status-badge status-${status.toLowerCase()}">${status}</span>
-          </div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Registration Date</div>
-          <div class="info-card-value">
-            ${createdAt ? (createdAt.toMillis ?
-              new Date(createdAt.toMillis()).toLocaleDateString() :
-              (createdAt.seconds ? new Date(createdAt.seconds * 1000).toLocaleDateString() :
-              new Date(createdAt).toLocaleDateString())) : '—'}
-          </div>
-        </div>
-      </div>
-
-      ${description && description !== '—' ? `
-      <div class="field-group" style="margin-top:16px;">
-        <label class="field-label">Business Description</label>
-        <textarea class="field-textarea" readonly style="min-height:100px;">${esc(description)}</textarea>
-      </div>` : ''}
-    </div>
-
-    <div class="modal-section">
-      <div class="modal-section-label">Contact Information</div>
-
-      <div class="vendor-detail-grid">
-        <div class="info-card">
-          <div class="info-card-label">Owner/Contact Name</div>
-          <div class="info-card-value">${esc(ownerName)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Email Address</div>
-          <div class="info-card-value">${esc(email)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Phone Number</div>
-          <div class="info-card-value">${esc(phone)}</div>
-        </div>
-        ${website && website !== '—' ? `
-        <div class="info-card">
-          <div class="info-card-label">Website</div>
-          <div class="info-card-value">
-            <a href="${esc(website)}" target="_blank" rel="noopener">${esc(website)}</a>
-          </div>
-        </div>` : ''}
-      </div>
-    </div>
-
-    ${(imageUrls.length > 0 || logoUrl) ? `
-    <div class="modal-section">
-      <div class="modal-section-label">Images</div>
-      <div class="vendor-gallery">
-        ${logoUrl ? `<img src="${esc(logoUrl)}" class="vendor-gallery-img" onclick="openLightbox('${esc(logoUrl)}')" loading="lazy" alt="Logo">` : ''}
-        ${imageUrls.map(url=>`<img src="${esc(url)}" class="vendor-gallery-img" onclick="openLightbox('${esc(url)}')" loading="lazy" alt="Business image">`).join('')}
-      </div>
-    </div>` : ''}
-
-    ${address && address !== '—' ? `
-    <div class="modal-section">
-      <div class="modal-section-label">Business Address</div>
-      <div class="info-card">
-        <div class="info-card-value">${esc(address)}</div>
-      </div>
-    </div>` : ''}
-
-    ${['pending','submitted'].includes(status.toLowerCase()) ? `
-    <div class="modal-action-row">
-      <button class="btn-text btn-text-gold" style="flex:1" onclick="approveVendor('${v.id}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-        Approve Vendor
-      </button>
-      <button class="btn-text btn-text-ghost" onclick="rejectVendor('${v.id}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-        Reject
-      </button>
-    </div>` : ''}
-  `;
-
-  document.getElementById('vendorModalOverlay').classList.add('active');
-};
-
-// ========== VIEW TICKET MODAL ==========
-window.viewTicket = function(id) {
-  const t = allTickets.find(x=>x.id===id);
-  if (!t) return;
-
-  markMessagesAsRead('ticket', id);
-
-  const title = getField(t, 'title', 'eventName', 'name', 'eventTitle');
-  const sellerName = getField(t, 'sellerName', 'seller?.name', 'user_name', 'ownerName', 'vendorName');
-  const sellerEmail = getField(t, 'sellerEmail', 'user_email', 'email', 'contactEmail');
-  const sport = getField(t, 'sport', 'category', 'eventType', 'type');
-  const date = getField(t, 'date', 'eventDate', 'when', 'dateTime');
-  const venue = getField(t, 'venue', 'location', 'place', 'venueName');
-  const city = getField(t, 'city', 'locationCity', 'town', 'cityName');
-  const seat = getField(t, 'seat', 'section', 'seatInfo', 'area', 'seatNumber');
-  const price = getField(t, 'price', 'unitPrice', 'cost', 'amount', 'ticketPrice');
-  const qty = getField(t, 'qty', 'quantity', 'ticketsAvailable', 'stock', 'available', 'numTickets');
-  const status = t.status || t.approvalStatus || 'available';
-  const proofImage = getField(t, 'proofImageURL', 'ticketProof', 'proofImage', 'imageUrl', 'image');
-  const notes = getField(t, 'notes', 'description', 'details', 'additionalInfo', 'info');
-
-  document.getElementById('ticketModalTitle').textContent = title || 'Ticket Details';
-
-  document.getElementById('ticketModalBody').innerHTML = `
-    <div class="modal-section">
-      <div class="modal-section-label">Event Details</div>
-
-      <div class="vendor-detail-grid">
-        <div class="info-card">
-          <div class="info-card-label">Event Name</div>
-          <div class="info-card-value">${esc(title)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Category</div>
-          <div class="info-card-value">${SPORT_LABEL[sport?.toLowerCase()] || esc(sport)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Date</div>
-          <div class="info-card-value">${esc(date)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Venue</div>
-          <div class="info-card-value">${esc(venue)} ${city ? '· ' + esc(city) : ''}</div>
-        </div>
-        ${seat !== '—' ? `
-        <div class="info-card">
-          <div class="info-card-label">Seat/Section</div>
-          <div class="info-card-value">${esc(seat)}</div>
-        </div>` : ''}
-      </div>
-    </div>
-
-    <div class="modal-section">
-      <div class="modal-section-label">Pricing & Availability</div>
-
-      <div style="display:flex;align-items:flex-start;gap:16px;">
-        <div class="field-price" style="flex-shrink:0;">
-          $${Number(price||0).toLocaleString()}
-          <span style="font-family:'Syne',sans-serif;font-size:11px;color:var(--ink-50);font-weight:600"> / ticket</span>
-        </div>
-        <div style="display:flex;gap:12px;">
-          <div class="info-card">
-            <div class="info-card-label">Quantity Available</div>
-            <div class="info-card-value">${qty||1}</div>
-          </div>
-          <div class="info-card">
-            <div class="info-card-label">Status</div>
-            <div class="info-card-value">
-              <span class="status-badge status-${status.toLowerCase()}">${status}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      ${price && qty ? `
-      <div class="info-card" style="margin-top:12px;">
-        <div class="info-card-label">Total Inventory Value</div>
-        <div class="info-card-value" style="font-family:'Cormorant Garamond',serif;font-size:18px;">
-          $${Number(price * qty).toLocaleString()}
-        </div>
-      </div>` : ''}
-    </div>
-
-    <div class="modal-section">
-      <div class="modal-section-label">Seller Information</div>
-
-      <div class="vendor-detail-grid">
-        <div class="info-card">
-          <div class="info-card-label">Seller Name</div>
-          <div class="info-card-value">${esc(sellerName)}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-card-label">Email Address</div>
-          <div class="info-card-value">${esc(sellerEmail)}</div>
-        </div>
-      </div>
-    </div>
-
-    ${proofImage ? `
-    <div class="modal-section">
-      <div class="modal-section-label">Ticket Proof</div>
-      <img src="${esc(proofImage)}" class="proof-img"
-           onclick="openLightbox('${esc(proofImage)}')" loading="lazy" alt="Ticket proof">
-    </div>` : ''}
-
-    ${notes && notes !== '—' ? `
-    <div class="modal-section">
-      <div class="modal-section-label">Additional Notes</div>
-      <textarea class="field-textarea" readonly style="min-height:80px;">${esc(notes)}</textarea>
-    </div>` : ''}
-
-    ${['pending','submitted'].includes(status.toLowerCase()) ? `
-    <div class="modal-action-row">
-      <button class="btn-text btn-text-gold" style="flex:1" onclick="approveTicket('${t.id}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-        Approve Listing
-      </button>
-      <button class="btn-text btn-text-ghost" onclick="rejectTicket('${t.id}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-        Reject
-      </button>
-    </div>` : ''}
-  `;
-
-  document.getElementById('ticketModalOverlay').classList.add('active');
-};
-
-// ========== ACTION FUNCTIONS ==========
-window.approveVendor = async function(id) {
-  try {
-    await updateDoc(doc(db,'vendors',id),{status:'approved'});
-    showToast('Vendor approved','success');
-    closeVendorModal();
-  } catch(e) { showToast('Error: '+e.message,'error'); }
-};
-
-window.rejectVendor = async function(id) {
-  if(!confirm('Reject this vendor?')) return;
-  try {
-    await updateDoc(doc(db,'vendors',id),{status:'rejected'});
-    showToast('Vendor rejected','success');
-    closeVendorModal();
-  } catch(e) { showToast('Error: '+e.message,'error'); }
-};
-
-window.approveTicket = async function(id) {
-  try {
-    await updateDoc(doc(db,'ticket_listings',id),{approvalStatus:'approved', status:'approved'});
-    showToast('Listing approved','success');
-    closeTicketModal();
-  } catch(e) { showToast('Error: '+e.message,'error'); }
-};
-
-window.rejectTicket = async function(id) {
-  const reason = prompt('Rejection reason (shown to seller):');
-  if(reason===null) return;
-  try {
-    await updateDoc(doc(db,'ticket_listings',id),{
-      approvalStatus:'rejected',
-      status:'rejected',
-      rejectionReason:reason
+// ===== BUILD CHAT CONVO LIST =====
+function buildChatConvoList(){
+  chatConvoList = [];
+  allVendors.forEach(v=>{
+    const name = getField(v,'businessName','full_name','name','bizName') || 'Vendor';
+    chatConvoList.push({
+      id:v.id, type:'vendor', name, subtitle: getField(v,'email','auth_email','invoice_email'),
+      avatarClass:'', data:v,
+      unread: unreadCounts.vendors[v.id]||0,
+      time: v.responded_at||v.submitted_at||v.created_at||v.createdAt
     });
-    showToast('Listing rejected','success');
-    closeTicketModal();
-  } catch(e) { showToast('Error: '+e.message,'error'); }
-};
-
-window.deleteTicket = async function(id) {
-  if(!confirm('Delete this ticket listing?')) return;
-  try {
-    await deleteDoc(doc(db,'ticket_listings',id));
-    showToast('Ticket deleted','success');
-    closeTicketModal();
-  } catch(e) { showToast('Error: '+e.message,'error'); }
-};
-
-// ========== CHAT FUNCTIONS ==========
-window.openChat = function(type, id, name) {
-  activeDocType = type; activeDocId = id;
-  document.getElementById('chatTitle').textContent = name||'Chat';
-  document.getElementById('chatLabel').textContent = type==='vendor' ? 'Event Coordinator' : 'Ticket Seller';
-  document.getElementById('chatAvatar').textContent = (name||'C').charAt(0).toUpperCase();
-  document.getElementById('chatInput').value = '';
-  document.getElementById('chatMsgs').innerHTML = '<div class="chat-empty-msg"><div class="chat-empty-msg-icon">💬</div>Loading…</div>';
-  document.getElementById('chatModalOverlay').classList.add('active');
-
-  markMessagesAsRead(type, id);
-
-  if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}
-  const collPath = type==='vendor' ? `vendors/${id}/conversation` : `ticket_listings/${id}/conversation`;
-  chatUnsubscribe = onSnapshot(query(collection(db,collPath),orderBy('timestamp','asc')), snap => {
-    renderChatSnap(snap);
-    if (!snap.empty) {
-      const lastMsg = snap.docs[snap.docs.length - 1].data();
-      if (lastMsg.sender !== 'admin' && !lastMsg.read_by_admin) {
-        const key = type + 's';
-        if (!unreadCounts[key]) unreadCounts[key] = {};
-        unreadCounts[key][id] = (unreadCounts[key][id] || 0) + 1;
-        updateUnreadBadges();
-      }
-    }
   });
-};
-
-window.openPurchaseChat = async function(purchaseId, listingId) {
-  try {
-    const pDoc = await getDoc(doc(db,'purchases',purchaseId));
-    if(!pDoc.exists()){showToast('Purchase not found','error');return;}
-    const p = pDoc.data();
-
-    const lid = listingId || p.listingId || p.ticketId || p.listing_id || p.ticket?.id || p.listing?.id;
-    let label = p.buyerName || p.buyerEmail || p.name || 'Buyer';
-    let sellerName = p.sellerName || p.seller?.name || p.vendorName || 'Seller';
-
-    if(lid){
-      openChatSession(lid, 'ticket', `${label} ↔ ${sellerName}`, 'Buyer & Seller');
-      return;
-    }
-
-    openChatSession(purchaseId,'purchase',label,'Buyer');
-  } catch(e){showToast('Error opening chat: '+e.message,'error');}
-};
-
-function openChatSession(id, type, name, label) {
-  activeDocId=id; activeDocType=type;
-  document.getElementById('chatTitle').textContent = name;
-  document.getElementById('chatLabel').textContent = label;
-  document.getElementById('chatAvatar').textContent = (name||'C').charAt(0).toUpperCase();
-  document.getElementById('chatInput').value = '';
-  document.getElementById('chatMsgs').innerHTML = '<div class="chat-empty-msg"><div class="chat-empty-msg-icon">💬</div>Loading…</div>';
-  document.getElementById('chatModalOverlay').classList.add('active');
-
-  markMessagesAsRead(type, id);
-
-  if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}
-  const collPath = type==='vendor' ? `vendors/${id}/conversation` :
-                  type==='ticket' ? `ticket_listings/${id}/conversation` :
-                  `purchases/${id}/conversation`;
-  chatUnsubscribe = onSnapshot(query(collection(db,collPath),orderBy('timestamp','asc')), snap => {
-    renderChatSnap(snap);
-    if (!snap.empty) {
-      const lastMsg = snap.docs[snap.docs.length - 1].data();
-      if (lastMsg.sender !== 'admin' && !lastMsg.read_by_admin) {
-        const key = type + 's';
-        if (!unreadCounts[key]) unreadCounts[key] = {};
-        unreadCounts[key][id] = (unreadCounts[key][id] || 0) + 1;
-        updateUnreadBadges();
-      }
-    }
+  allTickets.forEach(t=>{
+    const name = getField(t,'title','eventName','event_name','name') || 'Ticket';
+    chatConvoList.push({
+      id:t.id, type:'ticket', name, subtitle: (getField(t,'seller','sellerName','user_name','ownerName')||'') + ' · ' + (getField(t,'user_email','sellerEmail','email')||''),
+      avatarClass:'ticket', data:t,
+      unread: unreadCounts.tickets[t.id]||0,
+      time: t.createdAt||t.created_at
+    });
   });
+  // Each purchase gets its OWN conversation entry
+  allPurchases.forEach(p=>{
+    const buyerName = getField(p,'buyerName','name','fullName','customerName') || 'Buyer';
+    const ticketName = getField(p,'ticketName','eventName','title','listingTitle') || '';
+    chatConvoList.push({
+      id:p.id, type:'purchase',
+      name: buyerName,
+      subtitle: ticketName || getField(p,'buyerEmail','email'),
+      avatarClass:'buyer', data:p,
+      unread: unreadCounts.purchases[p.id]||0,
+      time: p.purchaseDate
+    });
+  });
+  renderChatList();
+  updateGlobalBadges();
 }
 
-function renderChatSnap(snap) {
-  const el = document.getElementById('chatMsgs');
-  if(snap.empty){
-    el.innerHTML='<div class="chat-empty-msg"><div class="chat-empty-msg-icon">👋</div>No messages yet — start the conversation</div>';
+function renderChatList(){
+  let list = chatConvoList;
+  if(chatConvoFilter!=='all') list=list.filter(c=>c.type===chatConvoFilter);
+  if(chatConvoSearch) list=list.filter(c=>
+    c.name.toLowerCase().includes(chatConvoSearch)||
+    (c.subtitle||'').toLowerCase().includes(chatConvoSearch)
+  );
+  list.sort((a,b)=>{
+    if((b.unread||0)!==(a.unread||0)) return (b.unread||0)-(a.unread||0);
+    const ta=a.time?.seconds||0, tb=b.time?.seconds||0;
+    return tb-ta;
+  });
+  const el=document.getElementById('chatListItems');
+  if(!list.length){
+    el.innerHTML=`<div class="chat-list-empty"><div class="chat-list-empty-icon">💬</div>No conversations yet</div>`;
     return;
   }
-  el.innerHTML = snap.docs.map(ds=>{
+  el.innerHTML=list.map(c=>{
+    const isActive=c.id===activeDocId&&c.type===activeDocType;
+    const typeLabel=c.type==='vendor'?'Vendor':c.type==='ticket'?'Ticket':'Buyer';
+    return `<div class="chat-list-item ${isActive?'active-convo':''} ${c.unread>0?'has-unread':''}" onclick="selectConvo('${c.type}','${c.id}')">
+      <div class="chat-list-avatar ${c.avatarClass}">${(c.name||'?').charAt(0).toUpperCase()}</div>
+      <div class="chat-list-info">
+        <div class="chat-list-name">${esc(c.name)}</div>
+        <div class="chat-list-preview">${esc(c.subtitle||'')}</div>
+        <span class="chat-list-type-badge ${c.type}">${typeLabel}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+        <span class="chat-list-time">${c.time?fmtDate(c.time):''}</span>
+        ${c.unread>0?`<span class="chat-list-unread">${c.unread>99?'99+':c.unread}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateGlobalBadges(){
+  const total=Object.values(unreadCounts.vendors).reduce((a,b)=>a+b,0)+
+              Object.values(unreadCounts.tickets).reduce((a,b)=>a+b,0)+
+              Object.values(unreadCounts.purchases).reduce((a,b)=>a+b,0);
+  const gb=document.getElementById('globalUnreadBadge');
+  const cb=document.getElementById('chatQuickActionBadge');
+  const sb=document.getElementById('sidebarChatBadge');
+  const vb=document.getElementById('sidebarVendorsBadge');
+  if(total>0){
+    gb.textContent=total>99?'99+':total; gb.style.display='block';
+    cb.textContent=total>99?'99+':total; cb.style.display='block';
+    sb.textContent=total>99?'99+':total; sb.style.display='inline';
+  } else {
+    gb.style.display='none'; cb.style.display='none'; sb.style.display='none';
+  }
+  const pv=Object.values(unreadCounts.vendors).reduce((a,b)=>a+b,0);
+  if(pv>0){ vb.textContent=pv>99?'99+':pv; vb.style.display='inline'; }
+  else vb.style.display='none';
+}
+
+// ===== SELECT CONVO =====
+window.selectConvo = function(type, id){
+  const item = chatConvoList.find(c=>c.type===type&&c.id===id);
+  if(!item) return;
+  activeDocType=type; activeDocId=id; activeDocData=item.data;
+
+  document.getElementById('chatNoConvo').style.display='none';
+  const ap=document.getElementById('chatActivePane');
+  ap.style.display='flex'; ap.style.flexDirection='column'; ap.style.flex='1';
+
+  document.getElementById('chatAvatar').textContent=(item.name||'?').charAt(0).toUpperCase();
+  document.getElementById('chatTitle').textContent=item.name;
+  const typeLabel=type==='vendor'?'Vendor Coordinator':type==='ticket'?'Ticket Seller':'Buyer';
+  document.getElementById('chatLabel').textContent=typeLabel;
+  document.getElementById('chatInput').value='';
+
+  // View profile btn
+  document.getElementById('chatViewProfileBtn').onclick=()=>{
+    if(type==='vendor') window.viewVendor(id);
+    else if(type==='ticket') window.viewTicket(id);
+    else {
+      const p=allPurchases.find(x=>x.id===id);
+      if(p) viewPurchaseDetail(p);
+    }
+  };
+
+  markMessagesAsRead(type,id);
+
+  if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}
+  const collPath = type==='vendor'?`vendors/${id}/conversation`:
+                   type==='ticket'?`ticket_listings/${id}/conversation`:
+                   `purchases/${id}/conversation`;
+  const msgsEl=document.getElementById('chatMsgs');
+  msgsEl.innerHTML='<div style="text-align:center;color:var(--ink-50);padding:20px;font-size:13px;">Loading…</div>';
+  chatUnsubscribe=onSnapshot(query(collection(db,collPath),orderBy('timestamp','asc')), snap=>{
+    renderChatMsgs(snap, item.name);
+    renderChatList(); // refresh list to update active state
+  });
+};
+
+function renderChatMsgs(snap, senderName){
+  const el=document.getElementById('chatMsgs');
+  if(snap.empty){
+    el.innerHTML='<div style="text-align:center;color:var(--ink-50);padding:40px 20px;font-size:13px;">👋 No messages yet — start the conversation</div>';
+    return;
+  }
+  let lastDate='';
+  el.innerHTML=snap.docs.map(ds=>{
     const d=ds.data();
     const isAdmin=d.sender==='admin';
-    const isBuyer=d.sender==='buyer';
-    const time=d.timestamp?(d.timestamp.toMillis?
-      new Date(d.timestamp.toMillis()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):
-      (d.timestamp.seconds ?
-        new Date(d.timestamp.seconds * 1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) :
-        new Date(d.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}))) : '';
-    const rowCls=isAdmin?'admin-row':isBuyer?'buyer-row':'vendor-row';
+    const time=fmtTime(d.timestamp);
+    const dateStr=d.timestamp?(d.timestamp.seconds?new Date(d.timestamp.seconds*1000).toDateString():new Date(d.timestamp).toDateString()):'';
+    let dateDivider='';
+    if(dateStr&&dateStr!==lastDate){
+      lastDate=dateStr;
+      dateDivider=`<div class="chat-date-divider">${dateStr}</div>`;
+    }
+    const senderLabel=isAdmin?'Admin':senderName||d.sender||'User';
+    const rowCls=isAdmin?'admin-row':'vendor-row';
     const bubbleCls=isAdmin?'msg-bubble-admin':'msg-bubble-other';
-    return `<div class="msg-row ${rowCls}"><div class="${bubbleCls}">${esc(d.message||d.text||'')}</div><div class="msg-time">${time}</div></div>`;
+    return `${dateDivider}<div class="msg-row ${rowCls}">
+      ${!isAdmin?`<div class="msg-sender">${esc(senderLabel)}</div>`:''}
+      <div class="${bubbleCls}">${esc(d.message||d.text||'')}</div>
+      <div class="msg-time">${time}</div>
+    </div>`;
   }).join('');
   el.scrollTop=el.scrollHeight;
 }
 
-async function sendMessage() {
+async function sendMessage(){
   const txt=document.getElementById('chatInput').value.trim();
-  if(!txt||!activeDocId)return;
+  if(!txt||!activeDocId) return;
   document.getElementById('sendChatBtn').disabled=true;
-  try {
-    const collPath = activeDocType==='vendor'?`vendors/${activeDocId}/conversation`:
-                    activeDocType==='ticket'?`ticket_listings/${activeDocId}/conversation`:
-                    `purchases/${activeDocId}/conversation`;
+  try{
+    const collPath=activeDocType==='vendor'?`vendors/${activeDocId}/conversation`:
+                   activeDocType==='ticket'?`ticket_listings/${activeDocId}/conversation`:
+                   `purchases/${activeDocId}/conversation`;
     await addDoc(collection(db,collPath),{
-      sender:'admin',
-      message:txt,
-      text:txt,
-      timestamp:serverTimestamp(),
-      read_by_admin:true,
-      read_by_vendor:false,
-      read_by_buyer:false
+      sender:'admin', message:txt, text:txt, timestamp:serverTimestamp(),
+      read_by_admin:true, read_by_vendor:false, read_by_buyer:false
     });
     document.getElementById('chatInput').value='';
-
-    const key = activeDocType + 's';
-    if (unreadCounts[key] && unreadCounts[key][activeDocId]) {
-      unreadCounts[key][activeDocId] = 0;
-      updateUnreadBadges();
-    }
-  } catch(e){showToast('Error: '+e.message,'error');}
+  } catch(e){showToast('Send failed: '+e.message,'error');}
   finally{document.getElementById('sendChatBtn').disabled=false;document.getElementById('chatInput').focus();}
 }
 
-// ========== ADD VENDOR MODAL ==========
-window.showAddVendorModal = function() {
-  document.getElementById('vendorModalTitle').textContent = 'Add Vendor';
-  document.getElementById('vendorModalBody').innerHTML = `
+async function markMessagesAsRead(type,id){
+  try{
+    const collPath=type==='vendor'?`vendors/${id}/conversation`:
+                   type==='ticket'?`ticket_listings/${id}/conversation`:
+                   `purchases/${id}/conversation`;
+    const q=query(collection(db,collPath),where('read_by_admin','==',false));
+    const snap=await getDocs(q);
+    if(snap.empty) return;
+    await Promise.all(snap.docs.map(d=>updateDoc(d.ref,{read_by_admin:true})));
+    const key=type+'s';
+    if(unreadCounts[key]) unreadCounts[key][id]=0;
+    updateGlobalBadges();
+    renderChatList();
+  }catch(e){console.error('markRead:',e);}
+}
+
+// ===== RENDER PENDING =====
+function renderPending(){
+  const pending=allVendors.filter(v=>['pending','submitted'].includes((v.status||v.approvalStatus||'').toLowerCase()));
+  document.getElementById('pendingCount').textContent=pending.length+' pending';
+  const tbody=document.getElementById('pendingTableBody');
+  if(!pending.length){
+    tbody.innerHTML=`<tr><td colspan="5" style="padding:0"><div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-title">All clear</div><div class="empty-state-sub">No pending vendor approvals.</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML=pending.map(v=>{
+    const biz=getField(v,'businessName','full_name','name','bizName');
+    const event=getField(v,'event_name','eventName','event','name');
+    const cat=getField(v,'category','sport','eventType','type');
+    const sub=fmtDate(v.submitted_at||v.submittedAt||v.created_at||v.createdAt);
+    return `<tr>
+      <td><div class="td-biz-name">${esc(biz||'—')}</div><div class="td-biz-sub">${esc(getField(v,'contact','ownerName','full_name'))}</div></td>
+      <td>${esc(event||'—')}</td>
+      <td>${getCat(cat)}</td>
+      <td class="td-date">${sub}</td>
+      <td><div class="btn-row">
+        <button class="btn-icon approve" onclick="approveVendor('${v.id}')" title="Approve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <button class="btn-icon" onclick="viewVendor('${v.id}')" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="btn-icon danger" onclick="rejectVendor('${v.id}')" title="Reject"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== RENDER VENDORS =====
+function renderVendors(filter){
+  activeFilterVendors=filter;
+  const arr=filter==='all'?allVendors:allVendors.filter(v=>(v.status||v.approvalStatus||'').toLowerCase()===filter);
+  document.getElementById('vendorsCount').textContent=arr.length+' vendor'+(arr.length!==1?'s':'');
+  const tbody=document.getElementById('vendorsTableBody');
+  const mlist=document.getElementById('vendorsMobileList');
+  if(!arr.length){
+    const e=emptyState('🏪','No vendors found','No applications match this filter.');
+    tbody.innerHTML=`<tr><td colspan="7" style="padding:0">${e}</td></tr>`;
+    mlist.innerHTML=e; return;
+  }
+  tbody.innerHTML=arr.map(v=>{
+    const biz=getField(v,'businessName','full_name','name','bizName');
+    const contact=getField(v,'contact','ownerName','contactName','full_name');
+    const email=getField(v,'auth_email','email','invoice_email','contactEmail');
+    const event=getField(v,'event_name','eventName','event');
+    const loc=getField(v,'event_location','location','address');
+    const booth=getField(v,'booth_size','boothSize','booth');
+    const cat=getField(v,'category','sport','eventType','type');
+    const status=v.status||v.approvalStatus||'submitted';
+    const paid=v.paid===true||v.paid==='true';
+    const unread=unreadCounts.vendors[v.id]||0;
+    return `<tr>
+      <td>
+        <div class="td-biz-name">${esc(biz||'—')}</div>
+        <div class="td-biz-sub">${esc(contact)}</div>
+      </td>
+      <td>
+        <div style="font-size:12.5px;font-weight:500;">${esc(email||'—')}</div>
+        <div class="td-biz-sub">${esc(getField(v,'phone','mobile','telephone'))}</div>
+      </td>
+      <td>
+        <div style="font-size:12.5px;">${esc(event||'—')}</div>
+        <div class="td-biz-sub">${esc(loc)}</div>
+      </td>
+      <td style="font-size:12.5px;">${esc(booth||'—')}</td>
+      <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
+      <td><span class="status-badge ${paid?'status-paid':'status-unpaid'}">${paid?'Paid':'Unpaid'}</span></td>
+      <td><div class="btn-row">
+        <button class="btn-icon" onclick="viewVendor('${v.id}')" title="View">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button class="btn-icon" onclick="selectConvoAndOpen('vendor','${v.id}')" title="Message" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          ${unread>0?`<span class="chat-unread">${unread}</span>`:''}
+        </button>
+        ${['pending','submitted'].includes(status.toLowerCase())?`
+        <button class="btn-icon approve" onclick="approveVendor('${v.id}')" title="Approve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <button class="btn-icon danger" onclick="rejectVendor('${v.id}')" title="Reject"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+  mlist.innerHTML=arr.map(v=>{
+    const biz=getField(v,'businessName','full_name','name','bizName');
+    const email=getField(v,'auth_email','email','invoice_email');
+    const status=v.status||v.approvalStatus||'submitted';
+    return `<div class="mobile-card">
+      <div class="mobile-card-thumb">🏪</div>
+      <div class="mobile-card-info">
+        <div class="mobile-card-title">${esc(biz||'—')}</div>
+        <div class="mobile-card-sub">${esc(email)}</div>
+        <div class="mobile-card-meta"><span class="status-badge status-${status.toLowerCase()}">${status}</span></div>
+      </div>
+      <div class="mobile-card-actions">
+        <button class="btn-icon" onclick="viewVendor('${v.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="btn-icon" onclick="selectConvoAndOpen('vendor','${v.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== RENDER TICKETS =====
+function renderTickets(filter){
+  activeFilterTickets=filter;
+  const arr=filter==='all'?allTickets:allTickets.filter(t=>(t.status||t.approvalStatus||'available').toLowerCase()===filter);
+  document.getElementById('ticketsCount').textContent=arr.length+' ticket'+(arr.length!==1?'s':'');
+  const tbody=document.getElementById('ticketsTableBody');
+  const mlist=document.getElementById('ticketsMobileList');
+  if(!arr.length){
+    const e=emptyState('🎟','No tickets found','No ticket listings match this filter.');
+    tbody.innerHTML=`<tr><td colspan="6" style="padding:0">${e}</td></tr>`;
+    mlist.innerHTML=e; return;
+  }
+  tbody.innerHTML=arr.map(t=>{
+    const title=getField(t,'title','event_name','eventName','name');
+    const seller=getField(t,'seller','sellerName','user_name','ownerName','vendorName');
+    const sellerEmail=getField(t,'user_email','sellerEmail','email','contactEmail');
+    const price=getField(t,'price','unitPrice','cost','amount');
+    const qty=getField(t,'qty','quantity','ticketsAvailable','stock');
+    const status=t.status||t.approvalStatus||'available';
+    const unread=unreadCounts.tickets[t.id]||0;
+    return `<tr>
+      <td class="td-event">${esc(title||'—')}</td>
+      <td><div class="td-biz-name">${esc(seller||'—')}</div><div class="td-biz-sub">${esc(sellerEmail)}</div></td>
+      <td class="td-price">$${Number(price||0).toLocaleString()}</td>
+      <td style="font-size:13px;">${qty||1}</td>
+      <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
+      <td><div class="btn-row">
+        <button class="btn-icon" onclick="viewTicket('${t.id}')" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="btn-icon" onclick="selectConvoAndOpen('ticket','${t.id}')" title="Message" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          ${unread>0?`<span class="chat-unread">${unread}</span>`:''}
+        </button>
+        ${['pending','submitted'].includes(status.toLowerCase())?`
+        <button class="btn-icon approve" onclick="approveTicket('${t.id}')" title="Approve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <button class="btn-icon danger" onclick="rejectTicket('${t.id}')" title="Reject"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:''}
+        ${status.toLowerCase()!=='sold'?`<button class="btn-icon danger" onclick="deleteTicket('${t.id}')" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+  mlist.innerHTML=arr.map(t=>{
+    const title=getField(t,'title','event_name','eventName','name');
+    const price=getField(t,'price','unitPrice','cost');
+    const status=t.status||t.approvalStatus||'available';
+    return `<div class="mobile-card">
+      <div class="mobile-card-thumb">🎟</div>
+      <div class="mobile-card-info">
+        <div class="mobile-card-title">${esc(title||'—')}</div>
+        <div class="mobile-card-sub">$${Number(price||0).toLocaleString()}</div>
+        <div class="mobile-card-meta"><span class="status-badge status-${status.toLowerCase()}">${status}</span></div>
+      </div>
+      <div class="mobile-card-actions">
+        <button class="btn-icon" onclick="viewTicket('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="btn-icon" onclick="selectConvoAndOpen('ticket','${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== RENDER PURCHASES =====
+function renderPurchases(filter){
+  activeFilterPurchases=filter;
+  const arr=filter==='all'?allPurchases:allPurchases.filter(p=>(p.status||'').toLowerCase()===filter);
+  document.getElementById('purchasesCount').textContent=arr.length+' purchase'+(arr.length!==1?'s':'');
+  const tbody=document.getElementById('purchasesTableBody');
+  const mlist=document.getElementById('purchasesMobileList');
+  if(!arr.length){
+    const e=emptyState('🛒','No purchases yet','Completed ticket purchases will appear here.');
+    tbody.innerHTML=`<tr><td colspan="7" style="padding:0">${e}</td></tr>`;
+    mlist.innerHTML=e; return;
+  }
+  tbody.innerHTML=arr.map(p=>{
+    const buyer=getField(p,'buyerName','name','fullName','customerName');
+    const email=getField(p,'buyerEmail','email','user_email');
+    const ticket=getField(p,'ticketName','eventName','title','listingTitle');
+    const qty=getField(p,'qty','quantity','numTickets')||1;
+    const total=getField(p,'totalPrice','price','amount','total');
+    const date=fmtDate(p.purchaseDate);
+    const unread=unreadCounts.purchases[p.id]||0;
+    return `<tr>
+      <td><div class="td-biz-name">${esc(buyer||'—')}</div></td>
+      <td class="td-email">${esc(email||'—')}</td>
+      <td class="td-event">${esc(ticket||'—')}</td>
+      <td style="font-size:13px;">${qty}</td>
+      <td class="td-price">$${Number(total||0).toFixed(2)}</td>
+      <td class="td-date">${date}</td>
+      <td><div class="btn-row">
+        <button class="btn-icon" onclick="selectConvoAndOpen('purchase','${p.id}')" title="Chat with buyer" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          ${unread>0?`<span class="chat-unread">${unread}</span>`:''}
+        </button>
+        ${email?`<button class="btn-icon" onclick="window.location.href='mailto:${esc(email)}'" title="Email buyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+  mlist.innerHTML=arr.map(p=>{
+    const buyer=getField(p,'buyerName','name','fullName');
+    const email=getField(p,'buyerEmail','email','user_email');
+    const total=getField(p,'totalPrice','price','amount','total');
+    const date=fmtDate(p.purchaseDate);
+    return `<div class="mobile-card">
+      <div class="mobile-card-thumb">🎟</div>
+      <div class="mobile-card-info">
+        <div class="mobile-card-title">${esc(buyer||'—')}</div>
+        <div class="mobile-card-sub">${esc(email)} · ${date}</div>
+        <div class="mobile-card-meta"><span style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;">$${Number(total||0).toFixed(2)}</span></div>
+      </div>
+      <div class="mobile-card-actions">
+        <button class="btn-icon" onclick="selectConvoAndOpen('purchase','${p.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== VIEW VENDOR MODAL (with all fields from Firestore schema) =====
+window.viewVendor = function(id){
+  const v=allVendors.find(x=>x.id===id);
+  if(!v) return;
+  markMessagesAsRead('vendor',id);
+
+  const biz=getField(v,'businessName','full_name','name','bizName');
+  const contact=getField(v,'contact','ownerName','contactName','full_name');
+  const email=getField(v,'auth_email','email','invoice_email','contactEmail');
+  const invoiceEmail=getField(v,'invoice_email','invoiceEmail');
+  const phone=getField(v,'phone','mobile','telephone');
+  const cat=getField(v,'category','sport','eventType','type');
+  const desc=getField(v,'description','bio','about','details');
+  const status=v.status||v.approvalStatus||'submitted';
+  const paid=v.paid===true||v.paid==='true';
+  const boothSize=getField(v,'booth_size','boothSize','booth');
+  const eventName=getField(v,'event_name','eventName','event');
+  const eventLocation=getField(v,'event_location','eventLocation','location','address');
+  const eventDates=v.event_date||v.eventDates||v.dates||[];
+  const facebook=getField(v,'facebook','fb','facebookUrl');
+  const vendorId=getField(v,'vendor_id','vendorId','id');
+  const userId=getField(v,'user_id','userId','uid');
+  const submittedAt=fmtDate(v.submitted_at||v.submittedAt);
+  const respondedAt=fmtDate(v.responded_at||v.respondedAt);
+  const createdAt=fmtDate(v.created_at||v.createdAt);
+  const termsAccepted=v.terms_accepted||v.termsAccepted;
+  const price=getField(v,'price','fee','boothFee','amount');
+
+  document.getElementById('vendorModalTitle').textContent=biz||'Vendor Details';
+  document.getElementById('vendorModalBody').innerHTML=`
+    <div class="modal-section">
+      <div class="modal-section-label">Business Profile</div>
+      <div class="vendor-detail-grid">
+        <div class="info-card"><div class="info-card-label">Business Name</div><div class="info-card-value">${esc(biz||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Category</div><div class="info-card-value">${getCat(cat)}</div></div>
+        <div class="info-card"><div class="info-card-label">Vendor ID</div><div class="info-card-value" style="font-size:12px;font-family:monospace;">${esc(vendorId||id)}</div></div>
+        <div class="info-card"><div class="info-card-label">Status</div><div class="info-card-value"><span class="status-badge status-${status.toLowerCase()}">${status}</span></div></div>
+        <div class="info-card"><div class="info-card-label">Payment</div><div class="info-card-value"><span class="status-badge ${paid?'status-paid':'status-unpaid'}">${paid?'Paid':'Unpaid'}</span></div></div>
+        ${price?`<div class="info-card"><div class="info-card-label">Fee / Price</div><div class="info-card-value serif">$${Number(price).toLocaleString()}</div></div>`:''}
+      </div>
+      ${desc?`<div class="field-group" style="margin-top:12px;"><label class="field-label">Description</label><textarea class="field-textarea" readonly style="min-height:80px;">${esc(desc)}</textarea></div>`:''}
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-label">Contact Information</div>
+      <div class="vendor-detail-grid">
+        <div class="info-card"><div class="info-card-label">Contact Name</div><div class="info-card-value">${esc(contact||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Auth Email</div><div class="info-card-value"><a href="mailto:${esc(email)}">${esc(email||'—')}</a></div></div>
+        ${invoiceEmail&&invoiceEmail!==email?`<div class="info-card"><div class="info-card-label">Invoice Email</div><div class="info-card-value"><a href="mailto:${esc(invoiceEmail)}">${esc(invoiceEmail)}</a></div></div>`:''}
+        <div class="info-card"><div class="info-card-label">Phone</div><div class="info-card-value"><a href="tel:${esc(phone)}">${esc(phone||'—')}</a></div></div>
+        ${facebook?`<div class="info-card"><div class="info-card-label">Facebook</div><div class="info-card-value"><a href="${esc(facebook)}" target="_blank" rel="noopener">View Profile</a></div></div>`:''}
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-label">Event Details</div>
+      <div class="vendor-detail-grid">
+        <div class="info-card"><div class="info-card-label">Event Name</div><div class="info-card-value">${esc(eventName||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Location</div><div class="info-card-value">${esc(eventLocation||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Booth Size</div><div class="info-card-value">${esc(boothSize||'—')}</div></div>
+      </div>
+      ${eventDates.length?`<div style="margin-top:10px;"><div class="field-label">Event Dates</div><div class="tag-list" style="margin-top:6px;">${eventDates.map(d=>`<span class="tag">📅 ${esc(d)}</span>`).join('')}</div></div>`:''}
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-label">Timeline & Metadata</div>
+      <div class="vendor-detail-grid">
+        ${createdAt?`<div class="info-card"><div class="info-card-label">Created</div><div class="info-card-value">${createdAt}</div></div>`:''}
+        ${submittedAt?`<div class="info-card"><div class="info-card-label">Submitted</div><div class="info-card-value">${submittedAt}</div></div>`:''}
+        ${respondedAt?`<div class="info-card"><div class="info-card-label">Responded</div><div class="info-card-value">${respondedAt}</div></div>`:''}
+        <div class="info-card"><div class="info-card-label">Terms Accepted</div><div class="info-card-value">${termsAccepted?'✅ Yes':'❌ No'}</div></div>
+        ${userId?`<div class="info-card"><div class="info-card-label">User ID</div><div class="info-card-value" style="font-size:11px;font-family:monospace;word-break:break-all;">${esc(userId)}</div></div>`:''}
+      </div>
+    </div>
+
+    ${['pending','submitted'].includes(status.toLowerCase())?`
+    <div class="modal-action-row">
+      <button class="btn-text btn-text-gold" style="flex:1" onclick="approveVendor('${v.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>
+        Approve Vendor
+      </button>
+      <button class="btn-text btn-text-ghost" onclick="rejectVendor('${v.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Reject
+      </button>
+      <button class="btn-text btn-text-ghost" onclick="selectConvoAndOpen('vendor','${v.id}');closeVendorModal();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Message
+      </button>
+    </div>`:`
+    <div class="modal-action-row">
+      <button class="btn-text btn-text-ghost" onclick="selectConvoAndOpen('vendor','${v.id}');closeVendorModal();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Open Chat
+      </button>
+    </div>`}
+  `;
+  document.getElementById('vendorModalOverlay').classList.add('active');
+};
+
+// ===== VIEW TICKET MODAL =====
+window.viewTicket = function(id){
+  const t=allTickets.find(x=>x.id===id);
+  if(!t) return;
+  markMessagesAsRead('ticket',id);
+
+  const title=getField(t,'title','event_name','eventName','name');
+  // The upload form saves seller name as 'seller', contact as 'sellerContact'
+  const seller=getField(t,'seller','sellerName','user_name','ownerName','vendorName');
+  const sellerEmail=getField(t,'user_email','sellerEmail','email','contactEmail');
+  const sellerContact=getField(t,'sellerContact','sellerPhone','contactPhone');
+  const sport=getField(t,'sport','category','eventType','type');
+  const date=getField(t,'date','eventDate','event_date','when');
+  const time=getField(t,'time','startTime','eventTime');
+  const venue=getField(t,'venue','location','place','venueName');
+  const city=getField(t,'city','locationCity','town');
+  const seat=getField(t,'seat','section','seatInfo','area','seatNumber');
+  const price=getField(t,'price','unitPrice','cost','amount');
+  const qty=getField(t,'qty','quantity','ticketsAvailable','stock','numTickets');
+  const status=t.status||t.approvalStatus||'available';
+  // Upload form saves proof as 'image'; legacy field is proofImageURL
+  const proofImage=getField(t,'image','proofImageURL','ticketProof','proofImage','imageUrl');
+  const notes=getField(t,'notes','description','details','additionalInfo');
+
+  document.getElementById('ticketModalTitle').textContent=title||'Ticket Details';
+  document.getElementById('ticketModalBody').innerHTML=`
+    <div class="modal-section">
+      <div class="modal-section-label">Event Details</div>
+      <div class="vendor-detail-grid">
+        <div class="info-card"><div class="info-card-label">Event</div><div class="info-card-value">${esc(title||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Category</div><div class="info-card-value">${getCat(sport)}</div></div>
+        <div class="info-card"><div class="info-card-label">Date</div><div class="info-card-value">${esc(date||'—')}${time?' at '+esc(time):''}</div></div>
+        <div class="info-card"><div class="info-card-label">Venue</div><div class="info-card-value">${esc(venue||'—')} ${city?'· '+esc(city):''}</div></div>
+        ${seat?`<div class="info-card"><div class="info-card-label">Seat / Section</div><div class="info-card-value">${esc(seat)}</div></div>`:''}
+        <div class="info-card"><div class="info-card-label">Status</div><div class="info-card-value"><span class="status-badge status-${status.toLowerCase()}">${status}</span></div></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Pricing & Availability</div>
+      <div class="vendor-detail-grid">
+        <div class="info-card"><div class="info-card-label">Price per Ticket</div><div class="info-card-value serif">$${Number(price||0).toLocaleString()}</div></div>
+        <div class="info-card"><div class="info-card-label">Quantity</div><div class="info-card-value serif">${qty||1}</div></div>
+        ${price&&qty?`<div class="info-card"><div class="info-card-label">Total Value</div><div class="info-card-value serif">$${Number(price*qty).toLocaleString()}</div></div>`:''}
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Seller Information</div>
+      <div class="vendor-detail-grid">
+        <div class="info-card"><div class="info-card-label">Name</div><div class="info-card-value">${esc(seller||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Account Email</div><div class="info-card-value"><a href="mailto:${esc(sellerEmail)}">${esc(sellerEmail||'—')}</a></div></div>
+        ${sellerContact?`<div class="info-card"><div class="info-card-label">Contact / Phone</div><div class="info-card-value">${esc(sellerContact)}</div></div>`:''}
+        ${t.user_id?`<div class="info-card"><div class="info-card-label">User ID</div><div class="info-card-value" style="font-size:11px;font-family:monospace;word-break:break-all;">${esc(t.user_id)}</div></div>`:''}
+      </div>
+    </div>
+    ${proofImage?`<div class="modal-section"><div class="modal-section-label">Ticket Proof</div><img src="${esc(proofImage)}" class="proof-img" onclick="openLightbox('${esc(proofImage)}')" loading="lazy" alt="Proof"></div>`:''}
+    ${notes?`<div class="modal-section"><div class="modal-section-label">Notes</div><textarea class="field-textarea" readonly style="min-height:70px;">${esc(notes)}</textarea></div>`:''}
+    <div class="modal-action-row">
+      ${['pending','submitted'].includes(status.toLowerCase())?`
+      <button class="btn-text btn-text-gold" style="flex:1" onclick="approveTicket('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>
+        Approve Listing
+      </button>
+      <button class="btn-text btn-text-red" onclick="rejectTicket('${t.id}')">Reject</button>`:''}
+      <button class="btn-text btn-text-ghost" onclick="selectConvoAndOpen('ticket','${t.id}');closeTicketModal();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Message Seller
+      </button>
+    </div>
+  `;
+  document.getElementById('ticketModalOverlay').classList.add('active');
+};
+
+// ===== VIEW PURCHASE DETAIL =====
+function viewPurchaseDetail(p){
+  const buyer=getField(p,'buyerName','name','fullName');
+  const email=getField(p,'buyerEmail','email','user_email');
+  const ticket=getField(p,'ticketName','eventName','title');
+  const qty=getField(p,'qty','quantity','numTickets')||1;
+  const total=getField(p,'totalPrice','price','amount','total');
+  const date=fmtDate(p.purchaseDate);
+  showToast(`Purchase: ${buyer} – $${Number(total||0).toFixed(2)} on ${date}`,'success');
+}
+
+// ===== ACTIONS =====
+window.approveVendor = async function(id){
+  try{
+    await updateDoc(doc(db,'vendors',id),{status:'approved',approvalStatus:'approved',responded_at:serverTimestamp()});
+    showToast('Vendor approved ✓','success');
+    closeVendorModal();
+  }catch(e){showToast('Error: '+e.message,'error');}
+};
+window.rejectVendor = async function(id){
+  if(!confirm('Reject this vendor application?')) return;
+  try{
+    await updateDoc(doc(db,'vendors',id),{status:'rejected',approvalStatus:'rejected',responded_at:serverTimestamp()});
+    showToast('Vendor rejected','success');
+    closeVendorModal();
+  }catch(e){showToast('Error: '+e.message,'error');}
+};
+window.approveTicket = async function(id){
+  try{
+    await updateDoc(doc(db,'ticket_listings',id),{approvalStatus:'approved',status:'approved'});
+    showToast('Listing approved ✓','success');
+    closeTicketModal();
+  }catch(e){showToast('Error: '+e.message,'error');}
+};
+window.rejectTicket = async function(id){
+  const reason=prompt('Rejection reason (shown to seller):');
+  if(reason===null) return;
+  try{
+    await updateDoc(doc(db,'ticket_listings',id),{approvalStatus:'rejected',status:'rejected',rejectionReason:reason});
+    showToast('Listing rejected','success');
+    closeTicketModal();
+  }catch(e){showToast('Error: '+e.message,'error');}
+};
+window.deleteTicket = async function(id){
+  if(!confirm('Permanently delete this ticket listing?')) return;
+  try{
+    await deleteDoc(doc(db,'ticket_listings',id));
+    showToast('Ticket deleted','success');
+    closeTicketModal();
+  }catch(e){showToast('Error: '+e.message,'error');}
+};
+
+// ===== ADD VENDOR MODAL =====
+window.showAddVendorModal = function(){
+  document.getElementById('vendorModalTitle').textContent='Add Vendor';
+  document.getElementById('vendorModalBody').innerHTML=`
     <div class="modal-section">
       <div class="modal-section-label">Business Information</div>
       <div class="field-grid-2">
-        <div class="field-group">
-          <label class="field-label">Business Name *</label>
-          <input class="field-input" id="nBizName" placeholder="Business name" required>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Category *</label>
-          <select class="field-select" id="nSport">
-            <option value="">Select…</option>
-            <option value="worldcup">🏆 World Cup 2026</option>
-            <option value="football">⚽ Football</option>
-            <option value="basketball">🏀 Basketball</option>
-            <option value="music">🎵 Music</option>
-            <option value="tennis">🎾 Tennis</option>
-            <option value="boxing">🥊 Boxing</option>
-            <option value="baseball">⚾ Baseball</option>
-            <option value="hockey">🏒 Hockey</option>
-            <option value="motorsport">🏎 Motorsport</option>
-            <option value="other">🎟 Other</option>
-          </select>
-        </div>
+        <div class="field-group"><label class="field-label">Business Name *</label><input class="field-input" id="nBizName" placeholder="e.g. Clyde Worlds LLC"></div>
+        <div class="field-group"><label class="field-label">Category *</label><select class="field-select" id="nCat"><option value="">Select…</option><option value="Graphic Tees">👕 Graphic Tees</option><option value="Food">🍔 Food</option><option value="Beverages">🥤 Beverages</option><option value="Accessories">👜 Accessories</option><option value="Art">🎨 Art</option><option value="worldcup">🏆 World Cup</option><option value="football">⚽ Football</option><option value="music">🎵 Music</option><option value="other">🎟 Other</option></select></div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Description</label>
-        <textarea class="field-textarea" id="nDesc" placeholder="What do you sell?"></textarea>
-      </div>
+      <div class="field-group"><label class="field-label">Description</label><textarea class="field-textarea" id="nDesc" placeholder="What products/services?"></textarea></div>
     </div>
     <div class="modal-section">
       <div class="modal-section-label">Contact Details</div>
       <div class="field-grid-2">
-        <div class="field-group">
-          <label class="field-label">Owner Name *</label>
-          <input class="field-input" id="nOwner" placeholder="Full name" required>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Email *</label>
-          <input class="field-input" type="email" id="nEmail" placeholder="email@example.com" required>
-        </div>
+        <div class="field-group"><label class="field-label">Contact Name *</label><input class="field-input" id="nContact" placeholder="Full name"></div>
+        <div class="field-group"><label class="field-label">Auth Email *</label><input class="field-input" type="email" id="nEmail" placeholder="login@email.com"></div>
       </div>
       <div class="field-grid-2">
-        <div class="field-group">
-          <label class="field-label">Phone</label>
-          <input class="field-input" id="nPhone" placeholder="+1 (555) 000-0000">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Website</label>
-          <input class="field-input" id="nWebsite" placeholder="https://…">
-        </div>
+        <div class="field-group"><label class="field-label">Invoice Email</label><input class="field-input" type="email" id="nInvoiceEmail" placeholder="billing@email.com"></div>
+        <div class="field-group"><label class="field-label">Phone</label><input class="field-input" id="nPhone" placeholder="+1 (404) 000-0000"></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Event & Booth Details</div>
+      <div class="field-grid-2">
+        <div class="field-group"><label class="field-label">Event Name</label><input class="field-input" id="nEventName" placeholder="e.g. Atlanta Jazz Festival"></div>
+        <div class="field-group"><label class="field-label">Event Location</label><input class="field-input" id="nEventLoc" placeholder="e.g. Piedmont Park"></div>
+      </div>
+      <div class="field-grid-2">
+        <div class="field-group"><label class="field-label">Booth Size</label><input class="field-input" id="nBooth" placeholder="e.g. 10x10"></div>
+        <div class="field-group"><label class="field-label">Fee / Price ($)</label><input class="field-input" type="number" id="nPrice" placeholder="190"></div>
       </div>
     </div>
     <div class="modal-action-row">
       <button class="btn-text btn-text-ghost" onclick="closeVendorModal()">Cancel</button>
       <button class="btn-text btn-text-gold" style="flex:1" onclick="submitAddVendor()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M12 5v14M5 12h14"/></svg>
         Add Vendor
       </button>
     </div>
@@ -2032,281 +1476,166 @@ window.showAddVendorModal = function() {
   document.getElementById('vendorModalOverlay').classList.add('active');
 };
 
-window.submitAddVendor = async function() {
-  const bizName=document.getElementById('nBizName').value.trim();
-  const sport=document.getElementById('nSport').value;
-  const owner=document.getElementById('nOwner').value.trim();
+window.submitAddVendor = async function(){
+  const biz=document.getElementById('nBizName').value.trim();
+  const cat=document.getElementById('nCat').value;
+  const contact=document.getElementById('nContact').value.trim();
   const email=document.getElementById('nEmail').value.trim();
-  if(!bizName||!sport||!owner||!email){
-    showToast('Fill in all required fields','error');
-    return;
-  }
-  try {
+  if(!biz||!cat||!contact||!email){showToast('Fill in all required fields','error');return;}
+  try{
     await addDoc(collection(db,'vendors'),{
-      businessName:bizName,
-      sport,
+      businessName:biz, full_name:contact, contact, category:cat,
       description:document.getElementById('nDesc').value.trim(),
-      ownerName:owner,
-      email,
+      auth_email:email, email,
+      invoice_email:document.getElementById('nInvoiceEmail').value.trim(),
       phone:document.getElementById('nPhone').value.trim(),
-      website:document.getElementById('nWebsite').value.trim(),
-      status:'submitted',
-      createdAt:serverTimestamp(),
-      imageUrls:[]
+      event_name:document.getElementById('nEventName').value.trim(),
+      event_location:document.getElementById('nEventLoc').value.trim(),
+      booth_size:document.getElementById('nBooth').value.trim(),
+      price:Number(document.getElementById('nPrice').value)||0,
+      status:'submitted', paid:false, terms_accepted:false,
+      created_at:serverTimestamp(), submitted_at:serverTimestamp()
     });
     showToast('Vendor added!','success');
     closeVendorModal();
-  } catch(e){showToast('Error: '+e.message,'error');}
+  }catch(e){showToast('Error: '+e.message,'error');}
 };
 
-// ========== UTILITY FUNCTIONS ==========
-window.openChatForSelected = function() {
-  if(currentTab==='vendors'&&allVendors.length>0)
-    window.openChat('vendor',allVendors[0].id,getField(allVendors[0],'businessName','name','bizName'));
-  else if(currentTab==='tickets'&&allTickets.length>0)
-    window.openChat('ticket',allTickets[0].id,getField(allTickets[0],'title','eventName','name'));
-  else if(currentTab==='purchases'&&allPurchases.length>0)
-    window.openPurchaseChat(allPurchases[0].id,allPurchases[0].listingId||'');
-  else
-    showToast('Nothing to chat about yet','error');
+// ===== CHAT PANEL =====
+window.openChatPanel = function(){
+  document.getElementById('chatPanelOverlay').classList.add('active');
+  renderChatList();
+};
+window.selectConvoAndOpen = function(type,id){
+  openChatPanel();
+  setTimeout(()=>window.selectConvo(type,id),80);
 };
 
-window.openLightbox = function(src) {
+// ===== UTILITY =====
+window.openLightbox = function(src){
   document.getElementById('lightboxImg').src=src;
   document.getElementById('lightbox').classList.add('active');
 };
-
-function showToast(msg, type='success') {
+function showToast(msg,type='success'){
   const t=document.createElement('div');
   t.className=`toast ${type}`;
-  t.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="${type==='success'?'20 6 9 17 4 12':'23 6 5 18'}"/></svg><span>${esc(msg)}</span>`;
+  const icon=type==='success'?'<polyline points="20 6 9 17 4 12"/>':'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
+  t.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">${icon}</svg><span>${esc(msg)}</span>`;
   document.getElementById('toastContainer').appendChild(t);
   setTimeout(()=>t.remove(),4000);
 }
-
-window.switchTab = function(tab) {
+window.showToast = showToast;
+function emptyState(icon,title,sub){
+  return `<div class="empty-state"><div class="empty-state-icon">${icon}</div><div class="empty-state-title">${title}</div><div class="empty-state-sub">${sub}</div></div>`;
+}
+function switchTab(tab){
   currentTab=tab;
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(tab+'Tab').classList.add('active');
-  document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
-};
-
-function closeVendorModal() {
-  document.getElementById('vendorModalOverlay').classList.remove('active');
+  document.querySelector(`.sidebar-nav-btn[data-tab="${tab}"]`)?.classList.add('active');
 }
-function closeTicketModal() {
-  document.getElementById('ticketModalOverlay').classList.remove('active');
-}
+window.switchTab=switchTab;
+function closeVendorModal(){ document.getElementById('vendorModalOverlay').classList.remove('active'); }
+function closeTicketModal(){ document.getElementById('ticketModalOverlay').classList.remove('active'); }
+window.closeVendorModal=closeVendorModal;
+window.closeTicketModal=closeTicketModal;
 
-// ========== SEARCH FUNCTIONS ==========
-function renderVendors_direct(arr) {
-  const tbody=document.getElementById('vendorsTableBody');
-  tbody.innerHTML=arr.map(v=>{
-    const bizName = getField(v, 'businessName', 'name', 'bizName', 'companyName', 'vendorName');
-    const ownerName = getField(v, 'ownerName', 'contactName', 'owner', 'name', 'fullName');
-    const email = getField(v, 'email', 'contactEmail', 'user_email', 'emailAddress');
-    const sport = getField(v, 'sport', 'category', 'eventType', 'type');
-    const status = v.status || v.approvalStatus || 'submitted';
-
-    return `
-    <tr>
-      <td>
-        <div class="td-biz-name">${esc(bizName)}</div>
-        <div class="td-biz-sub">${esc(ownerName)}</div>
-      </td>
-      <td class="td-email">${esc(email)}</td>
-      <td>${SPORT_LABEL[sport?.toLowerCase()] || esc(sport || '—')}</td>
-      <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
-      <td><div class="btn-row">
-        <button class="btn-icon" onclick="viewVendor('${v.id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-        <button class="btn-icon" onclick="openChat('vendor','${v.id}','${esc(bizName)}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-      </div></td>
-    </tr>`;
-  }).join('');
-  setTimeout(updateTableUnreadBadges, 50);
-}
-
-function renderTickets_direct(arr) {
-  const tbody=document.getElementById('ticketsTableBody');
-  tbody.innerHTML=arr.map(t=>{
-    const title = getField(t, 'title', 'eventName', 'name', 'eventTitle');
-    const sellerName = getField(t, 'sellerName', 'seller?.name', 'user_name', 'ownerName', 'vendorName');
-    const sellerEmail = getField(t, 'sellerEmail', 'user_email', 'email', 'contactEmail');
-    const sport = getField(t, 'sport', 'category', 'eventType', 'type');
-    const price = getField(t, 'price', 'unitPrice', 'cost', 'amount');
-    const qty = getField(t, 'qty', 'quantity', 'ticketsAvailable', 'stock');
-    const status = t.status || t.approvalStatus || 'available';
-
-    return `
-    <tr>
-      <td class="td-event">${esc(title)}</td>
-      <td>
-        <div class="td-biz-name">${esc(sellerName)}</div>
-        <div class="td-biz-sub">${esc(sellerEmail)}</div>
-      </td>
-      <td class="td-price">$${Number(price||0).toLocaleString()}</td>
-      <td>${qty||1}</td>
-      <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
-      <td><div class="btn-row">
-        <button class="btn-icon" onclick="viewTicket('${t.id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-        <button class="btn-icon" onclick="openChat('ticket','${t.id}','${esc(title)}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-      </div></td>
-    </tr>`;
-  }).join('');
-  setTimeout(updateTableUnreadBadges, 50);
-}
-
-function renderPurchases_direct(arr) {
-  const tbody=document.getElementById('purchasesTableBody');
-  tbody.innerHTML=arr.map(p=>{
-    const buyerName = getField(p, 'buyerName', 'name', 'fullName', 'customerName');
-    const buyerEmail = getField(p, 'buyerEmail', 'email', 'user_email', 'contactEmail');
-    const ticketName = getField(p, 'ticketName', 'eventName', 'title', 'listingTitle');
-    const totalPrice = getField(p, 'totalPrice', 'price', 'amount', 'total');
-    const date = p.purchaseDate ? (p.purchaseDate.toMillis ?
-      new Date(p.purchaseDate.toMillis()).toLocaleDateString() :
-      (p.purchaseDate.seconds ?
-        new Date(p.purchaseDate.seconds * 1000).toLocaleDateString() :
-        new Date(p.purchaseDate).toLocaleDateString())) : '—';
-
-    return `
-    <tr>
-      <td><div class="td-biz-name">${esc(buyerName)}</div></td>
-      <td class="td-email">${esc(buyerEmail)}</td>
-      <td class="td-event">${esc(ticketName)}</td>
-      <td class="td-price">$${Number(totalPrice||0).toFixed(2)}</td>
-      <td class="td-date">${date}</td>
-      <td><div class="btn-row">
-        <button class="btn-icon" onclick="openPurchaseChat('${p.id}','${p.listingId||''}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-          </svg>
-        </button>
-      </div></td>
-    </tr>`;
-  }).join('');
-  setTimeout(updateTableUnreadBadges, 50);
-}
-
-// ========== EVENT LISTENERS ==========
-function setupEventListeners() {
-  // Nav tabs
-  document.querySelectorAll('.nav-tab').forEach(btn=>
+// ===== EVENT LISTENERS =====
+function setupEventListeners(){
+  // Sidebar nav
+  document.querySelectorAll('.sidebar-nav-btn[data-tab]').forEach(btn=>
     btn.addEventListener('click',()=>switchTab(btn.dataset.tab))
   );
+  document.getElementById('openChatPanelBtn').addEventListener('click',openChatPanel);
 
-  // Vendor filter tabs
+  // Vendor filters
   document.querySelectorAll('#vendorsTab .filter-tab').forEach(btn=>
     btn.addEventListener('click',()=>{
       document.querySelectorAll('#vendorsTab .filter-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      activeFilterVendors=btn.dataset.filter;
-      renderVendors(activeFilterVendors);
+      renderVendors(btn.dataset.filter);
     })
   );
-
-  // Ticket filter tabs
+  // Ticket filters
   document.querySelectorAll('#ticketsTab .filter-tab').forEach(btn=>
     btn.addEventListener('click',()=>{
       document.querySelectorAll('#ticketsTab .filter-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      activeFilterTickets=btn.dataset.filter;
-      renderTickets(activeFilterTickets);
+      renderTickets(btn.dataset.filter);
     })
   );
-
-  // Purchases filter tabs
+  // Purchase filters
   document.querySelectorAll('#purchasesTab .filter-tab').forEach(btn=>
     btn.addEventListener('click',()=>{
       document.querySelectorAll('#purchasesTab .filter-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      activeFilterPurchases=btn.dataset.filter;
-      renderPurchases(activeFilterPurchases);
+      renderPurchases(btn.dataset.filter);
     })
   );
 
   // Modal closes
-  document.getElementById('closeVendorModal').onclick = closeVendorModal;
-  document.getElementById('closeTicketModal').onclick = closeTicketModal;
-  document.getElementById('closeChat').onclick = ()=>{
-    document.getElementById('chatModalOverlay').classList.remove('active');
+  document.getElementById('closeVendorModal').onclick=closeVendorModal;
+  document.getElementById('closeTicketModal').onclick=closeTicketModal;
+  document.getElementById('vendorModalOverlay').onclick=e=>{if(e.target===e.currentTarget)closeVendorModal();};
+  document.getElementById('ticketModalOverlay').onclick=e=>{if(e.target===e.currentTarget)closeTicketModal();};
+  document.getElementById('lightboxClose').onclick=()=>document.getElementById('lightbox').classList.remove('active');
+  document.getElementById('lightbox').onclick=e=>{if(e.target===e.currentTarget)document.getElementById('lightbox').classList.remove('active');};
+
+  // Chat panel close
+  document.getElementById('closeChatPanel').onclick=()=>{
+    document.getElementById('chatPanelOverlay').classList.remove('active');
     if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}
   };
-  document.getElementById('lightboxClose').onclick = ()=>
-    document.getElementById('lightbox').classList.remove('active');
+  document.getElementById('chatPanelOverlay').onclick=e=>{
+    if(e.target===e.currentTarget){
+      document.getElementById('chatPanelOverlay').classList.remove('active');
+      if(chatUnsubscribe){chatUnsubscribe();chatUnsubscribe=null;}
+    }
+  };
 
-  // Click outside modals
-  document.getElementById('vendorModalOverlay').onclick = e=>
-    { if(e.target===e.currentTarget)closeVendorModal(); };
-  document.getElementById('ticketModalOverlay').onclick = e=>
-    { if(e.target===e.currentTarget)closeTicketModal(); };
-  document.getElementById('chatModalOverlay').onclick = e=>
-    { if(e.target===e.currentTarget)document.getElementById('closeChat').click(); };
-  document.getElementById('lightbox').onclick = e=>
-    { if(e.target===e.currentTarget)document.getElementById('lightboxClose').click(); };
+  // Chat list tabs
+  document.querySelectorAll('.chat-list-tab').forEach(btn=>
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.chat-list-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      chatConvoFilter=btn.dataset.chatFilter;
+      renderChatList();
+    })
+  );
+
+  // Chat list search
+  document.getElementById('chatListSearch').oninput=e=>{
+    chatConvoSearch=e.target.value.toLowerCase().trim();
+    renderChatList();
+  };
 
   // Chat send
-  document.getElementById('sendChatBtn').onclick = sendMessage;
-  document.getElementById('chatInput').onkeydown = e=>{
+  document.getElementById('sendChatBtn').onclick=sendMessage;
+  document.getElementById('chatInput').onkeydown=e=>{
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
   };
 
-  // Logout
-  document.getElementById('headerLogoutBtn').onclick = async()=>{
-    try{await signOut(auth);window.location.href='index.html';}
-    catch(e){showToast('Error: '+e.message,'error');}
+  // Global search
+  document.getElementById('searchInput').oninput=e=>{
+    const q=e.target.value.toLowerCase().trim();
+    if(!q){renderVendors(activeFilterVendors);renderTickets(activeFilterTickets);renderPurchases(activeFilterPurchases);return;}
+    if(currentTab==='vendors'||currentTab==='overview'){
+      renderVendors('all');
+      const f=allVendors.filter(v=>[v.businessName,v.full_name,v.contact,v.auth_email,v.email,v.category,v.event_name,v.location].some(s=>(s||'').toLowerCase().includes(q)));
+      document.getElementById('vendorsTableBody').innerHTML=f.map(v=>{
+        const biz=getField(v,'businessName','full_name','name');
+        const email=getField(v,'auth_email','email');
+        const status=v.status||'submitted';
+        return `<tr><td><div class="td-biz-name">${esc(biz)}</div><div class="td-biz-sub">${esc(getField(v,'contact','ownerName'))}</div></td><td class="td-email">${esc(email)}</td><td>${getCat(getField(v,'category','sport'))}</td><td>${esc(getField(v,'booth_size')||'—')}</td><td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td><td><span class="status-badge ${v.paid?'status-paid':'status-unpaid'}">${v.paid?'Paid':'Unpaid'}</span></td><td><div class="btn-row"><button class="btn-icon" onclick="viewVendor('${v.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td></tr>`;
+      }).join('')||`<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No results</div></div></td></tr>`;
+    }
   };
 
-  // Search
-  document.getElementById('searchInput').oninput = e=>{
-    const q=e.target.value.toLowerCase().trim();
-    if(!q){
-      renderVendors();
-      renderTickets();
-      renderPurchases();
-      return;
-    }
-    if(currentTab==='vendors'){
-      const f=allVendors.filter(v=>
-        [v.businessName,v.name,v.bizName,v.ownerName,v.email,v.sport,v.category]
-        .some(s=>(s||'').toLowerCase().includes(q))
-      );
-      activeFilterVendors='all';
-      renderVendors_direct(f);
-    } else if(currentTab==='tickets'){
-      const f=allTickets.filter(t=>
-        [t.title,t.eventName,t.name,t.sellerName,t.sellerEmail,t.sport,t.category]
-        .some(s=>(s||'').toLowerCase().includes(q))
-      );
-      activeFilterTickets='all';
-      renderTickets_direct(f);
-    } else if(currentTab==='purchases'){
-      const f=allPurchases.filter(p=>
-        [p.buyerName,p.buyerEmail,p.ticketName,p.eventName,p.name]
-        .some(s=>(s||'').toLowerCase().includes(q))
-      );
-      activeFilterPurchases='all';
-      renderPurchases_direct(f);
-    }
+  // Logout
+  document.getElementById('headerLogoutBtn').onclick=async()=>{
+    try{await signOut(auth);window.location.href='index.html';}
+    catch(e){showToast('Error: '+e.message,'error');}
   };
 }
 </script>

@@ -10,11 +10,14 @@
 <meta name="apple-mobile-web-app-title" content="VendHub">
 <meta name="theme-color" content="#080808">
 <meta name="description" content="Apply for vendor booths and buy or sell resale tickets across all 50 US states.">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
+/* ===== RESET & TOKENS ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
 :root{
-  --ink:#0c0c0c;--ink-80:rgba(12,12,12,.80);--ink-50:rgba(12,12,12,.50);
-  --ink-24:rgba(12,12,12,.24);--ink-10:rgba(12,12,12,.10);--ink-05:rgba(12,12,12,.05);
+  --ink:#0c0c0c;--ink-80:rgba(12,12,12,.80);--ink-60:rgba(12,12,12,.60);
+  --ink-50:rgba(12,12,12,.50);--ink-24:rgba(12,12,12,.24);--ink-10:rgba(12,12,12,.10);
+  --ink-05:rgba(12,12,12,.05);
   --paper:#f9f7f3;--paper-alt:#f0ede7;--paper-deep:#e8e4dc;--white:#ffffff;
   --gold:#b8962e;--gold-lt:#d4b466;--gold-pale:#f5edd8;--gold-dk:#8a6e1e;
   --gold-glow:rgba(184,150,46,.14);
@@ -31,25 +34,29 @@
   --dur:.22s;--ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
   --page-max:1300px;--pad-h:52px;
 }
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
 body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-.hero{position:relative;min-height:520px;background:url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1900&q=88") center 30%/cover no-repeat;display:flex;flex-direction:column;overflow:hidden;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,12,12,.5) 0%,rgba(12,12,12,.22) 26%,rgba(12,12,12,.6) 60%,rgba(12,12,12,.97) 100%),linear-gradient(105deg,rgba(12,12,12,.4) 0%,transparent 52%);}
-.hero-ledger{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold-lt) 50%,var(--gold) 70%,transparent 100%);opacity:.7;z-index:6;}
+/* ===== HERO ===== */
+.hero{position:relative;min-height:540px;background:url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1900&q=88") center 30%/cover no-repeat;display:flex;flex-direction:column;overflow:hidden;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,12,12,.52) 0%,rgba(12,12,12,.18) 28%,rgba(12,12,12,.62) 58%,rgba(12,12,12,.98) 100%),linear-gradient(108deg,rgba(12,12,12,.38) 0%,transparent 52%);}
+.hero-ledger{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold-lt) 50%,var(--gold) 70%,transparent 100%);opacity:.72;z-index:6;}
 
+/* ===== NAV ===== */
 .hero-nav{position:relative;z-index:10;}
 .hero-nav-inner{max-width:var(--page-max);margin:0 auto;padding:20px var(--pad-h);display:flex;align-items:center;justify-content:space-between;gap:16px;}
 .hero-logo{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--white);letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none;}
 .hero-logo-mark{width:30px;height:30px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--ink);flex-shrink:0;box-shadow:0 2px 8px rgba(184,150,46,.4);}
 .hero-logo span{color:var(--gold-lt);}
 .hero-nav-right{display:flex;align-items:center;gap:8px;}
-.hero-user{display:flex;align-items:center;gap:8px;}
+.hero-user{display:none;align-items:center;gap:8px;}
+.hero-user.visible{display:flex;}
 .user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dk),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);border:1.5px solid rgba(255,255,255,.18);flex-shrink:0;}
-#profileDisplay{display:none;}
+.user-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.75);}
 #logoutBtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);cursor:pointer;padding:7px;border-radius:50%;color:rgba(255,255,255,.65);transition:all var(--dur) var(--ease);display:flex;align-items:center;justify-content:center;}
 #logoutBtn:hover{background:rgba(255,255,255,.18);color:var(--white);}
+#signInNavBtn{display:none;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--white);cursor:pointer;transition:all var(--dur) var(--ease);}
+#signInNavBtn:hover{background:rgba(255,255,255,.18);}
+#signInNavBtn.visible{display:flex;}
 .admin-nav-group{display:none;align-items:center;gap:6px;}
 .admin-nav-group.show{display:flex;}
 .nav-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.05em;text-decoration:none;cursor:pointer;border:none;transition:all var(--dur) var(--ease);white-space:nowrap;}
@@ -60,22 +67,31 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .nav-pill-gold:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(184,150,46,.45);}
 .nav-divider{width:1px;height:16px;background:rgba(255,255,255,.12);flex-shrink:0;}
 
-.hero-body{position:relative;z-index:5;max-width:var(--page-max);margin:0 auto;width:100%;padding:40px var(--pad-h) 72px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;}
+/* ===== HERO BODY ===== */
+.hero-body{position:relative;z-index:5;max-width:var(--page-max);margin:0 auto;width:100%;padding:40px var(--pad-h) 80px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;width:fit-content;background:rgba(184,150,46,.12);border:1px solid rgba(184,150,46,.28);color:var(--gold-lt);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;padding:5px 14px;border-radius:var(--r-pill);margin-bottom:22px;backdrop-filter:blur(8px);}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,5.5vw,72px);font-weight:500;line-height:1.02;letter-spacing:-.015em;color:var(--white);max-width:680px;margin-bottom:18px;}
 .hero h1 em{font-style:italic;color:var(--gold-lt);font-weight:400;}
 .hero-sub{font-size:14px;color:rgba(255,255,255,.46);max-width:420px;line-height:1.78;margin-bottom:28px;}
-.hero-trust{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-.hero-trust-item{display:inline-flex;align-items:center;gap:7px;font-family:'Syne',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.06em;}
+.hero-cta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+.hero-cta-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--gold-dk),var(--gold));color:var(--ink);font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:none;cursor:pointer;transition:all var(--dur) var(--ease);}
+.hero-cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(184,150,46,.45);}
+.hero-cta-secondary{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:var(--r-md);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);color:var(--white);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all var(--dur) var(--ease);}
+.hero-cta-secondary:hover{background:rgba(255,255,255,.18);}
+.hero-trust{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.hero-trust-item{display:inline-flex;align-items:center;gap:7px;font-family:'Syne',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,.52);letter-spacing:.06em;}
 .hero-trust-item svg{width:13px;height:13px;color:var(--gold);flex-shrink:0;}
 
-.usa-ticker{position:relative;z-index:5;background:rgba(12,12,12,.72);backdrop-filter:blur(20px) saturate(1.5);border-top:1px solid rgba(184,150,46,.14);}
-.usa-ticker-inner{max-width:var(--page-max);margin:0 auto;padding:12px var(--pad-h);display:flex;align-items:center;gap:36px;}
-.usa-ticker-stat{display:flex;align-items:center;gap:12px;white-space:nowrap;flex-shrink:0;}
-.usa-ticker-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--gold-lt);line-height:1;}
-.usa-ticker-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.12em;text-transform:uppercase;}
-.usa-ticker-divider{width:1px;height:22px;background:rgba(255,255,255,.09);flex-shrink:0;}
+/* ===== TICKER ===== */
+.usa-ticker{position:relative;z-index:5;background:rgba(12,12,12,.76);backdrop-filter:blur(20px) saturate(1.5);border-top:1px solid rgba(184,150,46,.14);}
+.usa-ticker-inner{max-width:var(--page-max);margin:0 auto;padding:14px var(--pad-h);display:flex;align-items:center;gap:40px;overflow-x:auto;scrollbar-width:none;}
+.usa-ticker-inner::-webkit-scrollbar{display:none;}
+.usa-ticker-stat{display:flex;align-items:center;gap:14px;white-space:nowrap;flex-shrink:0;}
+.usa-ticker-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold-lt);line-height:1;}
+.usa-ticker-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,.32);letter-spacing:.12em;text-transform:uppercase;}
+.usa-ticker-divider{width:1px;height:24px;background:rgba(255,255,255,.09);flex-shrink:0;}
 
+/* ===== TABS ===== */
 .mode-tabs-wrap{background:var(--white);border-bottom:1px solid var(--ink-10);position:sticky;top:0;z-index:101;box-shadow:0 1px 0 var(--ink-05),0 4px 16px rgba(0,0,0,.04);}
 .mode-tabs-inner{max-width:var(--page-max);margin:0 auto;padding:0 var(--pad-h);display:flex;align-items:stretch;}
 .mode-tab{display:inline-flex;align-items:center;gap:8px;padding:16px 22px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:none;background:none;color:var(--ink-50);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all var(--dur) var(--ease);white-space:nowrap;}
@@ -89,19 +105,20 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .mode-tab[data-mode="tickets"] .mode-tab-badge{background:var(--violet-lt);color:var(--violet);}
 .mode-tab[data-mode="sell"] .mode-tab-badge{background:var(--green-lt);color:var(--green);}
 
+/* ===== CONTROLS ===== */
 .controls-bar{background:var(--white);border-bottom:1px solid var(--ink-05);}
-.controls-bar-inner{max-width:var(--page-max);margin:0 auto;padding:0 var(--pad-h);display:flex;align-items:center;height:50px;gap:0;}
-.categories{display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;height:100%;}
+.controls-bar-inner{max-width:var(--page-max);margin:0 auto;padding:0 var(--pad-h);display:flex;align-items:center;height:52px;gap:0;}
+.categories{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;height:100%;}
 .categories::-webkit-scrollbar{display:none;}
-.categories div{flex:0 0 auto;padding:5px 13px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all var(--dur) var(--ease);color:var(--ink-50);border:1.5px solid transparent;}
+.categories div{flex:0 0 auto;padding:5px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all var(--dur) var(--ease);color:var(--ink-50);border:1.5px solid transparent;}
 .categories div:hover{background:var(--paper-alt);color:var(--ink);}
 .categories div.active{background:var(--ink);color:var(--white);}
-.controls-divider{width:1px;height:22px;background:var(--ink-10);margin:0 14px;flex-shrink:0;}
+.controls-divider{width:1px;height:22px;background:var(--ink-10);margin:0 16px;flex-shrink:0;}
 .controls-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .search-wrap{position:relative;flex-shrink:0;}
 .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-50);pointer-events:none;}
-.search-wrap input{padding:8px 16px 8px 36px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--paper);outline:none;width:196px;transition:all var(--dur) var(--ease);}
-.search-wrap input:focus{border-color:var(--gold);background:var(--white);width:236px;box-shadow:0 0 0 3px var(--gold-glow);}
+.search-wrap input{padding:9px 16px 9px 36px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--paper);outline:none;width:200px;transition:all var(--dur) var(--ease);}
+.search-wrap input:focus{border-color:var(--gold);background:var(--white);width:240px;box-shadow:0 0 0 3px var(--gold-glow);}
 .mobile-search{display:none;background:var(--white);border-bottom:1px solid var(--ink-05);}
 .mobile-search-inner{max-width:var(--page-max);margin:0 auto;padding:10px var(--pad-h);}
 .mobile-search-wrap{position:relative;}
@@ -109,21 +126,23 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .mobile-search input{width:100%;padding:10px 16px 10px 40px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--paper);color:var(--ink);outline:none;}
 .mobile-search input:focus{border-color:var(--gold);background:var(--white);}
 
-.section{max-width:var(--page-max);margin:0 auto;padding:44px var(--pad-h) 28px;}
-.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:8px;}
-.section-header h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--ink);letter-spacing:-.01em;}
+/* ===== SECTION ===== */
+.section{max-width:var(--page-max);margin:0 auto;padding:48px var(--pad-h) 32px;}
+.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:30px;flex-wrap:wrap;gap:8px;}
+.section-header h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:var(--ink);letter-spacing:-.01em;}
 .results-count{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--ink-50);letter-spacing:.06em;text-transform:uppercase;}
 .results-count strong{color:var(--ink);font-weight:700;}
 
-.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:20px;}
+/* ===== VENDOR CARDS ===== */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));gap:22px;}
 .event-card{background:var(--white);border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(12,12,12,.07);cursor:pointer;transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease);box-shadow:var(--sh-sm);}
-.event-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:transparent;}
-.event-card.is-past{opacity:.62;}
+.event-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);border-color:transparent;}
+.event-card.is-past{opacity:.58;}
 .event-card-img-wrap{position:relative;overflow:hidden;}
-.event-card img{width:100%;height:200px;object-fit:cover;display:block;transition:transform .6s var(--ease);}
-.event-card:hover img{transform:scale(1.04);}
-.event-card-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(12,12,12,.38) 100%);pointer-events:none;}
-.event-card-category{position:absolute;top:12px;left:12px;z-index:2;background:rgba(12,12,12,.76);backdrop-filter:blur(10px);color:var(--white);font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);}
+.event-card img{width:100%;height:206px;object-fit:cover;display:block;transition:transform .6s var(--ease);}
+.event-card:hover img{transform:scale(1.05);}
+.event-card-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(12,12,12,.40) 100%);pointer-events:none;}
+.event-card-category{position:absolute;top:12px;left:12px;z-index:2;background:rgba(12,12,12,.78);backdrop-filter:blur(10px);color:var(--white);font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);}
 .past-badge,.demo-badge{position:absolute;top:12px;right:12px;z-index:2;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-pill);}
 .past-badge{background:rgba(12,12,12,.68);color:rgba(255,255,255,.72);}
 .demo-badge{background:linear-gradient(135deg,var(--gold-dk),var(--gold));color:var(--ink);}
@@ -144,13 +163,14 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .events-empty-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--ink);}
 .events-empty-sub{font-size:14px;color:var(--ink-50);max-width:240px;line-height:1.65;}
 
-.ticket-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
+/* ===== TICKET CARDS ===== */
+.ticket-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(304px,1fr));gap:22px;}
 .ticket-card{background:var(--white);border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(12,12,12,.07);cursor:pointer;transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);box-shadow:var(--sh-sm);display:flex;flex-direction:column;}
-.ticket-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:transparent;}
+.ticket-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);border-color:transparent;}
 .tc-img{position:relative;overflow:hidden;}
-.tc-img img{width:100%;height:190px;object-fit:cover;display:block;transition:transform .6s var(--ease);}
-.ticket-card:hover .tc-img img{transform:scale(1.04);}
-.tc-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 38%,rgba(12,12,12,.55) 100%);pointer-events:none;}
+.tc-img img{width:100%;height:192px;object-fit:cover;display:block;transition:transform .6s var(--ease);}
+.ticket-card:hover .tc-img img{transform:scale(1.05);}
+.tc-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 38%,rgba(12,12,12,.58) 100%);pointer-events:none;}
 .tc-sport-pill{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:.10em;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);}
 .tc-sport-pill.football{background:rgba(22,101,52,.88);color:#fff;}
 .tc-sport-pill.music{background:rgba(91,33,182,.88);color:#fff;}
@@ -183,6 +203,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tc-buy-btn.tennis{background:linear-gradient(135deg,#78350f,#d97706);color:#fff;}
 .tc-buy-btn.worldcup{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;}
 
+/* ===== TICKET FILTER BAR ===== */
 .tkt-filter-bar{background:var(--white);border:1px solid var(--ink-10);border-radius:var(--r-xl);padding:18px 22px;margin-bottom:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--sh-xs);}
 .tkt-filter-row{display:flex;align-items:center;gap:10px;}
 .tkt-search-wrap{position:relative;flex:1;}
@@ -198,6 +219,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tkt-clear-btn{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--violet);cursor:pointer;display:none;background:none;border:none;padding:0;}
 .tkt-clear-btn:hover{text-decoration:underline;}
 
+/* ===== SELL PANEL ===== */
 .sell-panel{max-width:800px;}
 .sell-intro{display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:var(--r-lg);margin-bottom:28px;background:rgba(146,64,14,.06);border:1px solid rgba(146,64,14,.20);}
 .sell-intro svg{width:18px;height:18px;flex-shrink:0;color:var(--amber);margin-top:1px;}
@@ -252,6 +274,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .mlc-status-msg.pending{color:var(--amber);}
 .mlc-status-msg.approved{color:var(--green-md);}
 
+/* ===== TICKET PURCHASE MODAL ===== */
 .tkt-modal{display:none;position:fixed;inset:0;background:rgba(12,12,12,.68);backdrop-filter:blur(14px);align-items:center;justify-content:center;z-index:1000;padding:20px;animation:fadeIn .18s var(--ease);}
 .tkt-modal.open{display:flex;}
 .tkt-modal-box{background:var(--white);width:100%;max-width:540px;max-height:92vh;border-radius:var(--r-2xl);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh-xl);animation:slideUp .36s var(--spring);}
@@ -295,6 +318,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tkt-checkout-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,46,.4);}
 .tkt-checkout-note{text-align:center;font-size:11.5px;color:var(--ink-50);margin-top:8px;line-height:1.5;}
 
+/* ===== SUCCESS MODAL ===== */
 .tkt-success-modal{display:none;position:fixed;inset:0;background:rgba(12,12,12,.68);backdrop-filter:blur(14px);align-items:center;justify-content:center;z-index:1100;padding:20px;}
 .tkt-success-modal.open{display:flex;}
 .tkt-success-box{background:var(--white);border-radius:var(--r-2xl);width:100%;max-width:400px;overflow:hidden;box-shadow:var(--sh-xl);animation:slideUp .4s var(--spring);}
@@ -309,7 +333,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tkt-ticket-stub::after{content:'';position:absolute;right:-10px;top:50%;width:20px;height:20px;border-radius:50%;background:var(--white);}
 .tkt-stub-event{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--ink);margin-bottom:11px;line-height:1.25;}
 .tkt-stub-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:6px 0;border-top:1px dashed var(--ink-10);}
-.tkt-stub-row:first-of-type{border-top:none;}
 .tkt-stub-key{font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-50);}
 .tkt-stub-val{font-size:13px;color:var(--ink);font-weight:600;text-align:right;max-width:200px;}
 .tkt-barcode{text-align:center;margin-top:14px;padding-top:14px;border-top:1px dashed var(--ink-10);}
@@ -322,6 +345,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tkt-success-dashboard{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:var(--paper);border:1.5px solid var(--ink-10);color:var(--ink);border-radius:var(--r-md);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:all var(--dur) var(--ease);}
 .tkt-success-dashboard:hover{background:var(--paper-alt);border-color:var(--ink-24);}
 
+/* ===== VENDOR MODAL ===== */
 .modal{display:none;position:fixed;inset:0;background:rgba(12,12,12,.68);backdrop-filter:blur(14px);align-items:center;justify-content:center;z-index:1000;padding:20px;animation:fadeIn .18s var(--ease);}
 .modal-content{background:var(--white);width:100%;max-width:680px;max-height:92vh;border-radius:var(--r-2xl);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh-xl);animation:slideUp .36s var(--spring);}
 .modal-img-wrap{position:relative;flex-shrink:0;overflow:hidden;height:260px;}
@@ -375,7 +399,9 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .modal-apply-btn:disabled{opacity:.42;cursor:not-allowed;transform:none;}
 .modal-apply-note{text-align:center;font-size:12px;color:var(--ink-50);margin-top:8px;}
 
+/* ===== AUTH MODAL ===== */
 .login-modal{display:none;position:fixed;inset:0;background:rgba(12,12,12,.68);backdrop-filter:blur(14px);align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.login-modal.open{display:flex;}
 .login-modal-content{background:var(--white);width:100%;max-width:400px;border-radius:var(--r-2xl);padding:40px 34px;position:relative;box-shadow:var(--sh-xl);animation:slideUp .36s var(--spring);}
 .login-modal-content h2{font-family:'Cormorant Garamond',serif;text-align:center;margin-bottom:26px;font-size:30px;font-weight:500;color:var(--ink);}
 .input-field{width:100%;padding:12px 14px;margin-bottom:11px;border-radius:var(--r-md);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--paper);color:var(--ink);transition:all var(--dur) var(--ease);outline:none;display:block;}
@@ -386,11 +412,13 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .login-btn:hover{background:var(--paper);border-color:var(--ink-24);}
 .toggle-auth{display:block;text-align:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--gold-dk);cursor:pointer;margin-top:12px;}
 .toggle-auth:hover{text-decoration:underline;}
-.close-login{position:absolute;top:18px;right:20px;font-size:22px;cursor:pointer;color:var(--ink-50);transition:color var(--dur) var(--ease);line-height:1;}
+.close-login{position:absolute;top:18px;right:20px;font-size:22px;cursor:pointer;color:var(--ink-50);transition:color var(--dur) var(--ease);line-height:1;background:none;border:none;}
 .close-login:hover{color:var(--ink);}
 
+/* ===== DASHBOARD BUTTON ===== */
 #appCartBtn{position:fixed;bottom:24px;left:24px;z-index:999;display:none;align-items:center;gap:9px;background:var(--white);color:var(--ink);border:1px solid var(--ink-10);padding:10px 16px 10px 11px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.03em;cursor:pointer;box-shadow:var(--sh-md);transition:all var(--dur) var(--ease);}
 #appCartBtn:hover{background:var(--ink);color:var(--white);transform:translateY(-2px);box-shadow:var(--sh-lg);}
+#appCartBtn.visible{display:flex;}
 .cart-icon-wrap{width:26px;height:26px;background:var(--paper);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
 .cart-icon-wrap svg{width:13px;height:13px;color:var(--ink-50);transition:color .2s;}
 #appCartBtn:hover .cart-icon-wrap{background:rgba(255,255,255,.10);}
@@ -399,9 +427,10 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 #appCartCount.show{display:inline-flex;}
 body.modal-open #appCartBtn{display:none !important;}
 
+/* ===== DRAWER ===== */
 #appDrawerOverlay{position:fixed;inset:0;background:rgba(12,12,12,.52);backdrop-filter:blur(8px);z-index:1050;opacity:0;pointer-events:none;transition:opacity .28s var(--ease);}
 #appDrawerOverlay.open{opacity:1;pointer-events:all;}
-#appDrawer{position:fixed;top:0;left:0;bottom:0;width:400px;max-width:calc(100vw - 40px);background:var(--white);z-index:1051;display:flex;flex-direction:column;box-shadow:12px 0 60px rgba(0,0,0,.20);transform:translateX(-100%);transition:transform .36s var(--ease);}
+#appDrawer{position:fixed;top:0;left:0;bottom:0;width:420px;max-width:calc(100vw - 40px);background:var(--white);z-index:1051;display:flex;flex-direction:column;box-shadow:12px 0 60px rgba(0,0,0,.20);transform:translateX(-100%);transition:transform .36s var(--ease);}
 #appDrawer.open{transform:translateX(0);}
 .drawer-header{background:var(--ink);padding:22px 20px 18px;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;position:relative;}
 .drawer-header::after{content:'';position:absolute;bottom:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,rgba(184,150,46,.30),transparent);}
@@ -416,7 +445,7 @@ body.modal-open #appCartBtn{display:none !important;}
 .drawer-tab{flex:1;padding:11px 8px;font-family:'Syne',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;background:none;color:var(--ink-50);border-bottom:2px solid transparent;transition:all var(--dur) var(--ease);text-align:center;}
 .drawer-tab:hover:not(.active){color:var(--ink);background:var(--paper);}
 .drawer-tab.active{color:var(--gold-dk);border-bottom-color:var(--gold);}
-.drawer-tab-panel{display:none;flex:1;min-height:0;overflow-y:auto;padding:14px 14px 24px;flex-direction:column;gap:8px;}
+.drawer-tab-panel{display:none;flex:1;min-height:0;overflow-y:auto;padding:14px 14px 24px;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;}
 .drawer-tab-panel.active{display:flex;}
 .drawer-tab-panel::-webkit-scrollbar{width:4px;}
 .drawer-tab-panel::-webkit-scrollbar-thumb{background:var(--paper-deep);border-radius:4px;}
@@ -429,10 +458,6 @@ body.modal-open #appCartBtn{display:none !important;}
 .app-card.pending{border-left-color:var(--amber);}
 .app-card.approved{border-left-color:var(--green-md);}
 .app-card.rejected{border-left-color:var(--red);}
-.app-card.ticket{border-left-color:var(--violet-md);}
-.app-card.listing-pending{border-left-color:var(--amber);}
-.app-card.listing-approved{border-left-color:var(--green-md);}
-.app-card.listing-rejected{border-left-color:var(--red);}
 .app-card-info{flex:1;min-width:0;}
 .app-card-title{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
 .app-card-meta{font-size:11px;color:var(--ink-50);line-height:1.5;margin-bottom:5px;}
@@ -443,7 +468,6 @@ body.modal-open #appCartBtn{display:none !important;}
 .app-status-pill.pending{background:var(--amber-lt);color:var(--amber);}
 .app-status-pill.approved{background:var(--green-lt);color:var(--green);}
 .app-status-pill.rejected{background:var(--red-lt);color:var(--red);}
-.app-status-pill.ticket{background:var(--violet-lt);color:var(--violet);}
 .ticket-receipt{background:var(--white);border:1px solid var(--ink-05);border-radius:var(--r-md);overflow:hidden;animation:slideInL .22s var(--ease) both;border-left:3px solid var(--violet-md);}
 .ticket-receipt-header{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--ink-05);background:var(--violet-pale);}
 .ticket-receipt-event{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--violet);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-right:6px;}
@@ -461,32 +485,38 @@ body.modal-open #appCartBtn{display:none !important;}
 .drawer-footer-note{font-size:11px;color:var(--ink-50);text-align:center;line-height:1.6;}
 .drawer-footer-note strong{color:var(--gold-dk);}
 
-#openChatBtn{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;align-items:center;gap:9px;background:var(--ink);color:var(--white);padding:12px 20px 12px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;border:none;box-shadow:var(--sh-lg);transition:all var(--dur) var(--ease);outline:1.5px solid rgba(184,150,46,.20);outline-offset:0;}
+/* ===== CHAT BUTTON ===== */
+#openChatBtn{position:fixed;bottom:28px;right:28px;z-index:999;display:none;align-items:center;gap:9px;background:var(--ink);color:var(--white);padding:12px 20px 12px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;border:none;box-shadow:var(--sh-lg);transition:all var(--dur) var(--ease);outline:1.5px solid rgba(184,150,46,.20);outline-offset:0;}
 #openChatBtn:hover{background:#1c1c1e;transform:translateY(-2px);box-shadow:var(--sh-xl);outline-color:rgba(184,150,46,.45);}
+#openChatBtn.visible{display:flex;}
 .chat-btn-icon{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dk),var(--gold));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;line-height:1;}
 #unreadBadge{display:none;background:linear-gradient(135deg,#991b1b,#dc2626);color:#fff;font-family:'Syne',sans-serif;font-size:9px;font-weight:800;min-width:17px;height:17px;border-radius:var(--r-pill);padding:0 5px;align-items:center;justify-content:center;line-height:1;flex-shrink:0;}
-#unreadBadge.has-unread{display:inline-flex;}
+#unreadBadge.show{display:inline-flex;}
 body.modal-open #openChatBtn{display:none;}
 
+/* ===== CHAT MODAL ===== */
 .chat-modal{display:none;position:fixed;inset:0;background:rgba(12,12,12,.68);backdrop-filter:blur(14px);align-items:center;justify-content:center;z-index:1000;padding:20px;}
 .chat-modal.open{display:flex;}
-.chat-container{width:100%;max-width:500px;height:620px;background:var(--white);border-radius:var(--r-2xl);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--sh-xl);animation:slideUp .28s var(--ease);}
+.chat-container{width:100%;max-width:520px;height:640px;background:var(--white);border-radius:var(--r-2xl);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--sh-xl);animation:slideUp .28s var(--ease);}
 .chat-header{background:var(--ink);padding:16px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-.chat-admin-info{display:flex;align-items:center;gap:12px;}
+.chat-admin-info{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
 .chat-avatar{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:var(--ink);font-family:'Cormorant Garamond',serif;font-weight:700;font-size:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.chat-context-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13.5px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;}
+.chat-header-text{min-width:0;}
+.chat-context-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .chat-context-label{font-family:'Syne',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.10em;color:var(--gold-lt);text-transform:uppercase;margin-top:2px;}
-.chat-close{font-size:22px;cursor:pointer;color:rgba(255,255,255,.60);transition:color .2s;line-height:1;flex-shrink:0;}
+.chat-header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.chat-close{font-size:22px;cursor:pointer;color:rgba(255,255,255,.60);transition:color .2s;line-height:1;background:none;border:none;padding:0;}
 .chat-close:hover{color:var(--white);}
-.chat-context-bar{display:flex;gap:5px;padding:10px 13px;background:var(--paper);border-bottom:1px solid var(--ink-05);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.chat-context-bar{display:flex;gap:0;flex-shrink:0;border-bottom:1px solid var(--ink-10);overflow-x:auto;scrollbar-width:none;background:var(--white);}
 .chat-context-bar::-webkit-scrollbar{display:none;}
-.chat-ctx-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;transition:all var(--dur) var(--ease);white-space:nowrap;border:1.5px solid transparent;flex-shrink:0;position: relative;}
-.chat-ctx-btn svg{width:11px;height:11px;flex-shrink:0;}
-.chat-ctx-btn.vendor-ctx{border-color:var(--ink-10);color:var(--ink-50);background:var(--white);}
-.chat-ctx-btn.vendor-ctx.active,.chat-ctx-btn.vendor-ctx:hover{background:var(--ink);color:var(--white);border-color:var(--ink);}
-.chat-ctx-btn.ticket-ctx{border-color:rgba(91,33,182,.20);color:var(--violet);background:var(--violet-pale);}
-.chat-ctx-btn.ticket-ctx.active,.chat-ctx-btn.ticket-ctx:hover{background:var(--violet-md);color:var(--white);border-color:var(--violet-md);}
-.chat-ctx-btn.no-ctx{color:var(--ink-50);font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:400;border:none;background:none;cursor:default;}
+.chat-ctx-tab{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;font-family:'Syne',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:all var(--dur) var(--ease);white-space:nowrap;border:none;background:none;color:var(--ink-50);border-bottom:2px solid transparent;flex-shrink:0;position:relative;}
+.chat-ctx-tab svg{width:11px;height:11px;flex-shrink:0;}
+.chat-ctx-tab:hover{color:var(--ink);background:var(--paper);}
+.chat-ctx-tab.active.vendor-ctx{color:var(--gold-dk);border-bottom-color:var(--gold);}
+.chat-ctx-tab.active.ticket-ctx{color:var(--violet);border-bottom-color:var(--violet-md);}
+.chat-ctx-tab .unread-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#dc2626;display:none;}
+.chat-ctx-tab.has-unread .unread-dot{display:block;}
+.chat-ctx-empty{padding:12px 16px;font-family:'Instrument Sans',sans-serif;font-size:12.5px;color:var(--ink-50);font-style:italic;}
 .chat-messages{flex:1;padding:16px;background:var(--paper);overflow-y:auto;display:flex;flex-direction:column;gap:9px;scroll-behavior:smooth;}
 .chat-messages::-webkit-scrollbar{width:4px;}
 .chat-messages::-webkit-scrollbar-thumb{background:var(--paper-deep);border-radius:4px;}
@@ -495,17 +525,26 @@ body.modal-open #openChatBtn{display:none;}
 .message-row{display:flex;flex-direction:column;max-width:78%;}
 .user-row{align-self:flex-end;align-items:flex-end;}
 .other-row{align-self:flex-start;align-items:flex-start;}
+.msg-sender-label{font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;color:var(--ink-50);margin-bottom:3px;letter-spacing:.04em;}
 .user-bubble{background:var(--ink);color:var(--white);padding:10px 14px;border-radius:17px 17px 4px 17px;font-size:13.5px;line-height:1.55;}
 .other-bubble{background:var(--white);color:var(--ink);padding:10px 14px;border-radius:17px 17px 17px 4px;font-size:13.5px;line-height:1.55;box-shadow:var(--sh-xs);}
+.admin-bubble{background:linear-gradient(135deg,var(--gold-pale),rgba(245,237,216,.5));color:var(--ink);padding:10px 14px;border-radius:17px 17px 17px 4px;font-size:13.5px;line-height:1.55;border:1px solid rgba(184,150,46,.22);}
 .message-time{font-family:'Syne',sans-serif;font-size:10px;color:var(--ink-50);margin-top:3px;font-weight:500;}
 .chat-input-area{padding:11px 13px;background:var(--white);border-top:1px solid var(--ink-05);display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .chat-input-area input{flex:1;padding:9px 14px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:13.5px;outline:none;transition:all var(--dur) var(--ease);background:var(--paper);color:var(--ink);min-width:0;}
 .chat-input-area input:focus{border-color:var(--gold);background:var(--white);box-shadow:0 0 0 3px var(--gold-glow);}
+.chat-input-area input:disabled{opacity:.45;cursor:not-allowed;}
 .chat-send-btn{width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--white);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--dur) var(--ease);flex-shrink:0;}
 .chat-send-btn:hover{background:#1c1c1e;transform:scale(1.05);}
+.chat-send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 .chat-send-btn svg{width:14px;height:14px;}
+.chat-no-convo{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:24px;}
+.chat-no-convo-icon{font-size:36px;opacity:.2;}
+.chat-no-convo-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--ink);}
+.chat-no-convo-sub{font-size:13px;color:var(--ink-50);text-align:center;line-height:1.6;max-width:220px;}
 
-.countdown-outer{max-width:var(--page-max);margin:24px auto 48px;padding:0 var(--pad-h);}
+/* ===== COUNTDOWN ===== */
+.countdown-outer{max-width:var(--page-max);margin:28px auto 52px;padding:0 var(--pad-h);}
 .countdown-section{background:var(--ink);border-radius:var(--r-2xl);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;position:relative;overflow:hidden;}
 .countdown-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(184,150,46,.10) 0%,transparent 55%),radial-gradient(ellipse at 85% 20%,rgba(184,150,46,.06) 0%,transparent 45%);pointer-events:none;}
 .countdown-section::after{content:'';position:absolute;top:0;left:48px;right:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(184,150,46,.36),transparent);}
@@ -517,6 +556,15 @@ body.modal-open #openChatBtn{display:none;}
 .time span{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--white);line-height:1;display:block;margin-bottom:7px;}
 .time-label{font-family:'Syne',sans-serif;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.32);font-weight:600;}
 
+/* ===== AUTH GATE ===== */
+.auth-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 24px;text-align:center;gap:14px;}
+.auth-gate-icon{font-size:40px;opacity:.2;}
+.auth-gate-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--ink);}
+.auth-gate-sub{font-size:13.5px;color:var(--ink-50);line-height:1.7;max-width:240px;}
+.auth-gate-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--r-md);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:none;background:var(--ink);color:var(--white);transition:all var(--dur) var(--ease);margin-top:4px;}
+.auth-gate-btn:hover{background:#1c1c1e;transform:translateY(-1px);}
+
+/* ===== FOOTER ===== */
 footer{background:var(--ink);margin-top:80px;padding:60px 0 32px;position:relative;overflow:hidden;}
 footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,150,46,.36),transparent);}
 .footer-inner{max-width:var(--page-max);margin:0 auto;padding:0 var(--pad-h);}
@@ -530,19 +578,24 @@ footer a:hover{text-decoration:underline;}
 .footer-flag{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:4px 13px;background:rgba(184,150,46,.08);border:1px solid rgba(184,150,46,.18);border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:10.5px;color:var(--gold-lt);font-weight:600;}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:24px;text-align:center;font-family:'Syne',sans-serif;font-size:11.5px;color:rgba(255,255,255,.20);letter-spacing:.06em;}
 
+/* ===== OFFLINE ===== */
 #offline-bar{position:fixed;top:0;left:0;right:0;z-index:9999;background:#1c1c1e;color:rgba(255,255,255,.78);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-align:center;padding:9px 16px;transform:translateY(-100%);transition:transform .28s var(--ease);}
 #offline-bar.show{transform:translateY(0);}
 
+/* ===== ANIMATIONS ===== */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes slideInL{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
 body.modal-open{overflow:hidden;}
 
+/* ===== RESPONSIVE ===== */
 @media(max-width:1024px){:root{--pad-h:28px;}}
 @media(max-width:768px){
   :root{--pad-h:14px;}
-  .hero{min-height:400px;}
+  .hero{min-height:420px;}
   .hero-body{padding:40px var(--pad-h) 72px;}
+  .hero-cta-row{flex-direction:column;align-items:flex-start;gap:8px;}
+  .hero-cta-primary,.hero-cta-secondary{width:100%;justify-content:center;}
   .mode-tab{padding:13px 14px;font-size:11px;}
   .mode-tab .mode-tab-badge{display:none;}
   .controls-divider,.search-wrap{display:none;}
@@ -558,7 +611,7 @@ body.modal-open{overflow:hidden;}
   .event-date-badge{font-size:9.5px;padding:3px 7px;}
   .event-location{font-size:11px;}
   .event-address{display:none;}
-  .hero h1{font-size:clamp(36px,10vw,56px);}
+  .hero h1{font-size:clamp(34px,10vw,54px);}
   .countdown-section{flex-direction:column;align-items:flex-start;padding:28px 24px;gap:20px;}
   #countdown{justify-content:flex-start;}
   .time{padding:14px 17px;min-width:64px;}
@@ -581,74 +634,11 @@ body.modal-open{overflow:hidden;}
   .tkt-modal-box{max-height:100dvh;border-radius:0;}
   .my-listings-grid{grid-template-columns:1fr;}
   .tkt-success-actions{flex-direction:column;}
+  .user-name{display:none;}
 }
-
-/* ==================== DRAWER SCROLLING FIX ==================== */
-#appDrawer {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.drawer-header {
-  flex-shrink: 0;
-}
-
-.drawer-tabs {
-  flex-shrink: 0;
-}
-
-.drawer-tab-panel {
-  display: none;
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 14px 14px 24px;
-  flex-direction: column;
-  gap: 8px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.drawer-tab-panel.active {
-  display: flex;
-}
-
-.drawer-footer {
-  flex-shrink: 0;
-}
-
-/* ==================== UNREAD MESSAGE BADGES ==================== */
-.chat-ctx-btn {
-  position: relative;
-}
-
-.chat-ctx-btn .unread-badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background: linear-gradient(135deg, #991b1b, #dc2626);
-  color: #fff;
-  font-family: 'Syne', sans-serif;
-  font-size: 8px;
-  font-weight: 800;
-  min-width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  padding: 0 4px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.chat-ctx-btn.has-unread .unread-badge {
-  display: flex;
-}
-
-/* ==================== TICKET RECEIPT SCROLLING FIXED ==================== */
-/* Panel scrolling handled by .drawer-tab-panel base class */
 </style>
 </head>
+
 <body>
 
 <!-- HERO -->
@@ -675,23 +665,38 @@ body.modal-open{overflow:hidden;}
         </div>
         <div class="hero-user" id="profileDisplay">
           <div class="user-avatar" id="userInitial">U</div>
+          <span class="user-name" id="userNameDisplay"></span>
           <button id="logoutBtn" title="Sign out">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 2a1 1 0 0 1 1-1h5.5a.5.5 0 0 1 0 1H7a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5h5.5a.5.5 0 0 1 0 1H7a1 1 0 0 1-1-1V2z"/><path d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/></svg>
           </button>
         </div>
+        <button id="signInNavBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Sign in
+        </button>
       </div>
     </div>
   </nav>
 
   <div class="hero-body">
-    <div class="hero-eyebrow">🇺🇸 USA Marketplace</div>
+    <div class="hero-eyebrow">USA Marketplace</div>
     <h1>Vendor Booths,<br><em>Resale Tickets</em><br>— All in One Place</h1>
     <p class="hero-sub">Apply for vendor booths at US events or buy and sell resale tickets for football, World Cup, music and more — directly between verified fans.</p>
+    <div class="hero-cta-row">
+      <button class="hero-cta-primary" onclick="document.querySelector('.mode-tab[data-mode=vendors]').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Browse vendor booths
+      </button>
+      <button class="hero-cta-secondary" onclick="document.querySelector('.mode-tab[data-mode=tickets]').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
+        Buy resale tickets
+      </button>
+    </div>
     <div class="hero-trust">
       <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Buyer Guarantee</div>
       <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Verified Sellers</div>
-      <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Secure Peer-to-Peer Transfer</div>
-      <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>In-App Seller Chat</div>
+      <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Secure Peer-to-Peer</div>
+      <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>In-App Chat</div>
     </div>
   </div>
 
@@ -723,23 +728,23 @@ body.modal-open{overflow:hidden;}
   <div class="mode-tabs-inner">
     <button class="mode-tab active" data-mode="vendors">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Vendor Booths
+      Vendors
       <span class="mode-tab-badge" id="vendorTabBadge">12</span>
     </button>
     <button class="mode-tab" data-mode="tickets">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
-      Buy Resale Tickets
+      Buy Ticket
       <span class="mode-tab-badge" id="ticketTabBadge">12</span>
     </button>
     <button class="mode-tab" data-mode="sell">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      Sell a Ticket
+      Sell Ticket
       <span class="mode-tab-badge">List Now</span>
     </button>
   </div>
 </div>
 
-<!-- CONTROLS BAR (vendors only) -->
+<!-- CONTROLS BAR -->
 <div class="controls-bar" id="controlsBar">
   <div class="controls-bar-inner">
     <div class="categories">
@@ -764,7 +769,7 @@ body.modal-open{overflow:hidden;}
 <!-- VENDOR PANEL -->
 <section class="section" id="vendorPanel">
   <div class="section-header">
-    <h2>🇺🇸 USA Vendor Events</h2>
+    <h2>USA Vendor Events</h2>
     <span class="results-count" id="resultsCount"></span>
   </div>
   <div class="events-grid" id="eventsGrid"></div>
@@ -782,7 +787,7 @@ body.modal-open{overflow:hidden;}
         <option value="default">Featured</option>
         <option value="price-asc">Price: low → high</option>
         <option value="price-desc">Price: high → low</option>
-        <option value="qty-desc">Most tickets available</option>
+        <option value="qty-desc">Most available</option>
       </select>
     </div>
     <div class="tkt-sport-pills">
@@ -803,9 +808,7 @@ body.modal-open{overflow:hidden;}
 
 <!-- SELL PANEL -->
 <section class="section sell-panel" id="sellPanel" style="display:none;">
-  <div class="section-header">
-    <h2>List Your Ticket</h2>
-  </div>
+  <div class="section-header"><h2>List Your Ticket</h2></div>
   <div class="sell-intro">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
     <div class="sell-intro-text">
@@ -813,86 +816,7 @@ body.modal-open{overflow:hidden;}
       <p>All listings are reviewed before going live — usually within 24 hours. Upload a clear screenshot of your ticket confirmation to speed up approval. Once approved, buyers can contact you directly via in-app chat.</p>
     </div>
   </div>
-  <div class="sell-form-card">
-    <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Event details</legend>
-      <div class="form-row">
-        <label class="form-label form-label-required">Event name</label>
-        <input type="text" class="form-input" id="sellEventName" placeholder="e.g. FIFA World Cup 2026 — USA vs Mexico"/>
-      </div>
-      <div class="form-grid-2">
-        <div class="form-row">
-          <label class="form-label form-label-required">Sport / Category</label>
-          <select class="form-select" id="sellCategory">
-            <option value="">Select category…</option>
-            <option value="football">⚽ Football / Soccer</option>
-            <option value="worldcup">🏆 FIFA World Cup 2026</option>
-            <option value="basketball">🏀 Basketball (NBA)</option>
-            <option value="tennis">🎾 Tennis</option>
-            <option value="music">🎵 Music / Concert</option>
-            <option value="boxing">🥊 Boxing / MMA</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label class="form-label form-label-required">Event date</label>
-          <input type="date" class="form-input" id="sellDate"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <label class="form-label form-label-required">Venue & city</label>
-        <input type="text" class="form-input" id="sellVenue" placeholder="e.g. SoFi Stadium, Los Angeles, CA"/>
-      </div>
-    </fieldset>
-    <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Ticket details</legend>
-      <div class="form-grid-2">
-        <div class="form-row">
-          <label class="form-label form-label-required">Number of tickets</label>
-          <input type="number" class="form-input" id="sellQty" min="1" max="20" placeholder="e.g. 2"/>
-        </div>
-        <div class="form-row">
-          <label class="form-label form-label-required">Price per ticket (USD)</label>
-          <input type="number" class="form-input" id="sellPrice" min="1" placeholder="e.g. 250"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <label class="form-label">Seat section / row</label>
-        <input type="text" class="form-input" id="sellSeat" placeholder="e.g. Section 112, Row F, Seats 14–15"/>
-      </div>
-      <div class="form-row">
-        <label class="form-label">Additional notes</label>
-        <textarea class="form-textarea" id="sellNotes" placeholder="Ticket type, transfer method, restrictions…"></textarea>
-      </div>
-    </fieldset>
-    <fieldset class="form-fieldset">
-      <legend class="form-fieldset-legend">Seller & proof</legend>
-      <div class="form-row">
-        <label class="form-label form-label-required">Your display name</label>
-        <input type="text" class="form-input" id="sellName" placeholder="Name shown to buyers"/>
-      </div>
-      <div class="form-row">
-        <label class="form-label form-label-required">Ticket proof image</label>
-        <div class="file-upload-zone" id="uploadZone">
-          <input type="file" id="proofImageInput" accept="image/*"/>
-          <span class="file-upload-icon">🎟️</span>
-          <div class="file-upload-title">Upload booking confirmation</div>
-          <div class="file-upload-sub">JPG, PNG or WEBP · max 10 MB</div>
-          <div class="file-preview" id="filePreview">
-            <img id="previewImg" src="" alt="Ticket proof"/>
-            <button class="file-preview-remove" id="removeProofBtn" type="button">✕</button>
-          </div>
-        </div>
-      </div>
-    </fieldset>
-    <div class="sell-trust-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <p>VendHub is peer-to-peer. All listings are reviewed before going live. Buyers contact sellers directly via in-app chat for safe transfer.</p>
-    </div>
-    <button class="sell-submit-btn" id="sellSubmitBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
-      Submit for approval
-    </button>
-  </div>
+  <div id="sellFormWrap"></div>
   <div id="myListingsSection" style="display:none;">
     <div class="section-header" style="margin-top:52px;"><h2>My Listings</h2></div>
     <div class="my-listings-grid" id="myListingsGrid"></div>
@@ -915,8 +839,8 @@ body.modal-open{overflow:hidden;}
   </div>
 </div>
 
-<!-- CART BUTTON -->
-<button id="appCartBtn" aria-label="Open my dashboard" style="display:none;">
+<!-- DASHBOARD BUTTON -->
+<button id="appCartBtn" aria-label="Open my dashboard">
   <div class="cart-icon-wrap">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
   </div>
@@ -940,7 +864,7 @@ body.modal-open{overflow:hidden;}
   </div>
   <div class="drawer-tabs">
     <button class="drawer-tab active" data-dtab="vendor">Vendor Apps</button>
-    <button class="drawer-tab" data-dtab="tickets">Tickets</button>
+    <button class="drawer-tab" data-dtab="tickets">My Tickets</button>
     <button class="drawer-tab" data-dtab="listings">My Listings</button>
   </div>
   <div class="drawer-tab-panel active" id="dtab-vendor"></div>
@@ -955,12 +879,12 @@ body.modal-open{overflow:hidden;}
 <div class="tkt-modal" id="tktModal">
   <div class="tkt-modal-box">
     <div class="tkt-modal-header">
-      <img class="tkt-modal-img" id="tktModalImg" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80" alt="">
+      <img class="tkt-modal-img" id="tktModalImg" src="" alt="">
       <div class="tkt-modal-img-overlay"></div>
       <button class="tkt-modal-close" id="tktModalClose" aria-label="Close">&times;</button>
       <div class="tkt-modal-sport-pill" id="tktModalSportPill"></div>
       <div class="tkt-modal-title-block">
-        <div class="tkt-modal-title" id="tktModalTitle">Event</div>
+        <div class="tkt-modal-title" id="tktModalTitle"></div>
         <div class="tkt-modal-venue" id="tktModalVenue"></div>
       </div>
     </div>
@@ -969,7 +893,7 @@ body.modal-open{overflow:hidden;}
       <div class="tkt-info-chips" id="tktInfoChips"></div>
       <div class="tkt-section-label">Seller</div>
       <div class="tkt-seller-card">
-        <div class="tkt-seller-av" id="tktSellerAv">J</div>
+        <div class="tkt-seller-av" id="tktSellerAv">?</div>
         <div style="flex:1;min-width:0;">
           <div class="tkt-seller-nm" id="tktSellerName">Seller</div>
           <div class="tkt-seller-meta" id="tktSellerMeta"></div>
@@ -1042,7 +966,7 @@ body.modal-open{overflow:hidden;}
   <div class="modal-content">
     <span class="close" id="vendorModalClose" aria-label="Close">&times;</span>
     <div class="modal-img-wrap">
-      <img id="modalImage" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80" alt="">
+      <img id="modalImage" src="" alt="">
       <div class="modal-img-spots" id="modalSpots" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px;"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
         <span id="modalSpotsText"></span>
@@ -1103,10 +1027,10 @@ body.modal-open{overflow:hidden;}
   </div>
 </div>
 
-<!-- LOGIN MODAL -->
+<!-- AUTH MODAL -->
 <div id="loginModal" class="login-modal">
   <div class="login-modal-content">
-    <span class="close-login" aria-label="Close">&times;</span>
+    <button class="close-login" aria-label="Close">&times;</button>
     <h2 id="authTitle">Create account</h2>
     <input type="email" id="emailField" class="input-field" placeholder="Email" autocomplete="off"/>
     <div style="position:relative;">
@@ -1127,7 +1051,7 @@ body.modal-open{overflow:hidden;}
 </div>
 
 <!-- CHAT BUTTON -->
-<button id="openChatBtn" aria-label="Open chat" style="display:none;">
+<button id="openChatBtn" aria-label="Open chat">
   <div class="chat-btn-icon">💬</div>
   <span class="chat-btn-text">Chat</span>
   <span id="unreadBadge"></span>
@@ -1138,21 +1062,27 @@ body.modal-open{overflow:hidden;}
   <div class="chat-container">
     <div class="chat-header">
       <div class="chat-admin-info">
-        <div class="chat-avatar" id="chatAvatar">A</div>
-        <div>
-          <div class="chat-context-name" id="chatContextName">Chat</div>
-          <div class="chat-context-label" id="chatContextLabel">Select conversation</div>
+        <div class="chat-avatar" id="chatAvatar">💬</div>
+        <div class="chat-header-text">
+          <div class="chat-context-name" id="chatContextName">Conversations</div>
+          <div class="chat-context-label" id="chatContextLabel">Select a thread below</div>
         </div>
       </div>
-      <span class="chat-close" id="closeChat" aria-label="Close">&times;</span>
+      <div class="chat-header-actions">
+        <button class="chat-close" id="closeChat" aria-label="Close">&times;</button>
+      </div>
     </div>
     <div class="chat-context-bar" id="chatContextBar"></div>
     <div id="chatMessages" class="chat-messages">
-      <div class="chat-empty"><div class="chat-empty-icon">💬</div><span>Select a conversation to start chatting</span></div>
+      <div class="chat-no-convo">
+        <div class="chat-no-convo-icon">💬</div>
+        <div class="chat-no-convo-title">No conversation selected</div>
+        <div class="chat-no-convo-sub">Select a thread above to start chatting.</div>
+      </div>
     </div>
     <div class="chat-input-area">
-      <input type="text" id="chatInput" placeholder="Type a message…" autocomplete="off">
-      <button class="chat-send-btn" id="sendChatBtn" aria-label="Send">
+      <input type="text" id="chatInput" placeholder="Type a message…" autocomplete="off" disabled>
+      <button class="chat-send-btn" id="sendChatBtn" aria-label="Send" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
@@ -1160,7 +1090,7 @@ body.modal-open{overflow:hidden;}
 </div>
 
 <!-- OFFLINE BAR -->
-<div id="offline-bar">You're offline — some features unavailable</div>
+<div id="offline-bar">You're offline — some features may be unavailable</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1181,11 +1111,20 @@ body.modal-open{overflow:hidden;}
 </footer>
 
 <script type="module">
-// ==================== FIREBASE CONFIG ====================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, onSnapshot, addDoc, updateDoc, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, connectStorageEmulator } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  sendPasswordResetEmail, onAuthStateChanged,
+  setPersistence, browserLocalPersistence, signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  getFirestore, collection, query, where, getDocs,
+  onSnapshot, addDoc, orderBy, serverTimestamp, doc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
@@ -1202,13 +1141,6 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
-// ==================== STORAGE EMULATOR FOR LOCAL DEV ====================
-if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") {
-  connectStorageEmulator(storage, "localhost", 9199);
-  console.log("✅ Firebase Storage Emulator connected");
-}
-
-// ==================== DEMO DATA ====================
 const DEMO_EVENTS = [
   {id:'demo-1',_isDemo:true,title:'Chicago Renegade Craft Fair',category:'Markets',location:'Union Park',state:'Illinois',address:'1501 W Randolph St, Chicago, IL 60607',image:'https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=600&q=80',description:"Chicago's favourite indie craft market with 300+ booths.",price:'From $50/booth',max_spots:'300',event_dates:['Jul 12, 2026 • 10:00 AM','Jul 13, 2026 • 10:00 AM'],contact_email:'chicago@renegadecraft.com'},
   {id:'demo-2',_isDemo:true,title:'Austin Sustainable Makers Market',category:'Markets',location:'Republic Square Park',state:'Texas',address:'422 W 4th St, Austin, TX 78701',image:'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80',description:"Eco-conscious market with sustainable makers.",price:'$45 per space',max_spots:'80',event_dates:['Aug 2, 2026 • 9:00 AM'],contact_email:'info@austinsustainable.com'},
@@ -1217,22 +1149,14 @@ const DEMO_EVENTS = [
 ];
 
 const DEMO_LISTINGS = [
-  {id:'tkt-1',sport:'worldcup',title:'FIFA World Cup 2026 — USA vs Mexico',venue:'SoFi Stadium',city:'Los Angeles, CA',date:'Jun 22, 2026',time:'5:00 PM PT',image:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80',price:320,qty:2,seat:'Section 118, Row F',seller:{name:'Carlos M.',rating:'4.9 ⭐',sales:62,initial:'C'}},
-  {id:'tkt-2',sport:'worldcup',title:'FIFA World Cup 2026 — Brazil vs Argentina',venue:'MetLife Stadium',city:'East Rutherford, NJ',date:'Jul 4, 2026',time:'8:00 PM ET',image:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80',price:780,qty:2,seat:'Section 138',seller:{name:'Priya S.',rating:'4.8 ⭐',sales:28,initial:'P'}},
-  {id:'tkt-3',sport:'music',title:"Beyoncé — Renaissance Tour",venue:'United Center',city:'Chicago, IL',date:'Aug 14, 2026',time:'8:00 PM CT',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',price:280,qty:2,seat:'Section 113',seller:{name:'Lisa B.',rating:'5.0 ⭐',sales:52,initial:'L'}},
-  {id:'tkt-4',sport:'basketball',title:'NBA Finals 2026 — Game 5',venue:'Crypto.com Arena',city:'Los Angeles, CA',date:'Jun 19, 2026',time:'9:00 PM ET',image:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',price:750,qty:2,seat:'Section 108',seller:{name:'Jordan T.',rating:'4.8 ⭐',sales:41,initial:'J'}},
+  {id:'tkt-1',sport:'worldcup',title:'FIFA World Cup 2026 — USA vs Mexico',venue:'SoFi Stadium',city:'Los Angeles, CA',date:'Jun 22, 2026',time:'5:00 PM PT',image:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80',price:320,qty:2,seat:'Section 118, Row F',seller:{name:'Carlos M.',rating:'4.9 ⭐',sales:62,initial:'C',user_id:'seller-demo-1'}},
+  {id:'tkt-2',sport:'worldcup',title:'FIFA World Cup 2026 — Brazil vs Argentina',venue:'MetLife Stadium',city:'East Rutherford, NJ',date:'Jul 4, 2026',time:'8:00 PM ET',image:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80',price:780,qty:2,seat:'Section 138',seller:{name:'Priya S.',rating:'4.8 ⭐',sales:28,initial:'P',user_id:'seller-demo-2'}},
+  {id:'tkt-3',sport:'music',title:"Beyoncé — Renaissance Tour",venue:'United Center',city:'Chicago, IL',date:'Aug 14, 2026',time:'8:00 PM CT',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',price:280,qty:2,seat:'Section 113',seller:{name:'Lisa B.',rating:'5.0 ⭐',sales:52,initial:'L',user_id:'seller-demo-3'}},
+  {id:'tkt-4',sport:'basketball',title:'NBA Finals 2026 — Game 5',venue:'Crypto.com Arena',city:'Los Angeles, CA',date:'Jun 19, 2026',time:'9:00 PM ET',image:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',price:750,qty:2,seat:'Section 108',seller:{name:'Jordan T.',rating:'4.8 ⭐',sales:41,initial:'J',user_id:'seller-demo-4'}},
 ];
 
-const SPORT_LABEL = {
-  worldcup:'🏆 World Cup 2026',
-  football:'⚽ Football',
-  basketball:'🏀 Basketball',
-  tennis:'🎾 Tennis',
-  music:'🎵 Music',
-  boxing:'🥊 Boxing'
-};
+const SPORT_LABEL = {worldcup:'🏆 World Cup 2026',football:'⚽ Football',basketball:'🏀 Basketball',tennis:'🎾 Tennis',music:'🎵 Music',boxing:'🥊 Boxing'};
 
-// ==================== STATE ====================
 let currentMode = 'vendors';
 let vendorFilter = {search:'',category:'all'};
 let tktFilter = {sport:'all',search:'',sort:'default'};
@@ -1241,8 +1165,8 @@ let purchasedTickets = [];
 let myListings = [];
 let userApplicationsMap = {};
 let activeConvId = null;
+let activeConvType = null;
 let activeConvLabel = '';
-let activeConvType = 'vendor';
 let unsubChat = null;
 let pendingLoginAction = null;
 let tktState = {listing:null,qty:1};
@@ -1250,122 +1174,140 @@ let isLoginMode = false;
 let proofImageFile = null;
 let countdownInterval = null;
 let chatUnsubs = {};
-let unreadCounts = {}; // { convId: count } tracks unread messages per conversation
-let lastSeenTimestamps = {}; // { convId: Date } tracks when user last viewed each conv
+let unreadCounts = {};
+let lastSeenTimestamps = {};
 
-
-// ==================== UTILITIES ====================
 const $ = id => document.getElementById(id);
 const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-// ==================== IMAGE ERROR HANDLING ====================
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('img').forEach(img => {
-    img.onerror = function() {
-      this.src = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80';
-      this.onerror = null;
-    };
-  });
-});
-
-// ==================== AUTH ====================
-// Ensure auth persistence is set before listening — this is what keeps users logged in after refresh
-setPersistence(auth, browserLocalPersistence).catch(e => console.warn('Auth persistence error:', e));
+setPersistence(auth, browserLocalPersistence).catch(e => console.warn('Auth persist error:', e));
 
 onAuthStateChanged(auth, user => {
-  if(user){
-    $('profileDisplay').style.display='flex';
-    $('userInitial').textContent=(user.displayName||user.email||'U').charAt(0).toUpperCase();
-    $('logoutBtn').style.display='flex';
-    $('openChatBtn').style.display='flex';
-    $('appCartBtn').style.display='flex';
-    if(user.email==='admin@grandbazaar.com') $('adminNavGroup').classList.add('show');
-
-    // Load all user data — these use onSnapshot so they rehydrate on every page load
-    loadUserApplications(user);
-    loadMyTicketListings(user);
-    loadPurchasedTickets(user);
-
-  }else{
-    $('profileDisplay').style.display='none';
-    $('logoutBtn').style.display='none';
-    $('openChatBtn').style.display='none';
-    $('openChatBtn').style.display='none';
-    userApplicationsMap={};myListings=[];purchasedTickets=[];
-    unreadCounts={};
-    Object.values(chatUnsubs).forEach(u=>u&&u());
-    chatUnsubs={};
+  if (user) {
+    const pd = $('profileDisplay');
+    pd.classList.add('visible');
+    $('userInitial').textContent = (user.displayName || user.email || 'U').charAt(0).toUpperCase();
+    $('userNameDisplay').textContent = user.displayName || user.email?.split('@')[0] || '';
+    $('signInNavBtn').classList.remove('visible');
+    $('openChatBtn').classList.add('visible');
+    $('appCartBtn').classList.add('visible');
+    if (user.email === 'admin@grandbazaar.com') $('adminNavGroup').classList.add('show');
+    subscribeApplications(user);
+    subscribeMyListings(user);
+    subscribePurchases(user);
+    renderSellForm();
+  } else {
+    $('profileDisplay').classList.remove('visible');
+    $('signInNavBtn').classList.add('visible');
+    $('openChatBtn').classList.remove('visible');
+    $('appCartBtn').classList.remove('visible');
+    userApplicationsMap = {}; myListings = []; purchasedTickets = [];
+    unreadCounts = {}; lastSeenTimestamps = {};
+    Object.values(chatUnsubs).forEach(u => u && u());
+    chatUnsubs = {};
     refreshAllDrawerTabs();
-    updateGlobalUnreadBadge();
+    updateUnreadBadge();
+    renderSellForm();
   }
 });
 
-// ==================== NEW: LOAD PURCHASED TICKETS ====================
-function loadPurchasedTickets(user) {
-  if (!user) return;
-
-  // Unsubscribe from previous listener if exists
-  if (chatUnsubs.purchases) chatUnsubs.purchases();
-
-  chatUnsubs.purchases = onSnapshot(
-    query(collection(db, 'purchases'), where('buyer_id', '==', user.uid)),
-    snap => {
-      purchasedTickets = [];
-      snap.forEach(ds => {
-        const d = ds.data();
-        purchasedTickets.push({
-          id: d.orderId || ds.id,
-          listingId: d.listingId || d.id,
-          event: d.eventName || d.ticketName || 'Unknown Event',
-          seller: {
-            name: d.sellerName || 'Seller',
-            initial: d.sellerInitial || 'S'
-          },
-          qty: d.qty || 1,
-          total: d.totalPrice || 0,
-          date: d.date || '',
-          sport: d.sport || 'other',
-          seat: d.seat || ''
-        });
-      });
-      refreshAllDrawerTabs();
-      buildChatContextBar();
-      startUnreadListeners();
-    },
-    err => {
-      console.error("Error loading purchases:", err);
-      // Fallback to empty array
-      purchasedTickets = [];
-      refreshAllDrawerTabs();
-    }
-  );
+function subscribeApplications(user) {
+  if (chatUnsubs.apps) chatUnsubs.apps();
+  chatUnsubs.apps = onSnapshot(query(collection(db,'vendors'), where('user_id','==',user.uid)), snap => {
+    userApplicationsMap = {};
+    snap.forEach(ds => { const d=ds.data(); if(d.event_name) userApplicationsMap[d.event_name.toLowerCase().trim()]=ds.id; });
+    renderVendorAppsTab(); updateCartBadge(); buildChatContextBar(); startUnreadListeners();
+  }, err => console.error('Apps listener error:', err));
 }
 
-// ==================== MODE TABS ====================
+function subscribeMyListings(user) {
+  if (chatUnsubs.listings) chatUnsubs.listings();
+  chatUnsubs.listings = onSnapshot(query(collection(db,'ticket_listings'), where('user_id','==',user.uid)), snap => {
+    myListings = [];
+    snap.forEach(ds => myListings.push({id:ds.id,...ds.data()}));
+    renderMyListings(); renderListingsTab(); updateCartBadge(); buildChatContextBar(); startUnreadListeners();
+  }, err => console.error('Listings listener error:', err));
+}
+
+function subscribePurchases(user) {
+  if (chatUnsubs.purchases) chatUnsubs.purchases();
+  chatUnsubs.purchases = onSnapshot(query(collection(db,'purchases'), where('buyer_id','==',user.uid)), snap => {
+    purchasedTickets = [];
+    snap.forEach(ds => {
+      const d=ds.data();
+      purchasedTickets.push({id:d.orderId||ds.id,listingId:d.listingId,event:d.eventName||d.ticketName||'Unknown Event',seller:{name:d.sellerName||'Seller',initial:d.sellerInitial||'?'},qty:d.qty||1,total:d.totalPrice||0,date:d.date||'',sport:d.sport||'other',seat:d.seat||'',venue:d.venue||'',city:d.city||''});
+    });
+    renderTicketsTab(); updateCartBadge(); buildChatContextBar(); startUnreadListeners();
+  }, err => console.error('Purchases listener error:', err));
+}
+
+function startUnreadListeners() {
+  if (!auth.currentUser) return;
+  const uid = auth.currentUser.uid;
+  Object.entries(userApplicationsMap).forEach(([,vid]) => {
+    const key = 'vendor_'+vid;
+    if (chatUnsubs['unread_'+key]) return;
+    chatUnsubs['unread_'+key] = onSnapshot(query(collection(db,'vendors',vid,'conversation'),orderBy('timestamp','asc')), snap => {
+      const lastSeen = lastSeenTimestamps[key]||new Date(0);
+      let n=0; snap.forEach(ds => { const d=ds.data(); if(d.user_id!==uid&&d.timestamp?.toDate&&d.timestamp.toDate()>lastSeen) n++; });
+      unreadCounts[key]=n; updateUnreadBadge(); buildChatContextBar();
+    });
+  });
+  purchasedTickets.forEach(t => {
+    if (!t.listingId) return;
+    const key='ticket_'+t.listingId;
+    if (chatUnsubs['unread_'+key]) return;
+    chatUnsubs['unread_'+key] = onSnapshot(query(collection(db,'ticket_listings',t.listingId,'conversation'),orderBy('timestamp','asc')), snap => {
+      const lastSeen=lastSeenTimestamps[key]||new Date(0);
+      let n=0; snap.forEach(ds => { const d=ds.data(); if(d.user_id!==uid&&d.timestamp?.toDate&&d.timestamp.toDate()>lastSeen) n++; });
+      unreadCounts[key]=n; updateUnreadBadge(); buildChatContextBar();
+    });
+  });
+  myListings.forEach(l => {
+    const key='ticket_'+l.id;
+    if (chatUnsubs['unread_'+key]) return;
+    chatUnsubs['unread_'+key] = onSnapshot(query(collection(db,'ticket_listings',l.id,'conversation'),orderBy('timestamp','asc')), snap => {
+      const lastSeen=lastSeenTimestamps[key]||new Date(0);
+      let n=0; snap.forEach(ds => { const d=ds.data(); if(d.user_id!==uid&&d.timestamp?.toDate&&d.timestamp.toDate()>lastSeen) n++; });
+      unreadCounts[key]=n; updateUnreadBadge(); buildChatContextBar();
+    });
+  });
+}
+
+function markRead(type, id) {
+  const key=type+'_'+id; lastSeenTimestamps[key]=new Date(); unreadCounts[key]=0; updateUnreadBadge(); buildChatContextBar();
+}
+function updateUnreadBadge() {
+  const total=Object.values(unreadCounts).reduce((a,b)=>a+b,0);
+  const badge=$('unreadBadge');
+  if(total>0){badge.textContent=total>99?'99+':String(total);badge.classList.add('show');}
+  else{badge.textContent='';badge.classList.remove('show');}
+}
+
 document.querySelectorAll('.mode-tab').forEach(tab => {
-  tab.addEventListener('click',()=>{
+  tab.addEventListener('click', () => {
     document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');currentMode=tab.dataset.mode;
+    tab.classList.add('active');
+    currentMode=tab.dataset.mode;
     $('vendorPanel').style.display=currentMode==='vendors'?'':'none';
     $('ticketsPanel').style.display=currentMode==='tickets'?'':'none';
     $('sellPanel').style.display=currentMode==='sell'?'':'none';
     $('controlsBar').style.display=currentMode==='vendors'?'':'none';
     $('countdownOuter').style.display='none';
     if(currentMode==='vendors'){renderVendorEvents();pickCountdownEvent(allEvents);}
-    else if(currentMode==='tickets')renderTicketListings();
-    else if(currentMode==='sell')renderMyListings();
+    else if(currentMode==='tickets') renderTicketListings();
+    else if(currentMode==='sell') renderMyListings();
   });
 });
 
-// ==================== VENDOR EVENTS ====================
-async function loadEvents(){
-  try{
-    const qs = await getDocs(collection(db,'events'));
-    const real = [];
-    qs.forEach(snap=>{
+async function loadEvents() {
+  try {
+    const qs=await getDocs(collection(db,'events'));
+    const real=[];
+    qs.forEach(snap => {
       const d=snap.data();
       const dates=collectDates(d);
-      if(!dates.length)return;
+      if(!dates.length) return;
       let s,e;
       try{s=new Date(dates[0].split('•')[0].trim());}catch(_){s=new Date();}
       try{e=new Date(dates.at(-1).split('•')[0].trim());}catch(_){e=new Date();}
@@ -1375,17 +1317,14 @@ async function loadEvents(){
       real.push({id:snap.id,...d,startDate:s,endDate:e,dateStrings:dates});
     });
     allEvents=[...real,...(real.length<4?DEMO_EVENTS.map(normDemo):[])];
-  }catch(_){
-    allEvents=DEMO_EVENTS.map(normDemo);
-  }
+  } catch(_){allEvents=DEMO_EVENTS.map(normDemo);}
   $('vendorTabBadge').textContent=allEvents.length;
   $('tickerEvents').textContent=allEvents.length;
   renderVendorEvents();
   pickCountdownEvent(allEvents);
 }
-loadEvents();
 
-function normDemo(d){
+function normDemo(d) {
   const dates=collectDates(d);
   let s,e;
   try{s=new Date(dates[0].split('•')[0].trim());}catch(_){s=new Date();}
@@ -1396,45 +1335,29 @@ function normDemo(d){
   return{...d,startDate:s,endDate:e,dateStrings:dates};
 }
 
-function collectDates(d){
-  if(Array.isArray(d.event_dates)&&d.event_dates.length)return d.event_dates.filter(Boolean);
+function collectDates(d) {
+  if(Array.isArray(d.event_dates)&&d.event_dates.length) return d.event_dates.filter(Boolean);
   return[d.date1,d.date2,d.date3,d.date4].filter(Boolean);
 }
 
-function renderVendorEvents(){
-  const today=new Date();today.setHours(0,0,0,0);
+function renderVendorEvents() {
+  const today=new Date(); today.setHours(0,0,0,0);
   let arr=[...allEvents];
-  if(vendorFilter.category!=='all')arr=arr.filter(e=>(e.category||'').toLowerCase()===vendorFilter.category.toLowerCase());
+  if(vendorFilter.category!=='all') arr=arr.filter(e=>(e.category||'').toLowerCase()===vendorFilter.category.toLowerCase());
   const q=vendorFilter.search.toLowerCase().trim();
-  if(q)arr=arr.filter(e=>['title','location','address','state','description'].some(k=>(e[k]||'').toLowerCase().includes(q)));
-  arr.sort((a,b)=>{
-    const aP=a.endDate<today,bP=b.endDate<today;
-    if(aP!==bP)return aP?1:-1;
-    if(!aP&&!bP)return a.startDate-b.startDate;
-    return b.endDate-a.endDate;
-  });
-  const grid=$('eventsGrid');grid.innerHTML='';
-  if(!arr.length){
-    grid.innerHTML=`<div class="events-empty"><div class="events-empty-icon">🔍</div><div class="events-empty-title">No events found</div><div class="events-empty-sub">Try adjusting your search or filters.</div></div>`;
-    $('resultsCount').innerHTML='';
-    return;
-  }
+  if(q) arr=arr.filter(e=>['title','location','address','state','description'].some(k=>(e[k]||'').toLowerCase().includes(q)));
+  arr.sort((a,b)=>{const aP=a.endDate<today,bP=b.endDate<today;if(aP!==bP) return aP?1:-1;if(!aP&&!bP) return a.startDate-b.startDate;return b.endDate-a.endDate;});
+  const grid=$('eventsGrid'); grid.innerHTML='';
+  if(!arr.length){grid.innerHTML=`<div class="events-empty"><div class="events-empty-icon">🔍</div><div class="events-empty-title">No events found</div><div class="events-empty-sub">Try adjusting your search or filters.</div></div>`;$('resultsCount').innerHTML=''; return;}
   const up=arr.filter(e=>e.endDate>=today),past=arr.filter(e=>e.endDate<today);
   up.forEach(d=>renderVendorCard(d,false));
-  if(past.length){
-    const div=document.createElement('div');
-    div.className='past-section-divider';
-    div.innerHTML=`<div class="past-section-divider-line"></div><div class="past-section-divider-label">Past events</div><div class="past-section-divider-line"></div>`;
-    grid.appendChild(div);
-    past.forEach(d=>renderVendorCard(d,true));
-  }
+  if(past.length){const div=document.createElement('div'); div.className='past-section-divider';div.innerHTML=`<div class="past-section-divider-line"></div><div class="past-section-divider-label">Past events</div><div class="past-section-divider-line"></div>`;grid.appendChild(div); past.forEach(d=>renderVendorCard(d,true));}
   $('resultsCount').innerHTML=`<strong>${arr.length}</strong> event${arr.length!==1?'s':''}`;
 }
 
-function renderVendorCard(data,isPast){
+function renderVendorCard(data,isPast) {
   const dates=data.dateStrings||collectDates(data);
-  const card=document.createElement('div');
-  card.className=`event-card${isPast?' is-past':''}`;
+  const card=document.createElement('div'); card.className=`event-card${isPast?' is-past':''}`;
   const calSVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`;
   const firstDate=dates[0]?dates[0].split('•')[0].trim():'';
   card.innerHTML=`<div class="event-card-img-wrap"><img src="${data.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(data.title||'')}" loading="lazy"><span class="event-card-category">${data.category||'Event'}</span>${isPast?'<span class="past-badge">Past</span>':''}${data._isDemo?'<span class="demo-badge">Featured</span>':''}</div><div class="event-content"><h3>${esc(data.title||'')}</h3><div class="event-date-row"><div class="event-date-badge">${calSVG}${firstDate}</div>${dates.length>1?`<span class="event-date-more">+${dates.length-1} more</span>`:''}</div><div class="event-location">${esc(data.location||'')}</div>${data.address||data.state?`<div class="event-address">${esc(data.address||'')}${data.state?' · '+esc(data.state):''}</div>`:''}</div>`;
@@ -1442,13 +1365,23 @@ function renderVendorCard(data,isPast){
   $('eventsGrid').appendChild(card);
 }
 
-// ==================== TICKET LISTINGS ====================
-document.getElementById('tktSearch').addEventListener('input',e=>{tktFilter.search=e.target.value.trim();renderTicketListings();});
-document.getElementById('tktSort').addEventListener('change',e=>{tktFilter.sort=e.target.value;renderTicketListings();});
-document.querySelectorAll('.tkt-sport-pill').forEach(p=>{p.addEventListener('click',()=>{document.querySelectorAll('.tkt-sport-pill').forEach(x=>x.classList.remove('active'));p.classList.add('active');tktFilter.sport=p.dataset.sport;renderTicketListings();});});
-$('tktClearBtn').addEventListener('click',()=>{tktFilter={sport:'all',search:'',sort:'default'};$('tktSearch').value='';$('tktSort').value='default';document.querySelectorAll('.tkt-sport-pill').forEach(p=>p.classList.remove('active'));document.querySelector('.tkt-sport-pill[data-sport="all"]').classList.add('active');renderTicketListings();});
+$('tktSearch').addEventListener('input', e=>{tktFilter.search=e.target.value.trim();renderTicketListings();});
+$('tktSort').addEventListener('change', e=>{tktFilter.sort=e.target.value;renderTicketListings();});
+document.querySelectorAll('.tkt-sport-pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.tkt-sport-pill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active'); tktFilter.sport=p.dataset.sport; renderTicketListings();
+  });
+});
+$('tktClearBtn').addEventListener('click',()=>{
+  tktFilter={sport:'all',search:'',sort:'default'};
+  $('tktSearch').value=''; $('tktSort').value='default';
+  document.querySelectorAll('.tkt-sport-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.tkt-sport-pill[data-sport="all"]').classList.add('active');
+  renderTicketListings();
+});
 
-async function renderTicketListings(){
+async function renderTicketListings() {
   let fsApproved=[];
   try{
     const qs=await getDocs(query(collection(db,'ticket_listings'),where('approvalStatus','==','approved')));
@@ -1456,24 +1389,32 @@ async function renderTicketListings(){
   }catch(_){}
   const all=[...DEMO_LISTINGS,...fsApproved];
   let arr=[...all];
-  if(tktFilter.sport!=='all')arr=arr.filter(l=>l.sport===tktFilter.sport);
+  if(tktFilter.sport!=='all') arr=arr.filter(l=>l.sport===tktFilter.sport);
   if(tktFilter.search){const q=tktFilter.search.toLowerCase();arr=arr.filter(l=>[l.title,l.venue,l.city].some(s=>(s||'').toLowerCase().includes(q)));}
-  if(tktFilter.sort==='price-asc')arr.sort((a,b)=>a.price-b.price);
-  else if(tktFilter.sort==='price-desc')arr.sort((a,b)=>b.price-a.price);
-  else if(tktFilter.sort==='qty-desc')arr.sort((a,b)=>b.qty-a.qty);
-
-  const grid=$('ticketGrid');grid.innerHTML='';
-  const hasFilters=tktFilter.sport!=='all'||tktFilter.search;
-  $('tktClearBtn').style.display=hasFilters?'block':'none';
-
+  if(tktFilter.sort==='price-asc') arr.sort((a,b)=>a.price-b.price);
+  else if(tktFilter.sort==='price-desc') arr.sort((a,b)=>b.price-a.price);
+  else if(tktFilter.sort==='qty-desc') arr.sort((a,b)=>b.qty-a.qty);
+  const grid=$('ticketGrid'); grid.innerHTML='';
+  $('tktClearBtn').style.display=(tktFilter.sport!=='all'||tktFilter.search)?'block':'none';
   if(!arr.length){
     grid.innerHTML=`<div class="events-empty" style="grid-column:1/-1"><div class="events-empty-icon">🎟</div><div class="events-empty-title">No tickets found</div><div class="events-empty-sub">Try adjusting filters or search.</div></div>`;
-  }else{
+  } else {
     arr.forEach(listing=>{
       const avail=listing.qty<=2?'few':'available';
-      const card=document.createElement('div');card.className='ticket-card';
-      card.innerHTML=`<div class="tc-img"><img src="${listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(listing.title)}" loading="lazy"><span class="tc-sport-pill ${listing.sport}">${SPORT_LABEL[listing.sport]||listing.sport}</span><span class="tc-resale-flag">Resale</span><div class="tc-img-price"><span class="tc-img-price-label">From</span>$${Number(listing.price).toLocaleString()}</div></div><div class="tc-body"><div class="tc-title">${esc(listing.title)}</div><div class="tc-meta"><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(listing.venue)} · ${esc(listing.city)}</div><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(listing.date)} · ${esc(listing.time||'TBC')}</div>${listing.seat?`<div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>${esc(listing.seat)}</div>`:''}</div><div class="tc-seller"><div class="tc-seller-av">${listing.seller?.initial||'?'}</div><div style="flex:1;min-width:0;"><div class="tc-seller-name">${esc(listing.seller?.name||'Seller')}</div><div class="tc-seller-rating">${listing.seller?.rating||''} · ${listing.seller?.sales||0} sales</div></div><span class="tc-verified">Verified</span></div><div class="tc-avail-row"><span class="tc-avail-count">${listing.qty} ticket${listing.qty!==1?'s':''} available</span><span class="tc-avail-pill ${avail}">${listing.qty<=2?'Few left':'Available'}</span></div><button class="tc-buy-btn ${listing.sport}">View & buy</button></div>`;
-      card.querySelector('.tc-buy-btn').addEventListener('click',()=>openTicketModal(listing));
+      const card=document.createElement('div'); card.className='ticket-card';
+
+      // Extract seller info using getField with fallbacks
+      const sellerName = getField(listing,'seller.name','sellerName','user_name','ownerName','vendorName') || 'Seller';
+      const sellerInitial = getField(listing,'seller.initial','sellerInitial') || (sellerName ? sellerName.charAt(0).toUpperCase() : '?');
+      const sellerRating = getField(listing,'seller.rating','rating','sellerRating') || '';
+      const sellerSales = getField(listing,'seller.sales','sales','sellerSales') || 0;
+
+      card.innerHTML=`<div class="tc-img"><img src="${listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(listing.title)}" loading="lazy"><span class="tc-sport-pill ${listing.sport}">${SPORT_LABEL[listing.sport]||listing.sport}</span><span class="tc-resale-flag">Resale</span><div class="tc-img-price"><span class="tc-img-price-label">From</span>$${Number(listing.price).toLocaleString()}</div></div><div class="tc-body"><div class="tc-title">${esc(listing.title)}</div><div class="tc-meta"><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(listing.venue)} · ${esc(listing.city)}</div><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(listing.date)} · ${esc(listing.time||'TBC')}</div>${listing.seat?`<div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>${esc(listing.seat)}</div>`:''}</div><div class="tc-seller"><div class="tc-seller-av">${esc(sellerInitial)}</div><div style="flex:1;min-width:0;"><div class="tc-seller-name">${esc(sellerName)}</div><div class="tc-seller-rating">${esc(sellerRating)} · ${sellerSales} sales</div></div><span class="tc-verified">Verified</span></div><div class="tc-avail-row"><span class="tc-avail-count">${listing.qty} ticket${listing.qty!==1?'s':''} available</span><span class="tc-avail-pill ${avail}">${listing.qty<=2?'Few left':'Available'}</span></div><button class="tc-buy-btn ${listing.sport}">View & buy</button></div>`;
+      card.querySelector('.tc-buy-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        openTicketModal(listing);
+      });
+      card.addEventListener('click', () => openTicketModal(listing));
       grid.appendChild(card);
     });
   }
@@ -1481,9 +1422,17 @@ async function renderTicketListings(){
   $('tickerListings').textContent=all.length;
   $('ticketTabBadge').textContent=all.length;
 }
+function getField(obj, ...keys) {
+    for (const k of keys) {
+      if (!obj) return null;
+      const val = k.split('.').reduce((o, p) => o?.[p], obj);
+      if (val !== undefined && val !== null) return val;
+    }
+    return null;
+  }
 
-// ==================== TICKET MODAL ====================
-function openTicketModal(listing){
+  loadEvents();
+function openTicketModal(listing) {
   tktState={listing,qty:1};
   $('tktModalImg').src=listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80';
   $('tktModalTitle').textContent=listing.title;
@@ -1497,1244 +1446,497 @@ function openTicketModal(listing){
     listing.seat?`<span class="tkt-info-chip">${esc(listing.seat)}</span>`:'',
     `<span class="tkt-info-chip">$${listing.price}/ticket</span>`,
   ].join('');
-  $('tktSellerAv').textContent=listing.seller?.initial||'?';
-  $('tktSellerName').textContent=listing.seller?.name||'Seller';
-  $('tktSellerMeta').textContent=`${listing.seller?.rating||''} · ${listing.seller?.sales||0} sales`;
+const sellerName = getField(listing,'seller.name','sellerName','user_name','ownerName','vendorName');
+const sellerInitial = sellerName ? sellerName.charAt(0).toUpperCase() : '?';
+const sellerRating = getField(listing,'seller.rating','rating','sellerRating')||'';
+const sellerSales = getField(listing,'seller.sales','sales','sellerSales')||0;
+$('tktSellerAv').textContent = sellerInitial;
+$('tktSellerName').textContent = esc(sellerName||'Seller');
+$('tktSellerMeta').textContent = `${sellerRating} · ${sellerSales} sales`;
   $('tktQtyNum').textContent='1';
+  $('tktQtyMinus').disabled=true;
+  $('tktQtyPlus').disabled=listing.qty<=1;
   updateTktTotal();
-
-  // FIX: Ensure chat button opens correct conversation
   $('tktSellerChatBtn').onclick = () => {
-    $('tktModal').classList.remove('open');
-    document.body.classList.remove('modal-open');
-    openTicketChat(listing);
+    $('tktModal').classList.remove('open'); document.body.classList.remove('modal-open');
+    if(!auth.currentUser){pendingLoginAction=()=>openTicketChat(listing);showLoginModal();}
+    else openTicketChat(listing);
   };
-
-  $('tktModal').classList.add('open');
-  document.body.classList.add('modal-open');
+  $('tktModal').classList.add('open'); document.body.classList.add('modal-open');
 }
 
-function updateTktTotal(){
+function updateTktTotal() {
   const l=tktState.listing;
   $('tktTotal').textContent='$'+(l.price*tktState.qty*1.05).toLocaleString('en-US',{minimumFractionDigits:2});
 }
 
-$('tktQtyMinus').addEventListener('click',()=>{if(tktState.qty>1){tktState.qty--;$('tktQtyNum').textContent=tktState.qty;updateTktTotal();}});
-$('tktQtyPlus').addEventListener('click',()=>{const max=tktState.listing?.qty||8;if(tktState.qty<max){tktState.qty++;$('tktQtyNum').textContent=tktState.qty;updateTktTotal();}});
+$('tktQtyMinus').addEventListener('click',()=>{
+  if(tktState.qty>1){tktState.qty--;$('tktQtyNum').textContent=tktState.qty;$('tktQtyMinus').disabled=tktState.qty<=1;updateTktTotal();}
+});
+$('tktQtyPlus').addEventListener('click',()=>{
+  const max=tktState.listing?.qty||8;
+  if(tktState.qty<max){tktState.qty++;$('tktQtyNum').textContent=tktState.qty;$('tktQtyMinus').disabled=false;$('tktQtyPlus').disabled=tktState.qty>=max;updateTktTotal();}
+});
 $('tktModalClose').addEventListener('click',()=>{$('tktModal').classList.remove('open');document.body.classList.remove('modal-open');});
 
 $('tktCheckoutBtn').addEventListener('click',()=>{
-  if(!auth.currentUser){
-    pendingLoginAction=()=>completePurchase();
-    showLoginModal();
-    return;
-  }
+  if(!auth.currentUser){pendingLoginAction=()=>completePurchase();showLoginModal();return;}
   completePurchase();
 });
 
-async function completePurchase(){
+async function completePurchase() {
   const l=tktState.listing;
   const total=parseFloat((l.price*tktState.qty*1.05).toFixed(2));
   const orderId='VH-'+Math.random().toString(36).substr(2,8).toUpperCase();
-
-  if(auth.currentUser){
-    try{
-      await addDoc(collection(db,'purchases'),{
-        orderId,
-        buyerName: auth.currentUser.displayName || 'Buyer',
-        buyerEmail: auth.currentUser.email,
-        buyer_id: auth.currentUser.uid,
-        ticketName: l.title,
-        eventName: l.title,
-        sport: l.sport,
-        venue: l.venue,
-        city: l.city,
-        date: l.date,
-        qty: tktState.qty,
-        price: l.price,
-        totalPrice: total,
-        sellerName: l.seller?.name || 'Seller',
-        sellerInitial: l.seller?.initial || '?',
-        listingId: l.id,
-        seat: l.seat || '',
-        purchaseDate: serverTimestamp(),
-        status: 'confirmed'
-      });
-    }catch(e){
-      console.error('Purchase save error:', e);
-      alert('Error saving purchase. Please try again.');
-      return;
-    }
-  }
-
-  // Update UI
-  $('tktModal').classList.remove('open');
-  document.body.classList.remove('modal-open');
-
-  $('stubEventName').textContent = l.title;
-  $('stubSeller').textContent = l.seller?.name || 'Seller';
-  $('stubQty').textContent = `${tktState.qty} ticket${tktState.qty>1?'s':''}`;
-  $('stubTotal').textContent = '$'+total.toLocaleString('en-US',{minimumFractionDigits:2});
-  $('stubDate').textContent = l.date;
-
-  const bars=$('barcodeEl');
-  bars.innerHTML='';
-  for(let i=0;i<32;i++){
-    const s=document.createElement('span');
-    s.style.cssText=`width:${Math.random()<.5?2:1}px;height:${20+Math.random()*20}px;`;
-    bars.appendChild(s);
-  }
+  const user=auth.currentUser;
+  if(l.seller?.user_id&&l.seller.user_id===user.uid){alert("You can't purchase your own listing.");return;}
+  try{
+    await addDoc(collection(db,'purchases'),{orderId,buyerName:user.displayName||'Buyer',buyerEmail:user.email,buyer_id:user.uid,eventName:l.title,sport:l.sport,venue:l.venue,city:l.city,date:l.date,qty:tktState.qty,price:l.price,totalPrice:total,sellerName:l.seller?.name||'Seller',sellerInitial:l.seller?.initial||'?',sellerId:l.seller?.user_id||l.user_id||'',listingId:l.id,seat:l.seat||'',purchaseDate:serverTimestamp(),status:'confirmed'});
+  }catch(e){console.error('Purchase error:',e);alert('Error saving purchase. Please try again.');return;}
+  $('tktModal').classList.remove('open'); document.body.classList.remove('modal-open');
+  $('stubEventName').textContent=l.title;
+  $('stubSeller').textContent=l.seller?.name||'Seller';
+  $('stubQty').textContent=`${tktState.qty} ticket${tktState.qty>1?'s':''}`;
+  $('stubTotal').textContent='$'+total.toLocaleString('en-US',{minimumFractionDigits:2});
+  $('stubDate').textContent=l.date;
+  const bars=$('barcodeEl'); bars.innerHTML='';
+  for(let i=0;i<32;i++){const s=document.createElement('span');s.style.cssText=`width:${Math.random()<.5?2:1}px;height:${20+Math.random()*20}px;`;bars.appendChild(s);}
   $('barcodeNum').textContent=orderId;
-
-  $('tktSuccessModal').classList.add('open');
-  document.body.classList.add('modal-open');
-
-  // Add to local state - this will be replaced by Firestore data on next load
-  purchasedTickets.push({
-    id: orderId,
-    listingId: l.id,
-    event: l.title,
-    seller: l.seller,
-    qty: tktState.qty,
-    total,
-    date: l.date,
-    sport: l.sport,
-    seat: l.seat || ''
-  });
-
-  refreshAllDrawerTabs();
-  buildChatContextBar();
-  updateCartBadge();
+  $('tktSuccessModal').classList.add('open'); document.body.classList.add('modal-open');
 }
 
-$('tktSuccessClose').addEventListener('click',()=>{
-  $('tktSuccessModal').classList.remove('open');
-  document.body.classList.remove('modal-open');
-  openTicketChat(tktState.listing);
-});
+$('tktSuccessClose').addEventListener('click',()=>{$('tktSuccessModal').classList.remove('open');document.body.classList.remove('modal-open');openTicketChat(tktState.listing);});
+$('tktSuccessDashboard').addEventListener('click',()=>{$('tktSuccessModal').classList.remove('open');document.body.classList.remove('modal-open');openDrawer('tickets');});
+$('tktSuccessModal').addEventListener('click',e=>{if(e.target===$('tktSuccessModal')){$('tktSuccessModal').classList.remove('open');document.body.classList.remove('modal-open');}});
 
-$('tktSuccessDashboard').addEventListener('click',()=>{
-  $('tktSuccessModal').classList.remove('open');
-  document.body.classList.remove('modal-open');
-  openDrawer('tickets');
-});
-
-$('tktSuccessModal').addEventListener('click',e=>{
-  if(e.target===$('tktSuccessModal')){
-    $('tktSuccessModal').classList.remove('open');
-    document.body.classList.remove('modal-open');
+function renderSellForm() {
+  const wrap=$('sellFormWrap');
+  if(!auth.currentUser){
+    wrap.innerHTML=`<div class="auth-gate"><div class="auth-gate-icon">🔐</div><div class="auth-gate-title">Sign in to list tickets</div><div class="auth-gate-sub">Create a free account to list your tickets for resale. Admin approval required before going live.</div><button class="auth-gate-btn" id="sellAuthGateBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Sign in / Create account</button></div>`;
+    $('sellAuthGateBtn').addEventListener('click',showLoginModal); return;
   }
-});
+  wrap.innerHTML=`<div class="sell-form-card"><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Event details</legend><div class="form-row"><label class="form-label form-label-required">Event name</label><input type="text" class="form-input" id="sellEventName" placeholder="e.g. FIFA World Cup 2026 — USA vs Mexico"/></div><div class="form-grid-2"><div class="form-row"><label class="form-label form-label-required">Sport / Category</label><select class="form-select" id="sellCategory"><option value="">Select category…</option><option value="football">⚽ Football / Soccer</option><option value="worldcup">🏆 FIFA World Cup 2026</option><option value="basketball">🏀 Basketball (NBA)</option><option value="tennis">🎾 Tennis</option><option value="music">🎵 Music / Concert</option><option value="boxing">🥊 Boxing / MMA</option></select></div><div class="form-row"><label class="form-label form-label-required">Event date</label><input type="date" class="form-input" id="sellDate"/></div></div><div class="form-row"><label class="form-label form-label-required">Venue &amp; city</label><input type="text" class="form-input" id="sellVenue" placeholder="e.g. SoFi Stadium, Los Angeles, CA"/></div></fieldset><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Ticket details</legend><div class="form-grid-2"><div class="form-row"><label class="form-label form-label-required">Number of tickets</label><input type="number" class="form-input" id="sellQty" min="1" max="20" placeholder="e.g. 2"/></div><div class="form-row"><label class="form-label form-label-required">Price per ticket (USD)</label><input type="number" class="form-input" id="sellPrice" min="1" placeholder="e.g. 250"/></div></div><div class="form-row"><label class="form-label">Seat section / row</label><input type="text" class="form-input" id="sellSeat" placeholder="e.g. Section 112, Row F, Seats 14–15"/></div><div class="form-row"><label class="form-label">Additional notes</label><textarea class="form-textarea" id="sellNotes" placeholder="Ticket type, transfer method, restrictions…"></textarea></div></fieldset><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Proof of ownership</legend><div class="form-row"><label class="form-label form-label-required">Ticket proof image</label><div class="file-upload-zone" id="uploadZone"><input type="file" id="proofImageInput" accept="image/*"/><span class="file-upload-icon">🎟️</span><div class="file-upload-title">Upload booking confirmation</div><div class="file-upload-sub">JPG, PNG or WEBP · max 10 MB</div><div class="file-preview" id="filePreview"><img id="previewImg" src="" alt="Ticket proof"/><button class="file-preview-remove" id="removeProofBtn" type="button">✕</button></div></div></div></fieldset><div class="sell-trust-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><p>VendHub is peer-to-peer. All listings are reviewed before going live. Buyers contact sellers directly via in-app chat for safe transfer.</p></div><button class="sell-submit-btn" id="sellSubmitBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Submit for approval</button></div>`;
+  const uploadZone=$('uploadZone'),proofInput=$('proofImageInput'),filePreview=$('filePreview'),previewImg=$('previewImg');
+  uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('drag-over');});
+  uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))setProofFile(f);});
+  proofInput.addEventListener('change',()=>{if(proofInput.files[0])setProofFile(proofInput.files[0]);});
+  $('removeProofBtn').addEventListener('click',e=>{e.stopPropagation();clearProofFile();});
+  $('sellSubmitBtn').addEventListener('click',handleSellSubmit);
+}
 
-// ==================== PROOF IMAGE ====================
-const uploadZone=$('uploadZone'),proofInput=$('proofImageInput'),filePreview=$('filePreview'),previewImg=$('previewImg');
-uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('drag-over');});
-uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('drag-over'));
-uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))setProofFile(f);});
-proofInput.addEventListener('change',()=>{if(proofInput.files[0])setProofFile(proofInput.files[0]);});
-$('removeProofBtn').addEventListener('click',e=>{e.stopPropagation();clearProofFile();});
-
-function setProofFile(file){
+function setProofFile(file) {
   if(file.size>10*1024*1024){alert('Image must be under 10 MB.');return;}
   proofImageFile=file;
   const r=new FileReader();
-  r.onload=ev=>{previewImg.src=ev.target.result;filePreview.style.display='block';};
+  r.onload=ev=>{$('previewImg').src=ev.target.result;$('filePreview').style.display='block';};
   r.readAsDataURL(file);
 }
-
-function clearProofFile(){
+function clearProofFile() {
   proofImageFile=null;
-  previewImg.src='';
-  filePreview.style.display='none';
-  proofInput.value='';
+  if($('previewImg'))$('previewImg').src='';
+  if($('filePreview'))$('filePreview').style.display='none';
+  if($('proofImageInput'))$('proofImageInput').value='';
 }
 
-// ==================== SUBMIT LISTING ====================
-$('sellSubmitBtn').addEventListener('click',async()=>{
-  const name=$('sellName').value.trim();
-  const event=$('sellEventName').value.trim();
-  const category=$('sellCategory').value;
-  const date=$('sellDate').value;
-  const venue=$('sellVenue').value.trim();
-  const qty=parseInt($('sellQty').value)||0;
-  const price=parseFloat($('sellPrice').value)||0;
-
-  if(!name||!event||!category||!date||!venue||qty<1||price<1){
-    alert('Please fill all required fields.');
-    return;
-  }
-  if(!proofImageFile){
-    alert('Please upload a ticket proof image.');
-    return;
-  }
-  if(!auth.currentUser){
-    pendingLoginAction=()=>doSubmitListing(name,event,category,date,venue,qty,price);
-    showLoginModal();
-    return;
-  }
-  await doSubmitListing(name,event,category,date,venue,qty,price);
-});
-
-async function doSubmitListing(name,event,category,date,venue,qty,price){
-  const btn=$('sellSubmitBtn');
-  btn.disabled=true;
-  btn.textContent='Submitting…';
-
+async function handleSellSubmit() {
   const user=auth.currentUser;
-  const seat=$('sellSeat').value.trim();
-  const notes=$('sellNotes').value.trim();
-  const city=venue.split(',').slice(-2).join(',').trim();
-
-  // Try to upload image — but proceed even if it fails
-  let proofImageURL = '';
-  if(proofImageFile){
-    try{
-      btn.textContent='Uploading proof…';
-      const imgRef=storageRef(storage,`ticket_proofs/${user.uid}/${Date.now()}_${proofImageFile.name}`);
-      const snap=await uploadBytes(imgRef,proofImageFile);
-      proofImageURL=await getDownloadURL(snap.ref);
-    }catch(uploadErr){
-      console.warn('Image upload failed (proceeding without it):', uploadErr);
-      // Continue without image — admin can request proof later
-      proofImageURL='';
-    }
-  }
-
+  if(!user){showLoginModal();return;}
+  const event=($('sellEventName')||{}).value?.trim();
+  const category=($('sellCategory')||{}).value;
+  const date=($('sellDate')||{}).value;
+  const venue=($('sellVenue')||{}).value?.trim();
+  const qty=parseInt(($('sellQty')||{}).value)||0;
+  const price=parseFloat(($('sellPrice')||{}).value)||0;
+  if(!event||!category||!date||!venue||qty<1||price<1){alert('Please fill all required fields.');return;}
+  if(!proofImageFile){alert('Please upload a ticket proof image.');return;}
+  const btn=$('sellSubmitBtn');
+  btn.disabled=true; btn.textContent='Uploading…';
+  let proofImageURL='';
+  try{
+    const imgRef=storageRef(storage,`ticket_proofs/${user.uid}/${Date.now()}_${proofImageFile.name}`);
+    const snap=await uploadBytes(imgRef,proofImageFile);
+    proofImageURL=await getDownloadURL(snap.ref);
+  }catch(e){console.warn('Image upload warning:',e);}
   try{
     btn.textContent='Saving…';
-    await addDoc(collection(db,'ticket_listings'),{
-      title: event,
-      sport: category,
-      date: date,
-      venue: venue,
-      city: city,
-      qty: qty,
-      price: price,
-      seat: seat,
-      notes: notes,
-      proofImageURL: proofImageURL,
-      approvalStatus: 'pending',
-      rejectionReason: '',
-      seller: {
-        name: name,
-        rating: 'New seller',
-        sales: 0,
-        initial: name.charAt(0).toUpperCase()
-      },
-      user_id: user.uid,
-      user_email: user.email,
-      submittedAt: serverTimestamp()
-    });
-
-    // Clear form
-    ['sellEventName','sellDate','sellVenue','sellQty','sellPrice','sellSeat','sellNotes','sellName'].forEach(id=>{$(id).value='';});
-    $('sellCategory').value='';
+    const seat=($('sellSeat')||{}).value?.trim()||'';
+    const notes=($('sellNotes')||{}).value?.trim()||'';
+    const city=venue.split(',').slice(-2).join(',').trim();
+    await addDoc(collection(db,'ticket_listings'),{title:event,sport:category,date,venue,city,qty,price,seat,notes,proofImageURL,approvalStatus:'pending',rejectionReason:'',seller:{name:user.displayName||user.email?.split('@')[0]||'Seller',rating:'New seller',sales:0,initial:(user.displayName||user.email||'S').charAt(0).toUpperCase(),user_id:user.uid},user_id:user.uid,user_email:user.email,submittedAt:serverTimestamp()});
+    ['sellEventName','sellDate','sellVenue','sellQty','sellPrice','sellSeat','sellNotes'].forEach(id=>{const el=$(id);if(el)el.value='';});
+    if($('sellCategory'))$('sellCategory').value='';
     clearProofFile();
-
-    // Show inline success message instead of alert
     showListingSuccess();
-
-  }catch(err){
-    console.error('Firestore save error:', err);
-    // Even if Firestore save failed, show a friendly message
-    showListingSuccess();
-  }finally{
+  }catch(err){console.error('Listing save error:',err);showListingSuccess();}
+  finally{
     btn.disabled=false;
     btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg> Submit for approval';
   }
 }
 
-function showListingSuccess(){
-  // Remove any existing success banner
-  const existing = document.getElementById('listingSuccessBanner');
-  if(existing) existing.remove();
-
-  const banner = document.createElement('div');
-  banner.id = 'listingSuccessBanner';
-  banner.style.cssText = `
-    display:flex;align-items:flex-start;gap:14px;
-    padding:20px 22px;border-radius:var(--r-lg);
-    background:linear-gradient(135deg,rgba(22,101,52,.07),rgba(22,163,74,.10));
-    border:1px solid rgba(22,163,74,.28);
-    margin-top:20px;animation:slideUp .3s var(--spring);
-  `;
-  banner.innerHTML = `
-    <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-md));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">✓</div>
-    <div>
-      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;">Listing submitted successfully!</div>
-      <div style="font-size:13px;color:var(--ink-80);line-height:1.7;">
-        Your ticket is now <strong>pending admin review</strong> — usually within 24 hours.<br>
-        Once approved, it'll appear on the marketplace and buyers can message you directly.
-      </div>
-      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
-        <button onclick="document.querySelectorAll('.mode-tab')[1].click()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;background:var(--green);color:var(--white);border:none;cursor:pointer;">Browse Tickets →</button>
-        <button onclick="document.getElementById('listingSuccessBanner').remove()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:600;background:var(--paper);border:1.5px solid var(--ink-10);cursor:pointer;color:var(--ink);">Dismiss</button>
-      </div>
-    </div>
-  `;
-
-  // Insert after the sell submit button
-  const submitBtn = $('sellSubmitBtn');
-  submitBtn.parentNode.insertBefore(banner, submitBtn.nextSibling);
-  banner.scrollIntoView({behavior:'smooth', block:'nearest'});
+function showListingSuccess() {
+  const existing=document.getElementById('listingSuccessBanner');
+  if(existing)existing.remove();
+  const banner=document.createElement('div');
+  banner.id='listingSuccessBanner';
+  banner.style.cssText='display:flex;align-items:flex-start;gap:14px;padding:20px 22px;border-radius:var(--r-lg);background:linear-gradient(135deg,rgba(22,101,52,.07),rgba(22,163,74,.10));border:1px solid rgba(22,163,74,.28);margin-top:20px;animation:slideUp .3s var(--spring);';
+  banner.innerHTML=`<div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-md));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;color:#fff;">✓</div><div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;">Listing submitted!</div><div style="font-size:13px;color:var(--ink-80);line-height:1.7;">Pending admin review — usually within 24 hours. Once approved it'll appear on the marketplace.</div><div style="margin-top:10px;display:flex;gap:8px;"><button onclick="document.querySelectorAll('.mode-tab')[1].click()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;background:var(--green);color:#fff;border:none;cursor:pointer;">Browse tickets →</button><button onclick="document.getElementById('listingSuccessBanner').remove()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:600;background:var(--paper);border:1.5px solid var(--ink-10);cursor:pointer;color:var(--ink);">Dismiss</button></div></div>`;
+  const btn=$('sellSubmitBtn');
+  if(btn)btn.parentNode.insertBefore(banner,btn.nextSibling);
+  banner.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function loadMyTicketListings(user){
-  if (!user) return;
-
-  // Unsubscribe from previous listener if exists
-  if (chatUnsubs.listings) chatUnsubs.listings();
-
-  chatUnsubs.listings = onSnapshot(
-    query(collection(db,'ticket_listings'), where('user_id','==',user.uid)),
-    snap=>{
-      myListings=[];
-      snap.forEach(ds=>myListings.push({id:ds.id,...ds.data()}));
-      renderMyListings();
-      refreshAllDrawerTabs();
-      startUnreadListeners();
-    },
-    err => {
-      console.error("Error loading listings:", err);
-      myListings = [];
-      renderMyListings();
-      refreshAllDrawerTabs();
-    }
-  );
-}
-
-function renderMyListings(){
+function renderMyListings() {
   const section=$('myListingsSection'),grid=$('myListingsGrid');
-  if(!myListings.length){section.style.display='none';return;}
-  section.style.display='';grid.innerHTML='';
+  if(!auth.currentUser||!myListings.length){section.style.display='none';return;}
+  section.style.display=''; grid.innerHTML='';
   myListings.forEach(l=>{
-    const stateClass=l.approvalStatus==='approved'?'state-approved':l.approvalStatus==='rejected'?'state-rejected':'state-pending';
-    const card=document.createElement('div');
-    card.className=`my-listing-card ${stateClass}`;
-    const statusLabel=l.approvalStatus==='approved'?'Live ✓':l.approvalStatus==='rejected'?'Rejected':'Pending';
-    card.innerHTML=`<div class="mlc-header"><div class="mlc-title">${esc(l.title)}</div><span class="mlc-status ${l.approvalStatus||'pending'}">${statusLabel}</span></div><div class="mlc-body">${l.proofImageURL?`<img class="mlc-proof-thumb" src="${l.proofImageURL}" alt="Proof" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=200&q=80'">`:''}<div class="mlc-meta">${esc(l.venue||'')} · ${esc(l.city||'')}<br>${esc(l.date||'')} · ${l.qty} ticket${l.qty!==1?'s':''}</div><div class="mlc-price">$${Number(l.price||0).toLocaleString()}<span class="mlc-price-unit"> /ticket</span></div>${l.approvalStatus==='rejected'&&l.rejectionReason?`<div class="mlc-rejection-msg">Rejected: ${esc(l.rejectionReason)}</div>`:''}<div class="mlc-status-msg ${l.approvalStatus||'pending'}">${l.approvalStatus==='approved'?'✓ Live on marketplace':l.approvalStatus==='rejected'?'':'⏳ Awaiting approval'}</div></div>`;
+    const sc=l.approvalStatus==='approved'?'state-approved':l.approvalStatus==='rejected'?'state-rejected':'state-pending';
+    const sl=l.approvalStatus==='approved'?'Live ✓':l.approvalStatus==='rejected'?'Rejected':'Pending';
+    const card=document.createElement('div'); card.className=`my-listing-card ${sc}`;
+    card.innerHTML=`<div class="mlc-header"><div class="mlc-title">${esc(l.title)}</div><span class="mlc-status ${l.approvalStatus||'pending'}">${sl}</span></div><div class="mlc-body">${l.proofImageURL?`<img class="mlc-proof-thumb" src="${l.proofImageURL}" alt="Proof">`:''}<div class="mlc-meta">${esc(l.venue||'')} · ${esc(l.city||'')}<br>${esc(l.date||'')} · ${l.qty} ticket${l.qty!==1?'s':''}</div><div class="mlc-price">$${Number(l.price||0).toLocaleString()}<span class="mlc-price-unit"> /ticket</span></div>${l.approvalStatus==='rejected'&&l.rejectionReason?`<div class="mlc-rejection-msg">Reason: ${esc(l.rejectionReason)}</div>`:''}<div class="mlc-status-msg ${l.approvalStatus||'pending'}">${l.approvalStatus==='approved'?'✓ Live on marketplace':l.approvalStatus==='rejected'?'':' ⏳ Awaiting approval'}</div></div>`;
     grid.appendChild(card);
   });
 }
 
-// ==================== VENDOR MODAL ====================
 let selectedEvent='',selectedLocation='',selectedEventDates=[],selectedEventIsPast=false;
 
-function openVendorModal(data,isPast){
-  selectedEvent=data.title;
-  selectedLocation=data.location;
-  selectedEventDates=data.dateStrings||collectDates(data);
-  selectedEventIsPast=isPast;
+function openVendorModal(data,isPast) {
+  selectedEvent=data.title; selectedLocation=data.location;
+  selectedEventDates=data.dateStrings||collectDates(data); selectedEventIsPast=isPast;
   const dates=selectedEventDates;
-
   $('modalImage').src=data.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80';
   $('modalCategory').textContent=data.category||'Event';
-
   const mp=$('modalPrice');
-  if(data.price){
-    mp.style.display='inline-flex';
-    mp.textContent=data.price;
-  }else{
-    mp.style.display='none';
-  }
-
+  if(data.price){mp.style.display='inline-flex';mp.textContent=data.price;}else{mp.style.display='none';}
   const ms=$('modalSpots');
-  if(data.max_spots){
-    ms.style.display='inline-flex';
-    $('modalSpotsText').textContent=data.max_spots+' spots';
-  }else{
-    ms.style.display='none';
-  }
-
+  if(data.max_spots){ms.style.display='inline-flex';$('modalSpotsText').textContent=data.max_spots+' spots';}else{ms.style.display='none';}
   $('modalTitle').textContent=data.title||'Event';
-  const chips=$('modalMetaChips');
-  chips.innerHTML='';
-  if(isPast) chips.innerHTML+=`<span class="modal-meta-chip past">Past event</span>`;
-  if(data.state) chips.innerHTML+=`<span class="modal-meta-chip">🇺🇸 ${data.state}</span>`;
-  if(data.price) chips.innerHTML+=`<span class="modal-meta-chip gold">${data.price}</span>`;
-
+  const chips=$('modalMetaChips'); chips.innerHTML='';
+  if(isPast)chips.innerHTML+=`<span class="modal-meta-chip past">Past event</span>`;
+  if(data.state)chips.innerHTML+=`<span class="modal-meta-chip">🇺🇸 ${data.state}</span>`;
+  if(data.price)chips.innerHTML+=`<span class="modal-meta-chip gold">${data.price}</span>`;
   $('modalDatesGrid').innerHTML=dates.map((raw,i)=>{const p=raw.split('•');const d=p[0].trim();const t=(p[1]||'').trim();return `<div class="modal-date-row"><div class="modal-date-num">${i+1}</div><div><div class="modal-date-main">${d}</div>${t?`<div class="modal-date-time">${t}</div>`:''}</div></div>`;}).join('');
-
   $('modalLocation').textContent=data.location||'—';
   $('modalLocationAddr').textContent=[data.address,data.state].filter(Boolean).join(', ');
-
   const ml=$('modalMapsLink');
   const mq=[data.location,data.address,data.state].filter(Boolean).join(', ');
-  if(mq){
-    ml.href=`https://maps.google.com/?q=${encodeURIComponent(mq)}`;
-    ml.style.display='inline-flex';
-  }else{
-    ml.style.display='none';
-  }
-
+  if(mq){ml.href=`https://maps.google.com/?q=${encodeURIComponent(mq)}`;ml.style.display='inline-flex';}else{ml.style.display='none';}
   $('modalDescription').textContent=data.description||'';
-
-  const cr=$('modalContactRow');
-  cr.innerHTML='';
+  const cr=$('modalContactRow'); cr.innerHTML='';
   const contacts=[];
-
-  if(data.contact_email) contacts.push({label:'Email',value:data.contact_email,href:`mailto:${data.contact_email}`});
-  if(data.website) contacts.push({label:'Website',value:data.website.replace(/^https?:\/\//,''),href:data.website,external:true});
-
+  if(data.contact_email)contacts.push({label:'Email',value:data.contact_email,href:`mailto:${data.contact_email}`});
+  if(data.website)contacts.push({label:'Website',value:data.website.replace(/^https?:\/\//,''),href:data.website,external:true});
   if(contacts.length){
     $('modalContactBlock').style.display='';
-    contacts.forEach(c=>{
-      const a=document.createElement('a');
-      a.className='modal-contact-item';
-      a.href=c.href;
-      if(c.external){
-        a.target='_blank';
-        a.rel='noopener';
-      }
-      a.innerHTML=`<div class="modal-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--gold)"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="modal-contact-info"><div class="modal-contact-label">${c.label}</div><div class="modal-contact-value">${c.value}</div></div>`;
-      cr.appendChild(a);
-    });
-  }else{
-    $('modalContactBlock').style.display='none';
-  }
-
+    contacts.forEach(c=>{const a=document.createElement('a');a.className='modal-contact-item';a.href=c.href;if(c.external){a.target='_blank';a.rel='noopener';}a.innerHTML=`<div class="modal-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--gold)"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="modal-contact-info"><div class="modal-contact-label">${c.label}</div><div class="modal-contact-value">${c.value}</div></div>`;cr.appendChild(a);});
+  }else{$('modalContactBlock').style.display='none';}
   const ab=$('applyBtn');
-  if(isPast){
-    ab.disabled=true;
-    ab.textContent='Event ended';
-  }else{
-    ab.disabled=false;
-    ab.textContent='Apply as vendor';
-  }
+  if(isPast){ab.disabled=true;ab.textContent='Event ended';}else{ab.disabled=false;ab.textContent='Apply as vendor';}
   $('modalApplyNote').textContent=isPast?'Applications closed.':'Free to apply · Organiser approval';
-
-  $('eventModal').style.display='flex';
-  document.body.classList.add('modal-open');
+  $('eventModal').style.display='flex'; document.body.classList.add('modal-open');
 }
 
 $('applyBtn').addEventListener('click',()=>{
-  if($('applyBtn').disabled) return;
-
-  if(!auth.currentUser){
-    pendingLoginAction=()=>redirectToApply();
-    showLoginModal();
-    return;
-  }
-
-  if(userApplicationsMap[selectedEvent.toLowerCase().trim()]){
-    alert('You already applied to this event!');
-    return;
-  }
-
+  if($('applyBtn').disabled)return;
+  if(!auth.currentUser){pendingLoginAction=()=>redirectToApply();showLoginModal();return;}
+  if(userApplicationsMap[selectedEvent.toLowerCase().trim()]){alert('You already applied to this event!');return;}
   redirectToApply();
 });
-
 function redirectToApply(){
   if(selectedEvent&&selectedLocation){
     const dp=selectedEventDates.map(encodeURIComponent).join('|||');
     window.location.href=`apply.html?event=${encodeURIComponent(selectedEvent)}&location=${encodeURIComponent(selectedLocation)}&event_dates=${dp}`;
-  }else{
-    window.location.href='apply.html';
-  }
+  }else{window.location.href='apply.html';}
 }
+$('vendorModalClose').addEventListener('click',()=>{$('eventModal').style.display='none';document.body.classList.remove('modal-open');});
 
-$('vendorModalClose').addEventListener('click',()=>{
-  $('eventModal').style.display='none';
-  document.body.classList.remove('modal-open');
-});
-
-// ==================== DRAWER ====================
 function openDrawer(tab='vendor'){
-  $('appDrawer').classList.add('open');
-  $('appDrawerOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-  if(tab) switchDrawerTab(tab);
+  $('appDrawer').classList.add('open'); $('appDrawerOverlay').classList.add('open');
+  document.body.style.overflow='hidden'; if(tab)switchDrawerTab(tab);
 }
-
 function closeDrawer(){
-  $('appDrawer').classList.remove('open');
-  $('appDrawerOverlay').classList.remove('open');
+  $('appDrawer').classList.remove('open'); $('appDrawerOverlay').classList.remove('open');
   document.body.style.overflow='';
 }
-
 $('appCartBtn').addEventListener('click',()=>openDrawer());
 $('drawerClose').addEventListener('click',closeDrawer);
 $('appDrawerOverlay').addEventListener('click',closeDrawer);
-
-document.querySelectorAll('.drawer-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>switchDrawerTab(tab.dataset.dtab));
-});
-
+document.querySelectorAll('.drawer-tab').forEach(tab=>{tab.addEventListener('click',()=>switchDrawerTab(tab.dataset.dtab));});
 function switchDrawerTab(name){
-  document.querySelectorAll('.drawer-tab').forEach(t=>
-    t.classList.toggle('active',t.dataset.dtab===name)
-  );
-  document.querySelectorAll('.drawer-tab-panel').forEach(p=>
-    p.classList.toggle('active',p.id===`dtab-${name}`)
-  );
+  document.querySelectorAll('.drawer-tab').forEach(t=>t.classList.toggle('active',t.dataset.dtab===name));
+  document.querySelectorAll('.drawer-tab-panel').forEach(p=>p.classList.toggle('active',p.id===`dtab-${name}`));
 }
 
 function updateCartBadge(){
-  const total=Object.keys(userApplicationsMap).length + purchasedTickets.length + myListings.length;
+  const total=Object.keys(userApplicationsMap).length+purchasedTickets.length+myListings.length;
   $('drawerCountPill').textContent=total;
-  if(total>0){
-    $('appCartCount').textContent=total>99?'99+':String(total);
-    $('appCartCount').classList.add('show');
-  }else{
-    $('appCartCount').textContent='';
-    $('appCartCount').classList.remove('show');
-  }
+  if(total>0){$('appCartCount').textContent=total>99?'99+':String(total);$('appCartCount').classList.add('show');}
+  else{$('appCartCount').textContent='';$('appCartCount').classList.remove('show');}
 }
 
-function refreshAllDrawerTabs(){
-  renderVendorAppsTab();
-  renderTicketsTab();
-  renderListingsTab();
-  updateCartBadge();
-}
+function refreshAllDrawerTabs(){renderVendorAppsTab();renderTicketsTab();renderListingsTab();updateCartBadge();}
 
 function renderVendorAppsTab(){
-  const panel=$('dtab-vendor');
-  panel.innerHTML='';
+  const panel=$('dtab-vendor'); panel.innerHTML='';
   const apps=Object.entries(userApplicationsMap);
-
-  if(!apps.length){
-    panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">🏪</div><div class="drawer-empty-title">No applications</div><div class="drawer-empty-sub">Browse events and apply for booths.</div></div>`;
-    return;
-  }
-
-  apps.forEach(([key,vid])=>{const evName=key.charAt(0).toUpperCase()+key.slice(1);const card=document.createElement('div');card.className='app-card pending';card.innerHTML=`<div class="app-card-info"><div class="app-card-title">${esc(evName)}</div><div class="app-card-meta">Vendor application</div><button class="app-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Chat</button></div><span class="app-status-pill pending">Applied</span>`;
-
-    card.querySelector('.app-card-action').addEventListener('click',()=>{
-      closeDrawer();
-      activeConvId=vid;
-      activeConvLabel=evName;
-      activeConvType='vendor';
-      openChatModal();
-    });
-
+  if(!apps.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">🏪</div><div class="drawer-empty-title">No applications yet</div><div class="drawer-empty-sub">Browse vendor events and apply for booths.</div></div>`;return;}
+  apps.forEach(([key,vid])=>{
+    const evName=key.charAt(0).toUpperCase()+key.slice(1);
+    const card=document.createElement('div'); card.className='app-card pending';
+    card.innerHTML=`<div class="app-card-info"><div class="app-card-title">${esc(evName)}</div><div class="app-card-meta">Vendor application submitted</div><button class="app-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Chat coordinator</button></div><span class="app-status-pill pending">Applied</span>`;
+    card.querySelector('.app-card-action').addEventListener('click',()=>{closeDrawer();activeConvId=vid;activeConvLabel=evName;activeConvType='vendor';openChatModal();});
     panel.appendChild(card);
   });
 }
 
-function renderTicketsTab() {
-  const panel = $('dtab-tickets');
-  panel.innerHTML = '';
-
-  if (!purchasedTickets.length) {
-    panel.innerHTML = `<div class="drawer-empty">
-      <div class="drawer-empty-icon">🎟️</div>
-      <div class="drawer-empty-title">No tickets</div>
-      <div class="drawer-empty-sub">Purchase tickets to see them here.</div>
-    </div>`;
-    return;
-  }
-
-  purchasedTickets.forEach(t => {
-    const card = document.createElement('div');
-    card.className = 'ticket-receipt';
-
-    // Get listing details for additional info
-    const listing = [...DEMO_LISTINGS, ...myListings].find(l => l.id === t.listingId);
-    const pricePerTicket = listing?.price || t.price || (t.total / t.qty).toFixed(2);
-
-    card.innerHTML = `
-      <div class="ticket-receipt-header">
-        <span class="ticket-receipt-event">${esc(t.event)}</span>
-        <span class="ticket-receipt-badge">${SPORT_LABEL[t.sport] || t.sport}</span>
-      </div>
-      <div class="ticket-receipt-body">
-        <div class="ticket-receipt-row">
-          <span>Seller</span>
-          <strong>${esc(t.seller?.name || '—')}</strong>
-        </div>
-        <div class="ticket-receipt-row">
-          <span>Venue</span>
-          <strong>${esc(t.venue || listing?.venue || '—')}</strong>
-        </div>
-        <div class="ticket-receipt-row">
-          <span>Location</span>
-          <strong>${esc(t.city || listing?.city || '—')}</strong>
-        </div>
-        <div class="ticket-receipt-row">
-          <span>Date</span>
-          <strong>${esc(t.date || listing?.date || '—')}</strong>
-        </div>
-        ${t.time ? `<div class="ticket-receipt-row"><span>Time</span><strong>${esc(t.time)}</strong></div>` : ''}
-        ${t.seat ? `<div class="ticket-receipt-row"><span>Seat</span><strong>${esc(t.seat)}</strong></div>` : ''}
-        <div class="ticket-receipt-row">
-          <span>Quantity</span>
-          <strong>${t.qty} ticket${t.qty > 1 ? 's' : ''}</strong>
-        </div>
-        <div class="ticket-receipt-row">
-          <span>Price per ticket</span>
-          <strong>$${Number(pricePerTicket).toLocaleString('en-US', {minimumFractionDigits: 2})}</strong>
-        </div>
-        <div class="ticket-receipt-row">
-          <span>Order ID</span>
-          <strong>${esc(t.id)}</strong>
-        </div>
-        ${t.purchaseDate ?
-          `<div class="ticket-receipt-row">
-            <span>Purchased on</span>
-            <strong>${new Date(t.purchaseDate).toLocaleDateString()}</strong>
-          </div>` : ''}
-      </div>
-      <div class="ticket-receipt-total">
-        <span class="ticket-receipt-total-label">Total</span>
-        <span class="ticket-receipt-total-val">$${t.total.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
-      </div>
-      <button class="ticket-receipt-chat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-        </svg>
-        Message seller →
-      </button>`;
-
-    card.querySelector('.ticket-receipt-chat').addEventListener('click', () => {
-      closeDrawer();
-      const listing = [...DEMO_LISTINGS, ...myListings].find(l => l.id === t.listingId) ||
-                    {id: t.listingId, title: t.event, seller: t.seller};
-      openTicketChat(listing);
-    });
-
+function renderTicketsTab(){
+  const panel=$('dtab-tickets'); panel.innerHTML='';
+  if(!purchasedTickets.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">🎟️</div><div class="drawer-empty-title">No tickets yet</div><div class="drawer-empty-sub">Purchase tickets to see them here.</div></div>`;return;}
+  purchasedTickets.forEach(t=>{
+    const card=document.createElement('div'); card.className='ticket-receipt';
+    card.innerHTML=`<div class="ticket-receipt-header"><span class="ticket-receipt-event">${esc(t.event)}</span><span class="ticket-receipt-badge">${SPORT_LABEL[t.sport]||t.sport}</span></div><div class="ticket-receipt-body"><div class="ticket-receipt-row"><span>Seller</span><strong>${esc(t.seller?.name||'—')}</strong></div>${t.venue?`<div class="ticket-receipt-row"><span>Venue</span><strong>${esc(t.venue)}</strong></div>`:''}${t.date?`<div class="ticket-receipt-row"><span>Date</span><strong>${esc(t.date)}</strong></div>`:''}<div class="ticket-receipt-row"><span>Qty</span><strong>${t.qty} ticket${t.qty>1?'s':''}</strong></div>${t.seat?`<div class="ticket-receipt-row"><span>Seat</span><strong>${esc(t.seat)}</strong></div>`:''}<div class="ticket-receipt-row"><span>Order</span><strong>${esc(t.id)}</strong></div></div><div class="ticket-receipt-total"><span class="ticket-receipt-total-label">Total paid</span><span class="ticket-receipt-total-val">$${t.total.toLocaleString('en-US',{minimumFractionDigits:2})}</span></div><button class="ticket-receipt-chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Message seller →</button>`;
+    card.querySelector('.ticket-receipt-chat').addEventListener('click',()=>{closeDrawer();const listing=[...DEMO_LISTINGS,...myListings].find(l=>l.id===t.listingId)||{id:t.listingId,title:t.event,seller:t.seller};openTicketChat(listing);});
     panel.appendChild(card);
   });
 }
 
 function renderListingsTab(){
-  const panel=$('dtab-listings');
-  panel.innerHTML='';
-
-  if(!myListings.length){
-    panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">📋</div><div class="drawer-empty-title">No listings</div><div class="drawer-empty-sub">List a ticket to get started.</div></div>`;
-    return;
-  }
-
+  const panel=$('dtab-listings'); panel.innerHTML='';
+  if(!myListings.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">📋</div><div class="drawer-empty-title">No listings yet</div><div class="drawer-empty-sub">List a ticket to get started.</div></div>`;return;}
   myListings.forEach(l=>{
-    const stClass = l.approvalStatus==='approved' ? 'listing-approved' :
-                   l.approvalStatus==='rejected' ? 'listing-rejected' : 'listing-pending';
-    const stLabel = l.approvalStatus==='approved' ? 'Live ✓' :
-                  l.approvalStatus==='rejected' ? 'Rejected' : 'Pending';
-    const stPill = l.approvalStatus==='approved' ? 'approved' :
-                 l.approvalStatus==='rejected' ? 'rejected' : 'pending';
-
-    const card = document.createElement('div');
-    card.className = `app-card ${stClass}`;
-    card.innerHTML = `<div class="app-card-info">
-      <div class="app-card-title">${esc(l.title)}</div>
-      <div class="app-card-meta">
-        $${Number(l.price||0).toLocaleString()}/ticket · ${l.qty} available · ${l.date||''}
-        ${l.rejectionReason ? '<br>Reason: '+esc(l.rejectionReason) : ''}
-      </div>
-    </div>
-    <span class="app-status-pill ${stPill}">${stLabel}</span>`;
-
+    const sc=l.approvalStatus==='approved'?'approved':l.approvalStatus==='rejected'?'rejected':'pending';
+    const sl=l.approvalStatus==='approved'?'Live ✓':l.approvalStatus==='rejected'?'Rejected':'Pending';
+    const card=document.createElement('div'); card.className=`app-card ${sc==='approved'?'approved':sc==='rejected'?'rejected':'pending'}`;
+    card.innerHTML=`<div class="app-card-info"><div class="app-card-title">${esc(l.title)}</div><div class="app-card-meta">$${Number(l.price||0).toLocaleString()}/ticket · ${l.qty} available${l.rejectionReason?'<br>Reason: '+esc(l.rejectionReason):''}</div></div><span class="app-status-pill ${sc}">${sl}</span>`;
     panel.appendChild(card);
   });
 }
 
-// ==================== USER APPLICATIONS ====================
-function loadUserApplications(user) {
-  if (!user) return;
-
-  // Unsubscribe from previous listener if exists
-  if (chatUnsubs.applications) chatUnsubs.applications();
-
-  chatUnsubs.applications = onSnapshot(
-    query(collection(db, 'vendors'), where('user_id', '==', user.uid)),
-    snap => {
-      userApplicationsMap = {};
-      snap.forEach(ds => {
-        const d = ds.data();
-        if (d.event_name) {
-          userApplicationsMap[d.event_name.toLowerCase().trim()] = ds.id;
-        }
-      });
-      renderVendorAppsTab();
-      updateCartBadge();
-      buildChatContextBar();
-      startUnreadListeners();
-    },
-    err => {
-      console.error("Error loading applications:", err);
-      userApplicationsMap = {};
-      renderVendorAppsTab();
-      updateCartBadge();
-      buildChatContextBar();
-    }
-  );
-}
-
-// ==================== UNREAD BADGE SYSTEM ====================
-function startUnreadListeners() {
-  if (!auth.currentUser) return;
-  // Vendor conversations
-  Object.entries(userApplicationsMap).forEach(([key, vid]) => {
-    if (chatUnsubs['unread_vendor_' + vid]) return; // already listening
-    chatUnsubs['unread_vendor_' + vid] = onSnapshot(
-      query(collection(db, 'vendors', vid, 'conversation'), orderBy('timestamp', 'asc')),
-      snap => {
-        const lastSeen = lastSeenTimestamps['vendor_' + vid] || new Date(0);
-        let unread = 0;
-        snap.forEach(ds => {
-          const d = ds.data();
-          if (d.user_id !== auth.currentUser.uid && d.timestamp?.toDate && d.timestamp.toDate() > lastSeen) {
-            unread++;
-          }
-        });
-        unreadCounts['vendor_' + vid] = unread;
-        updateGlobalUnreadBadge();
-        buildChatContextBar();
-      }
-    );
-  });
-
-  // Ticket conversations (purchased tickets)
-  purchasedTickets.forEach(t => {
-    const cid = 'ticket_' + t.listingId;
-    if (chatUnsubs['unread_' + cid]) return;
-    chatUnsubs['unread_' + cid] = onSnapshot(
-      query(collection(db, 'ticket_listings', t.listingId, 'conversation'), orderBy('timestamp', 'asc')),
-      snap => {
-        const lastSeen = lastSeenTimestamps[cid] || new Date(0);
-        let unread = 0;
-        snap.forEach(ds => {
-          const d = ds.data();
-          // Count messages not from the current user that are newer than last seen
-          if (d.user_id !== auth.currentUser.uid && d.timestamp?.toDate && d.timestamp.toDate() > lastSeen) {
-            unread++;
-          }
-        });
-        unreadCounts[cid] = unread;
-        updateGlobalUnreadBadge();
-        buildChatContextBar();
-      }
-    );
-  });
-
-  // My listings (seller receiving messages)
-  myListings.forEach(l => {
-    const cid = 'ticket_' + l.id;
-    if (chatUnsubs['unread_' + cid]) return;
-    chatUnsubs['unread_' + cid] = onSnapshot(
-      query(collection(db, 'ticket_listings', l.id, 'conversation'), orderBy('timestamp', 'asc')),
-      snap => {
-        const lastSeen = lastSeenTimestamps[cid] || new Date(0);
-        let unread = 0;
-        snap.forEach(ds => {
-          const d = ds.data();
-          if (d.user_id !== auth.currentUser.uid && d.timestamp?.toDate && d.timestamp.toDate() > lastSeen) {
-            unread++;
-          }
-        });
-        unreadCounts[cid] = unread;
-        updateGlobalUnreadBadge();
-        buildChatContextBar();
-      }
-    );
-  });
-}
-
-function updateGlobalUnreadBadge() {
-  const total = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
-  const badge = $('unreadBadge');
-  if (total > 0) {
-    badge.textContent = total > 99 ? '99+' : String(total);
-    badge.classList.add('has-unread');
-  } else {
-    badge.textContent = '';
-    badge.classList.remove('has-unread');
-  }
-}
-
-function markConvAsRead(convType, convId) {
-  const key = convType + '_' + convId;
-  lastSeenTimestamps[key] = new Date();
-  unreadCounts[key] = 0;
-  updateGlobalUnreadBadge();
-  buildChatContextBar();
-}
-
-function getTotalUnreadForConv(convType, convId) {
-  return unreadCounts[convType + '_' + convId] || 0;
-}
-
-// ==================== CHAT ====================
-$('openChatBtn').addEventListener('click', async() => {
-  if(!auth.currentUser) {
-    pendingLoginAction = () => openChatModal();
-    showLoginModal();
-    return;
-  }
-
-  // Determine default conversation
-  if(Object.keys(userApplicationsMap).length) {
-    const [key, vid] = Object.entries(userApplicationsMap)[0];
-    activeConvId = vid;
-    activeConvLabel = key.charAt(0).toUpperCase() + key.slice(1);
-    activeConvType = 'vendor';
-  }
-  else if(purchasedTickets.length) {
-    const t = purchasedTickets[0];
-    const l = [...DEMO_LISTINGS, ...myListings].find(x => x.id === t.listingId) ||
-             {id: t.listingId, title: t.event, seller: t.seller};
-    activeConvId = l.id;
-    activeConvLabel = l.title;
-    activeConvType = 'ticket';
-  }
-  else if(myListings.length) {
-    activeConvId = myListings[0].id;
-    activeConvLabel = myListings[0].title;
-    activeConvType = 'ticket';
-  }
-
+$('openChatBtn').addEventListener('click',()=>{
+  if(!auth.currentUser){pendingLoginAction=()=>openChatModal();showLoginModal();return;}
   openChatModal();
 });
 
-function openTicketChat(listing) {
-  activeConvId = listing.id;
-  activeConvLabel = listing.title;
-  activeConvType = 'ticket';
-  openChatModal();
+function openTicketChat(listing){
+  if(!auth.currentUser){pendingLoginAction=()=>{activeConvId=listing.id;activeConvLabel=listing.title;activeConvType='ticket';openChatModal();};showLoginModal();return;}
+  activeConvId=listing.id; activeConvLabel=listing.title; activeConvType='ticket'; openChatModal();
 }
 
-function openChatModal() {
-  $('chatModal').classList.add('open');
-  document.body.classList.add('modal-open');
+function openChatModal(){
+  $('chatModal').classList.add('open'); document.body.classList.add('modal-open');
   buildChatContextBar();
-  loadChatForContext();
+  if(activeConvId){loadChatForConv(activeConvType,activeConvId,activeConvLabel);}
+  else{
+    const firstVendor=Object.entries(userApplicationsMap)[0];
+    const firstTicket=purchasedTickets[0];
+    const firstListing=myListings[0];
+    if(firstVendor){activeConvId=firstVendor[1];activeConvType='vendor';activeConvLabel=firstVendor[0];loadChatForConv('vendor',firstVendor[1],firstVendor[0]);}
+    else if(firstTicket&&firstTicket.listingId){activeConvId=firstTicket.listingId;activeConvType='ticket';activeConvLabel=firstTicket.event;loadChatForConv('ticket',firstTicket.listingId,firstTicket.event);}
+    else if(firstListing){activeConvId=firstListing.id;activeConvType='ticket';activeConvLabel=firstListing.title;loadChatForConv('ticket',firstListing.id,firstListing.title);}
+  }
 }
 
-function buildChatContextBar() {
-  const bar = $('chatContextBar');
-  bar.innerHTML = '';
-
-  // Vendor conversations (applications)
-  Object.entries(userApplicationsMap).forEach(([key, vid]) => {
-    const evName = key.charAt(0).toUpperCase() + key.slice(1);
-    const isActive = activeConvId === vid && activeConvType === 'vendor';
-    const unread = getTotalUnreadForConv('vendor', vid);
-    const btn = document.createElement('button');
-    btn.className = `chat-ctx-btn vendor-ctx${isActive ? ' active' : ''}${unread > 0 ? ' has-unread' : ''}`;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>${esc(evName.slice(0, 20))}${evName.length > 20 ? '…' : ''}<span class="unread-badge">${unread > 0 ? unread : ''}</span>`;
-
-    btn.addEventListener('click', () => {
-      activeConvId = vid;
-      activeConvLabel = evName;
-      activeConvType = 'vendor';
-      markConvAsRead('vendor', vid);
-      buildChatContextBar();
-      loadChatForContext();
-    });
-
+function buildChatContextBar(){
+  const bar=$('chatContextBar'); bar.innerHTML='';
+  let hasConvs=false;
+  Object.entries(userApplicationsMap).forEach(([key,vid])=>{
+    hasConvs=true;
+    const evName=key.charAt(0).toUpperCase()+key.slice(1);
+    const isActive=activeConvId===vid&&activeConvType==='vendor';
+    const unread=(unreadCounts['vendor_'+vid]||0);
+    const btn=document.createElement('button');
+    btn.className=`chat-ctx-tab vendor-ctx${isActive?' active':''}${unread>0?' has-unread':''}`;
+    btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>${esc(evName.length>18?evName.slice(0,18)+'…':evName)}<span class="unread-dot"></span>`;
+    btn.addEventListener('click',()=>{activeConvId=vid;activeConvType='vendor';activeConvLabel=evName;markRead('vendor',vid);buildChatContextBar();loadChatForConv('vendor',vid,evName);});
     bar.appendChild(btn);
   });
-
-  // Purchased ticket conversations (buyer to seller)
-  purchasedTickets.forEach(t => {
-    const isActive = activeConvId === t.listingId && activeConvType === 'ticket';
-    const unread = getTotalUnreadForConv('ticket', t.listingId);
-    const btn = document.createElement('button');
-    btn.className = `chat-ctx-btn ticket-ctx${isActive ? ' active' : ''}${unread > 0 ? ' has-unread' : ''}`;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg>${esc((t.event || '').slice(0, 22))}<span class="unread-badge">${unread > 0 ? unread : ''}</span>`;
-
-    btn.addEventListener('click', () => {
-      activeConvId = t.listingId;
-      activeConvLabel = t.event;
-      activeConvType = 'ticket';
-      markConvAsRead('ticket', t.listingId);
-      buildChatContextBar();
-      loadChatForContext();
-    });
-
+  purchasedTickets.forEach(t=>{
+    if(!t.listingId)return;
+    hasConvs=true;
+    const isActive=activeConvId===t.listingId&&activeConvType==='ticket';
+    const unread=(unreadCounts['ticket_'+t.listingId]||0);
+    const btn=document.createElement('button');
+    const label=(t.event||'Ticket').slice(0,20);
+    btn.className=`chat-ctx-tab ticket-ctx${isActive?' active':''}${unread>0?' has-unread':''}`;
+    btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg>${esc(label)}<span class="unread-dot"></span>`;
+    btn.addEventListener('click',()=>{activeConvId=t.listingId;activeConvType='ticket';activeConvLabel=t.event;markRead('ticket',t.listingId);buildChatContextBar();loadChatForConv('ticket',t.listingId,t.event);});
     bar.appendChild(btn);
   });
-
-  // My listings conversations (seller to buyers)
-  myListings.forEach(l => {
-    const isActive = activeConvId === l.id && activeConvType === 'ticket';
-    const unread = getTotalUnreadForConv('ticket', l.id);
-    const btn = document.createElement('button');
-    btn.className = `chat-ctx-btn ticket-ctx${isActive ? ' active' : ''}${unread > 0 ? ' has-unread' : ''}`;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>${esc(('Listing: ' + (l.title || '')).slice(0, 22))}<span class="unread-badge">${unread > 0 ? unread : ''}</span>`;
-
-    btn.addEventListener('click', () => {
-      activeConvId = l.id;
-      activeConvLabel = l.title;
-      activeConvType = 'ticket';
-      markConvAsRead('ticket', l.id);
-      buildChatContextBar();
-      loadChatForContext();
-    });
-
+  myListings.forEach(l=>{
+    const alreadyShown=purchasedTickets.some(t=>t.listingId===l.id);
+    if(alreadyShown)return;
+    hasConvs=true;
+    const isActive=activeConvId===l.id&&activeConvType==='ticket';
+    const unread=(unreadCounts['ticket_'+l.id]||0);
+    const label=('My: '+(l.title||'')).slice(0,22);
+    const btn=document.createElement('button');
+    btn.className=`chat-ctx-tab ticket-ctx${isActive?' active':''}${unread>0?' has-unread':''}`;
+    btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>${esc(label)}<span class="unread-dot"></span>`;
+    btn.addEventListener('click',()=>{activeConvId=l.id;activeConvType='ticket';activeConvLabel=l.title;markRead('ticket',l.id);buildChatContextBar();loadChatForConv('ticket',l.id,l.title);});
     bar.appendChild(btn);
   });
-
-  if(!bar.children.length) {
-    const span = document.createElement('span');
-    span.className = 'chat-ctx-btn no-ctx';
-    span.textContent = 'Apply for a booth or buy a ticket to start.';
+  if(!hasConvs){
+    const span=document.createElement('span'); span.className='chat-ctx-empty';
+    span.textContent='Apply for a booth or buy a ticket to start chatting.';
     bar.appendChild(span);
+    $('chatInput').disabled=true; $('chatInput').placeholder='No conversations yet'; $('sendChatBtn').disabled=true;
   }
 }
 
-function loadChatForContext() {
-  // Clean up previous subscription
-  if(unsubChat) {
-    unsubChat();
-    unsubChat = null;
-  }
-
-  const msgs = $('chatMessages');
-  msgs.innerHTML = '';
-
-  $('chatContextName').textContent = activeConvLabel || 'Chat';
-  $('chatAvatar').textContent = (activeConvLabel || 'C').charAt(0).toUpperCase();
-
-  // Mark this conversation as read when opened
-  if(activeConvId) {
-    markConvAsRead(activeConvType === 'vendor' ? 'vendor' : 'ticket', activeConvId);
-  }
-
-  if(activeConvType === 'vendor') {
-    $('chatContextLabel').textContent = 'Event Coordinator';
-
-    if(!activeConvId) {
-      msgs.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">💬</div><span>Select a conversation</span></div>';
-      return;
-    }
-
-    unsubChat = onSnapshot(
-      query(collection(db, 'vendors', activeConvId, 'conversation'), orderBy('timestamp', 'asc')),
-      snap => {
-        msgs.innerHTML = '';
-        if(snap.empty) {
-          msgs.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">👋</div><span>Start a conversation with the event coordinator</span></div>';
-          return;
-        }
-
-        snap.forEach(ds => {
-          const d = ds.data();
-          if(!d.timestamp) return;
-
-          const isMe = auth.currentUser && d.user_id === auth.currentUser.uid;
-          appendMsg(msgs, d.message || '', d.timestamp?.toDate ? d.timestamp.toDate() : new Date(), isMe);
-        });
-
-        msgs.scrollTop = msgs.scrollHeight;
-      },
-      err => {
-        console.error("Error loading vendor chat:", err);
-        msgs.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">⚠️</div><span>Error loading messages</span></div>';
+function loadChatForConv(type,id,label){
+  if(unsubChat){unsubChat();unsubChat=null;}
+  const user=auth.currentUser;
+  if(!user||!id){showNoChatSelected();return;}
+  markRead(type,id);
+  const isSeller=type==='ticket'&&myListings.some(l=>l.id===id);
+  $('chatContextName').textContent=label||'Chat';
+  $('chatAvatar').textContent=(label||'C').charAt(0).toUpperCase();
+  $('chatContextLabel').textContent=type==='vendor'?'Event Coordinator':isSeller?'Buyer enquiries':'Seller conversation';
+  $('chatInput').disabled=false; $('chatInput').placeholder='Type a message…'; $('sendChatBtn').disabled=false;
+  const msgs=$('chatMessages'); msgs.innerHTML='';
+  const colPath=type==='vendor'?collection(db,'vendors',id,'conversation'):collection(db,'ticket_listings',id,'conversation');
+  unsubChat=onSnapshot(query(colPath,orderBy('timestamp','asc')),snap=>{
+    msgs.innerHTML='';
+    if(snap.empty){msgs.innerHTML=`<div class="chat-empty"><div class="chat-empty-icon">${type==='vendor'?'👋':'🎟️'}</div><span>${type==='vendor'?'Start a conversation with the event coordinator':'No messages yet — start the conversation!'}</span></div>`;return;}
+    snap.forEach(ds=>{
+      const d=ds.data();
+      if(!d.timestamp)return;
+      const isMe=user&&(d.user_id===user.uid||d.user_email===user.email);
+      const isAdmin=(d.sender==='admin'||d.senderName==='Admin');
+      let shouldShow=false;
+      if(type==='vendor'){shouldShow=isMe||(d.sender==='admin'||d.sender==='coordinator'||d.sender==='vendor'||!d.user_id);}
+      else{
+        const isPurchaser=purchasedTickets.some(t=>t.listingId===id);
+        const isMyListing=myListings.some(l=>l.id===id);
+        if(isMe){shouldShow=true;}
+        else if(isPurchaser){shouldShow=(d.sender==='seller'||d.sender==='admin'||d.user_id!==user.uid);}
+        else if(isMyListing){shouldShow=(d.sender==='buyer'||d.sender==='admin'||d.user_id!==user.uid);}
       }
-    );
-
-  } else {
-    // ===== FIXED TICKET CONVERSATION LOGIC =====
-    const isPurchased = purchasedTickets.some(t => t.listingId === activeConvId);
-    const listing = [...DEMO_LISTINGS, ...myListings].find(l => l.id === activeConvId);
-    const sellerName = listing?.seller?.name || 'Seller';
-    const isSeller = listing?.user_id === auth.currentUser?.uid;
-
-    $('chatContextLabel').textContent = isPurchased ? `Seller: ${sellerName}` : 'Buyer enquiry';
-
-    if(activeConvId) {
-      unsubChat = onSnapshot(
-        query(collection(db, 'ticket_listings', activeConvId, 'conversation'), orderBy('timestamp', 'asc')),
-        snap => {
-          msgs.innerHTML = '';
-          if(snap.empty) {
-            msgs.innerHTML = `<div class="chat-empty">
-              <div class="chat-empty-icon">🎟️</div>
-              <span>${isPurchased ? `Message ${sellerName} to arrange transfer` : 'No enquiries yet on this listing'}</span>
-            </div>`;
-            return;
-          }
-
-          snap.forEach(ds => {
-            const d = ds.data();
-            if(!d.timestamp) return;
-
-            const isMe = auth.currentUser && d.user_id === auth.currentUser.uid;
-
-            // 🔥 CRITICAL FIX: Filter messages based on user role
-            // Sellers see ALL messages for their listing
-            // Buyers only see their own messages + seller's messages
-            const isRelevant = isSeller || isMe || (isPurchased && d.sender === 'seller');
-
-            if (!isRelevant) return;
-
-            appendMsg(msgs, d.message || '', d.timestamp?.toDate ? d.timestamp.toDate() : new Date(), isMe);
-          });
-
-          msgs.scrollTop = msgs.scrollHeight;
-        },
-        err => {
-          console.error("Error loading ticket chat:", err);
-          msgs.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">⚠️</div><span>Error loading messages</span></div>';
-        }
-      );
-    }
-  }
+      if(!shouldShow)return;
+      appendMsg(msgs,d.message||'',d.timestamp?.toDate?d.timestamp.toDate():new Date(),isMe,isAdmin,d.senderName||'');
+    });
+    msgs.scrollTop=msgs.scrollHeight;
+  },err=>{console.error('Chat listener error:',err);msgs.innerHTML='<div class="chat-empty"><div class="chat-empty-icon">⚠️</div><span>Unable to load messages. Check your connection.</span></div>';});
 }
 
-function appendMsg(container, text, ts, isMe) {
-  const row = document.createElement('div');
-  row.className = `message-row ${isMe ? 'user-row' : 'other-row'}`;
-
-  const bubble = document.createElement('div');
-  bubble.className = isMe ? 'user-bubble' : 'other-bubble';
-  bubble.textContent = text;
-
-  const time = document.createElement('div');
-  time.className = 'message-time';
-  time.textContent = (ts instanceof Date ? ts : new Date()).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-
-  row.appendChild(bubble);
-  row.appendChild(time);
-  container.appendChild(row);
-  container.scrollTop = container.scrollHeight;
+function showNoChatSelected(){
+  $('chatMessages').innerHTML=`<div class="chat-no-convo"><div class="chat-no-convo-icon">💬</div><div class="chat-no-convo-title">No conversation selected</div><div class="chat-no-convo-sub">Select a thread above to start chatting.</div></div>`;
+  $('chatInput').disabled=true; $('chatInput').placeholder='Select a conversation first'; $('sendChatBtn').disabled=true;
 }
 
-$('closeChat').addEventListener('click', () => {
-  $('chatModal').classList.remove('open');
-  document.body.classList.remove('modal-open');
-  if(unsubChat) {
-    unsubChat();
-    unsubChat = null;
-  }
-});
-
-$('sendChatBtn').addEventListener('click', sendChatMessage);
-$('chatInput').addEventListener('keydown', e => {
-  if(e.key === 'Enter') {
-    e.preventDefault();
-    sendChatMessage();
-  }
-});
-
-async function sendChatMessage() {
-  const msg = $('chatInput').value.trim();
-  if(!msg || !auth.currentUser) return;
-
-  $('chatInput').value = '';
-
-  try {
-    if(activeConvType === 'vendor') {
-      if(!activeConvId) return;
-
-      // FIX: Ensure proper sender identification
-      await addDoc(collection(db, 'vendors', activeConvId, 'conversation'), {
-        sender: 'vendor',
-        senderName: auth.currentUser.displayName || auth.currentUser.email || 'Vendor',
-        message: msg,
-        messageType: 'text',
-        timestamp: serverTimestamp(),
-        read_by_admin: false,
-        read_by_vendor: true,
-        user_id: auth.currentUser.uid,
-        user_email: auth.currentUser.email
-      });
-
-    } else {
-      if(!activeConvId) return;
-
-      const isPurchased = purchasedTickets.some(t => t.listingId === activeConvId);
-      const senderType = isPurchased ? 'buyer' : 'seller';
-
-      // FIX: Ensure proper sender identification for ticket chats
-      await addDoc(collection(db, 'ticket_listings', activeConvId, 'conversation'), {
-        sender: senderType,
-        senderName: auth.currentUser.displayName || auth.currentUser.email || 'User',
-        message: msg,
-        messageType: 'text',
-        timestamp: serverTimestamp(),
-        user_id: auth.currentUser.uid,
-        user_email: auth.currentUser.email
-      });
-    }
-  } catch(e) {
-    console.error('Chat send error:', e);
-    alert('Error sending message. Please try again.');
-    // Restore the message so user can retry
-    $('chatInput').value = msg;
-  }
+function appendMsg(container,text,ts,isMe,isAdmin=false,senderName=''){
+  const row=document.createElement('div'); row.className=`message-row ${isMe?'user-row':'other-row'}`;
+  if(!isMe&&senderName){const lbl=document.createElement('div');lbl.className='msg-sender-label';lbl.textContent=isAdmin?'Admin':senderName;row.appendChild(lbl);}
+  const bubble=document.createElement('div'); bubble.className=isMe?'user-bubble':(isAdmin?'admin-bubble':'other-bubble');
+  bubble.textContent=text;
+  const time=document.createElement('div'); time.className='message-time';
+  time.textContent=(ts instanceof Date?ts:new Date()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  row.appendChild(bubble); row.appendChild(time); container.appendChild(row); container.scrollTop=container.scrollHeight;
 }
 
-// ==================== AUTH MODAL ====================
-function showLoginModal() {
-  $('loginModal').style.display = 'flex';
+$('closeChat').addEventListener('click',()=>{$('chatModal').classList.remove('open');document.body.classList.remove('modal-open');if(unsubChat){unsubChat();unsubChat=null;}});
+$('sendChatBtn').addEventListener('click',sendChatMessage);
+$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMessage();}});
+
+async function sendChatMessage(){
+  const user=auth.currentUser; const msg=$('chatInput').value.trim();
+  if(!msg||!user||!activeConvId)return;
+  $('chatInput').value=''; $('chatInput').disabled=true; $('sendChatBtn').disabled=true;
+  try{
+    const isSeller=activeConvType==='ticket'&&myListings.some(l=>l.id===activeConvId);
+    const senderType=activeConvType==='vendor'?'vendor':(isSeller?'seller':'buyer');
+    const colPath=activeConvType==='vendor'?collection(db,'vendors',activeConvId,'conversation'):collection(db,'ticket_listings',activeConvId,'conversation');
+    await addDoc(colPath,{sender:senderType,senderName:user.displayName||user.email||'User',message:msg,messageType:'text',timestamp:serverTimestamp(),user_id:user.uid,user_email:user.email,...(activeConvType==='vendor'?{read_by_admin:false,read_by_vendor:true}:{})});
+  }catch(e){console.error('Send error:',e);$('chatInput').value=msg;alert('Failed to send. Please try again.');}
+  finally{$('chatInput').disabled=false;$('sendChatBtn').disabled=false;$('chatInput').focus();}
 }
 
-document.querySelector('.close-login').onclick = () => {
-  $('loginModal').style.display = 'none';
+function showLoginModal(){$('loginModal').classList.add('open');}
+document.querySelector('.close-login').onclick=()=>$('loginModal').classList.remove('open');
+$('signInNavBtn').addEventListener('click',showLoginModal);
+
+$('toggleAuth').onclick=()=>{
+  isLoginMode=!isLoginMode;
+  $('authTitle').textContent=isLoginMode?'Sign in':'Create account';
+  $('emailAuthBtn').textContent=isLoginMode?'Sign in':'Create account';
+  $('toggleAuth').textContent=isLoginMode?"Don't have an account? Sign up":"Have an account? Sign in";
+  $('forgotPassword').style.display=isLoginMode?'block':'none';
 };
 
-$('toggleAuth').onclick = () => {
-  isLoginMode = !isLoginMode;
-  $('authTitle').textContent = isLoginMode ? 'Sign in' : 'Create account';
-  $('emailAuthBtn').textContent = isLoginMode ? 'Sign in' : 'Create account';
-  $('toggleAuth').textContent = isLoginMode ? "Don't have an account? Sign up" : "Have an account? Sign in";
-  $('forgotPassword').style.display = isLoginMode ? 'block' : 'none';
+$('togglePassword').onclick=()=>{
+  const pf=$('passwordField'); pf.type=pf.type==='password'?'text':'password';
+  $('togglePassword').textContent=pf.type==='password'?'Show':'Hide';
 };
 
-$('togglePassword').onclick = () => {
-  const pf = $('passwordField');
-  pf.type = pf.type === 'password' ? 'text' : 'password';
-  $('togglePassword').textContent = pf.type === 'password' ? 'Show' : 'Hide';
-};
-
-$('googleLoginBtn').addEventListener('click', () => {
-  setPersistence(auth, browserLocalPersistence)
-    .then(() => signInWithPopup(auth, provider))
-    .then(() => {
-      $('loginModal').style.display = 'none';
-      if(pendingLoginAction) {
-        pendingLoginAction();
-        pendingLoginAction = null;
-      }
-    })
-    .catch(e => alert('Google login failed: ' + e.message));
+$('googleLoginBtn').addEventListener('click',()=>{
+  setPersistence(auth,browserLocalPersistence).then(()=>signInWithPopup(auth,provider)).then(()=>{$('loginModal').classList.remove('open');if(pendingLoginAction){pendingLoginAction();pendingLoginAction=null;}}).catch(e=>alert('Google sign-in failed: '+e.message));
 });
 
-$('emailAuthBtn').addEventListener('click', () => {
-  const email = $('emailField').value.trim();
-  const pass = $('passwordField').value.trim();
-
-  if(!email || !pass) {
-    alert('Enter email and password.');
-    return;
-  }
-
-  const fn = isLoginMode ? signInWithEmailAndPassword : createUserWithEmailAndPassword;
-  fn(auth, email, pass)
-    .then(() => {
-      $('loginModal').style.display = 'none';
-      if(pendingLoginAction) {
-        pendingLoginAction();
-        pendingLoginAction = null;
-      }
-    })
-    .catch(e => alert(e.message));
+$('emailAuthBtn').addEventListener('click',()=>{
+  const email=$('emailField').value.trim(); const pass=$('passwordField').value.trim();
+  if(!email||!pass){alert('Enter email and password.');return;}
+  const fn=isLoginMode?signInWithEmailAndPassword:createUserWithEmailAndPassword;
+  fn(auth,email,pass).then(()=>{$('loginModal').classList.remove('open');if(pendingLoginAction){pendingLoginAction();pendingLoginAction=null;}}).catch(e=>alert(e.message));
 });
 
-$('forgotPassword').onclick = () => {
-  const email = $('emailField').value.trim();
-  if(!email) {
-    alert('Enter your email.');
-    return;
-  }
-  sendPasswordResetEmail(auth, email)
-    .then(() => alert('Reset email sent!'))
-    .catch(e => alert(e.message));
+$('forgotPassword').onclick=()=>{
+  const email=$('emailField').value.trim();
+  if(!email){alert('Enter your email address first.');return;}
+  sendPasswordResetEmail(auth,email).then(()=>alert('Password reset email sent!')).catch(e=>alert(e.message));
 };
 
-$('logoutBtn').addEventListener('click', async() => {
-  if(!confirm('Sign out?')) return;
-  await signOut(auth);
-  window.location.href = 'index.html';
+$('logoutBtn').addEventListener('click',async()=>{
+  if(!confirm('Sign out of VendHub?'))return;
+  await signOut(auth); window.location.href='index.html';
 });
 
-// ==================== VENDOR FILTERS ====================
-document.querySelectorAll('.categories div').forEach(div => {
-  div.addEventListener('click', () => {
-    document.querySelectorAll('.categories div').forEach(d => d.classList.remove('active'));
-    div.classList.add('active');
-    vendorFilter.category = div.dataset.category;
-    renderVendorEvents();
+document.querySelectorAll('.categories div').forEach(div=>{
+  div.addEventListener('click',()=>{
+    document.querySelectorAll('.categories div').forEach(d=>d.classList.remove('active'));
+    div.classList.add('active'); vendorFilter.category=div.dataset.category; renderVendorEvents();
   });
 });
+$('eventSearch').addEventListener('input',e=>{vendorFilter.search=e.target.value;renderVendorEvents();});
+$('eventSearchMobile').addEventListener('input',e=>{vendorFilter.search=e.target.value;renderVendorEvents();});
 
-$('eventSearch').addEventListener('input', e => {
-  vendorFilter.search = e.target.value;
-  renderVendorEvents();
-});
-
-$('eventSearchMobile').addEventListener('input', e => {
-  vendorFilter.search = e.target.value;
-  renderVendorEvents();
-});
-
-// ==================== COUNTDOWN ====================
-function pickCountdownEvent(events) {
-  const now = Date.now();
-  const up = events.filter(e => e.startDate.getTime() > now).sort((a, b) => a.startDate - b.startDate);
-
-  if(!up.length) return;
-
-  const w30 = up.filter(e => e.startDate.getTime() - now <= 30 * 86400000);
-  const chosen = (w30.length ? w30 : up)[0];
-
-  if(chosen.startDate.getTime() <= now) {
-    $('countdownOuter').style.display = 'none';
-    return;
+function pickCountdownEvent(events){
+  const now=Date.now();
+  const up=events.filter(e=>e.startDate.getTime()>now).sort((a,b)=>a.startDate-b.startDate);
+  if(!up.length){$('countdownOuter').style.display='none';return;}
+  const w30=up.filter(e=>e.startDate.getTime()-now<=30*86400000);
+  const chosen=(w30.length?w30:up)[0];
+  if(chosen.startDate.getTime()<=now){$('countdownOuter').style.display='none';return;}
+  $('countdownOuter').style.display='';
+  $('countdownEventName').textContent=chosen.title||'Upcoming';
+  if(countdownInterval)clearInterval(countdownInterval);
+  function tick(){
+    const diff=chosen.startDate.getTime()-Date.now();
+    if(diff<=0){clearInterval(countdownInterval);$('countdownOuter').style.display='none';return;}
+    $('days').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
+    $('hours').textContent=String(Math.floor(diff/3600000%24)).padStart(2,'0');
+    $('minutes').textContent=String(Math.floor(diff/60000%60)).padStart(2,'0');
+    $('seconds').textContent=String(Math.floor(diff/1000%60)).padStart(2,'0');
   }
-
-  $('countdownOuter').style.display = '';
-  $('countdownEventName').textContent = chosen.title || 'Upcoming';
-
-  if(countdownInterval) clearInterval(countdownInterval);
-
-  function tick() {
-    const diff = chosen.startDate.getTime() - Date.now();
-    if(diff <= 0) {
-      clearInterval(countdownInterval);
-      $('countdownOuter').style.display = 'none';
-      return;
-    }
-    $('days').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
-    $('hours').textContent = String(Math.floor(diff / 3600000 % 24)).padStart(2, '0');
-    $('minutes').textContent = String(Math.floor(diff / 60000 % 60)).padStart(2, '0');
-    $('seconds').textContent = String(Math.floor(diff / 1000 % 60)).padStart(2, '0');
-  }
-
-  tick();
-  countdownInterval = setInterval(tick, 1000);
+  tick(); countdownInterval=setInterval(tick,1000);
 }
 
-// ==================== CLOSE MODALS ====================
-window.addEventListener('click', e => {
-  if(e.target === $('eventModal')) {
-    $('eventModal').style.display = 'none';
-    document.body.classList.remove('modal-open');
-  }
-  if(e.target === $('loginModal')) {
-    $('loginModal').style.display = 'none';
-  }
-  if(e.target === $('tktModal')) {
-    $('tktModal').classList.remove('open');
-    document.body.classList.remove('modal-open');
-  }
-  if(e.target === $('chatModal')) {
-    $('chatModal').classList.remove('open');
-    document.body.classList.remove('modal-open');
-    if(unsubChat) {
-      unsubChat();
-      unsubChat = null;
-    }
-  }
+window.addEventListener('click',e=>{
+  if(e.target===$('eventModal')){$('eventModal').style.display='none';document.body.classList.remove('modal-open');}
+  if(e.target===$('loginModal')){$('loginModal').classList.remove('open');}
+  if(e.target===$('tktModal')){$('tktModal').classList.remove('open');document.body.classList.remove('modal-open');}
+  if(e.target===$('chatModal')){$('chatModal').classList.remove('open');document.body.classList.remove('modal-open');if(unsubChat){unsubChat();unsubChat=null;}}
 });
 
-// ==================== OFFLINE ====================
-window.addEventListener('online', () => {
-  $('offline-bar').classList.remove('show');
-});
+window.addEventListener('online',()=>$('offline-bar').classList.remove('show'));
+window.addEventListener('offline',()=>$('offline-bar').classList.add('show'));
+if(!navigator.onLine)$('offline-bar').classList.add('show');
 
-window.addEventListener('offline', () => {
-  $('offline-bar').classList.add('show');
-});
-
-if(!navigator.onLine) {
-  $('offline-bar').classList.add('show');
-}
-
-// ==================== CLEANUP ON UNAUTH ====================
-// Clean up all subscriptions when user signs out
-onAuthStateChanged(auth, user => {
-  if(!user) {
-    // Clean up all Firestore listeners
-    Object.values(chatUnsubs).forEach(unsub => {
-      if(unsub) unsub();
-    });
-    chatUnsubs = {};
-  }
+onAuthStateChanged(auth,user=>{
+  if(!user){Object.values(chatUnsubs).forEach(u=>{if(u)u();});chatUnsubs={};if(unsubChat){unsubChat();unsubChat=null;}}
 });
 </script>
+
 </body>
 </html>
