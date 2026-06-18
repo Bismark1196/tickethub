@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VendHub — USA Vendor Booths & Resale Tickets</title>
+<title>VendHub â USA Vendor Booths & Resale Tickets</title>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -59,7 +59,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 #signInNavBtn.visible{display:flex;}
 .admin-nav-group{display:none;align-items:center;gap:6px;}
 .admin-nav-group.show{display:flex;}
-.nav-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.05em;text-decoration:none;cursor:pointer;border:none;transition:all var(--dur) var(--ease);white-space:nowrap;}
+.nav-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.05em;text-decoration:none;cursor:pointer;border:none;background:none;color:rgba(255,255,255,.7);transition:all var(--dur) var(--ease);white-space:nowrap;}
 .nav-pill svg{width:11px;height:11px;}
 .nav-pill-ghost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);}
 .nav-pill-ghost:hover{background:rgba(255,255,255,.16);color:var(--white);}
@@ -153,7 +153,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .event-date-badge svg{width:10px;height:10px;flex-shrink:0;opacity:.7;}
 .event-date-more{font-family:'Syne',sans-serif;font-size:10px;font-weight:600;color:var(--ink-50);background:var(--paper-alt);border:1px solid var(--ink-10);padding:3px 8px;border-radius:var(--r-pill);}
 .event-location{font-size:12.5px;color:var(--ink-50);font-weight:500;display:flex;align-items:center;gap:5px;}
-.event-location::before{content:"📍";font-size:10px;}
+.event-location::before{content:"ð";font-size:10px;}
 .event-address{font-size:11.5px;color:rgba(12,12,12,.36);margin-top:3px;padding-left:17px;}
 .past-section-divider{grid-column:1/-1;display:flex;align-items:center;gap:18px;margin:18px 0 8px;}
 .past-section-divider-line{flex:1;height:1px;background:var(--ink-10);}
@@ -210,7 +210,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tkt-search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--ink-50);pointer-events:none;}
 .tkt-search-wrap input{width:100%;padding:9px 16px 9px 38px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--paper);outline:none;transition:all var(--dur) var(--ease);}
 .tkt-search-wrap input:focus{border-color:var(--violet-md);background:var(--white);box-shadow:0 0 0 3px rgba(124,58,237,.10);}
-.tkt-sort-select{padding:9px 32px 9px 14px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:600;color:var(--ink);background:var(--paper);outline:none;cursor:pointer;appearance:none;flex-shrink:0;background-image:url("data:image/svg+xml,%3Csvg width='10' height='7' viewBox='0 0 10 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 6L9 1' stroke='%230c0c0c' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.tkt-sort-select{padding:9px 32px 9px 14px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:600;color:var(--ink);background:var(--paper);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;flex-shrink:0;background-image:url("data:image/svg+xml,%3Csvg width='10' height='7' viewBox='0 0 10 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 6L9 1' stroke='%230c0c0c' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
 .tkt-sport-pills{display:flex;gap:6px;flex-wrap:wrap;}
 .tkt-sport-pill{padding:5px 13px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all var(--dur) var(--ease);color:var(--ink-50);border:1.5px solid var(--ink-10);background:var(--paper);}
 .tkt-sport-pill:hover{background:var(--paper-alt);color:var(--ink);}
@@ -274,6 +274,72 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .mlc-status-msg.pending{color:var(--amber);}
 .mlc-status-msg.approved{color:var(--green-md);}
 
+/* ===== RESPONSIVE - FIXED: Seller name now displays on mobile ===== */
+@media(max-width:1024px){:root{--pad-h:28px;}}
+@media(max-width:768px){
+  :root{--pad-h:14px;}
+  .hero{min-height:420px;}
+  .hero-body{padding:40px var(--pad-h) 72px;}
+  .hero-cta-row{flex-direction:column;align-items:flex-start;gap:8px;}
+  .hero-cta-primary,.hero-cta-secondary{width:100%;justify-content:center;}
+  .mode-tab{padding:13px 14px;font-size:11px;}
+  .mode-tab .mode-tab-badge{display:none;}
+  .controls-divider,.search-wrap{display:none;}
+  .mobile-search{display:block;}
+  .events-grid,.ticket-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .event-card img{height:116px;}
+  .tc-img img{height:126px;}
+  .event-content{padding:10px 12px 13px;}
+  .event-content h3{font-size:12.5px;margin-bottom:5px;}
+  .tc-body{padding:10px 12px 13px;}
+  .tc-title{font-size:14px;}
+  /* FIXED: Show seller info on mobile with compact styling */
+  .tc-seller{padding:6px 8px;gap:6px;}
+  .tc-seller-av{width:22px;height:22px;font-size:9px;}
+  .tc-seller-name{font-size:11px;font-weight:600;}
+  .tc-seller-rating{font-size:10px;}
+  .tc-seller-rating{display:none;}
+  .tc-verified{display:none;}
+  .tc-avail-row{display:none;}
+  .tc-buy-btn{display:none;}
+  .event-date-badge{font-size:9.5px;padding:3px 7px;}
+  .event-location{font-size:11px;}
+  .event-address{display:none;}
+  .hero h1{font-size:clamp(34px,10vw,54px);}
+  .countdown-section{flex-direction:column;align-items:flex-start;padding:28px 24px;gap:20px;}
+  #countdown{justify-content:flex-start;}
+  .time{padding:14px 17px;min-width:64px;}
+  .time span{font-size:30px;}
+  .footer-grid{grid-template-columns:1fr;gap:32px;}
+  #openChatBtn{width:56px;height:56px;border-radius:50%;padding:0;justify-content:center;gap:0;bottom:20px;right:20px;}
+  #openChatBtn .chat-btn-text{display:none;}
+  .chat-modal{padding:0;align-items:flex-end;}
+  .chat-container{max-width:100%;border-radius:0;height:100dvh;}
+  .modal-content{border-radius:var(--r-xl);}
+  .modal-img-wrap{height:210px;}
+  .modal-scroll-area{padding:0 20px 20px;}
+  .modal-title-block{padding:18px 20px 14px;}
+  .modal-apply-wrap{padding:16px 20px 20px;}
+  .modal-highlights{grid-template-columns:1fr;}
+  .login-modal-content{padding:30px 22px;}
+  #appDrawer{width:100%;max-width:100%;}
+  .sell-form-card{padding:22px;}
+  .form-grid-2{grid-template-columns:1fr;}
+  .tkt-modal-box{max-height:100dvh;border-radius:0;}
+  .my-listings-grid{grid-template-columns:1fr;}
+  .tkt-success-actions{flex-direction:column;}
+  .user-name{display:none;}
+}
+
+@media(max-width:480px){
+  .ticket-grid{grid-template-columns:1fr;}
+  .tc-seller-name{font-size:10.5px;}
+  .tc-seller-av{width:20px;height:20px;font-size:8.5px;}
+  .tc-seller{padding:5px 7px;gap:5px;}
+}
+
+/* ===== REMAINING STYLES (UNCHANGED) ===== */
+
 /* ===== TICKET PURCHASE MODAL ===== */
 .tkt-modal{display:none;position:fixed;inset:0;background:rgba(12,12,12,.68);backdrop-filter:blur(14px);align-items:center;justify-content:center;z-index:1000;padding:20px;animation:fadeIn .18s var(--ease);}
 .tkt-modal.open{display:flex;}
@@ -306,6 +372,10 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tkt-share-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--r-pill);border:1.5px solid var(--violet);background:var(--violet-pale);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--violet);cursor:pointer;transition:all var(--dur) var(--ease);flex-shrink:0;}
 .tkt-share-btn:hover{background:var(--violet);color:var(--white);border-color:var(--violet);}
 .tkt-share-btn svg{width:12px;height:12px;}
+.tc-link-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--r-sm);border:1px solid var(--ink-10);background:var(--white);cursor:pointer;transition:all var(--dur) var(--ease);flex-shrink:0;position:absolute;top:12px;right:12px;}
+.tc-link-btn:hover{background:var(--ink);border-color:var(--ink);}
+.tc-link-btn:hover svg{stroke:var(--white);}
+.tc-link-btn svg{width:14px;height:14px;stroke:var(--ink);transition:stroke var(--dur) var(--ease);}
 .share-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:var(--white);padding:12px 20px;border-radius:var(--r-md);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;opacity:0;transition:all var(--dur) var(--ease);z-index:2000;pointer-events:none;}
 .share-toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 .tkt-qty-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--paper);border-radius:var(--r-md);border:1px solid var(--ink-10);}
@@ -397,7 +467,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .modal-contact-value{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .modal-highlights{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .modal-highlight-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--paper);border:1px solid var(--ink-05);border-radius:var(--r-sm);font-size:13px;color:rgba(12,12,12,.68);}
-.modal-highlight-item::before{content:'✓';width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--gold);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.modal-highlight-item::before{content:'â';width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--gold);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .modal-apply-wrap{padding:20px 28px 28px;border-top:1px solid var(--ink-05);background:var(--white);flex-shrink:0;}
 .modal-apply-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:14px 20px;background:linear-gradient(135deg,var(--gold-dk),var(--gold));color:var(--ink);border-radius:var(--r-md);font-family:'Syne',sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:none;transition:all var(--dur) var(--ease);}
 .modal-apply-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,46,.42);}
@@ -592,55 +662,6 @@ footer a:hover{text-decoration:underline;}
 @keyframes slideUp{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes slideInL{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
 body.modal-open{overflow:hidden;}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:1024px){:root{--pad-h:28px;}}
-@media(max-width:768px){
-  :root{--pad-h:14px;}
-  .hero{min-height:420px;}
-  .hero-body{padding:40px var(--pad-h) 72px;}
-  .hero-cta-row{flex-direction:column;align-items:flex-start;gap:8px;}
-  .hero-cta-primary,.hero-cta-secondary{width:100%;justify-content:center;}
-  .mode-tab{padding:13px 14px;font-size:11px;}
-  .mode-tab .mode-tab-badge{display:none;}
-  .controls-divider,.search-wrap{display:none;}
-  .mobile-search{display:block;}
-  .events-grid,.ticket-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
-  .event-card img{height:116px;}
-  .tc-img img{height:126px;}
-  .event-content{padding:10px 12px 13px;}
-  .event-content h3{font-size:12.5px;margin-bottom:5px;}
-  .tc-body{padding:10px 12px 13px;}
-  .tc-title{font-size:14px;}
-  .tc-seller,.tc-avail-row,.tc-buy-btn{display:none;}
-  .event-date-badge{font-size:9.5px;padding:3px 7px;}
-  .event-location{font-size:11px;}
-  .event-address{display:none;}
-  .hero h1{font-size:clamp(34px,10vw,54px);}
-  .countdown-section{flex-direction:column;align-items:flex-start;padding:28px 24px;gap:20px;}
-  #countdown{justify-content:flex-start;}
-  .time{padding:14px 17px;min-width:64px;}
-  .time span{font-size:30px;}
-  .footer-grid{grid-template-columns:1fr;gap:32px;}
-  #openChatBtn{width:56px;height:56px;border-radius:50%;padding:0;justify-content:center;gap:0;bottom:20px;right:20px;}
-  #openChatBtn .chat-btn-text{display:none;}
-  .chat-modal{padding:0;align-items:flex-end;}
-  .chat-container{max-width:100%;border-radius:0;height:100dvh;}
-  .modal-content{border-radius:var(--r-xl);}
-  .modal-img-wrap{height:210px;}
-  .modal-scroll-area{padding:0 20px 20px;}
-  .modal-title-block{padding:18px 20px 14px;}
-  .modal-apply-wrap{padding:16px 20px 20px;}
-  .modal-highlights{grid-template-columns:1fr;}
-  .login-modal-content{padding:30px 22px;}
-  #appDrawer{width:100%;max-width:100%;}
-  .sell-form-card{padding:22px;}
-  .form-grid-2{grid-template-columns:1fr;}
-  .tkt-modal-box{max-height:100dvh;border-radius:0;}
-  .my-listings-grid{grid-template-columns:1fr;}
-  .tkt-success-actions{flex-direction:column;}
-  .user-name{display:none;}
-}
 </style>
 </head>
 
@@ -685,8 +706,8 @@ body.modal-open{overflow:hidden;}
 
   <div class="hero-body">
     <div class="hero-eyebrow">USA Marketplace</div>
-    <h1>Vendor Booths,<br><em>Resale Tickets</em><br>— All in One Place</h1>
-    <p class="hero-sub">Apply for vendor booths at US events or buy and sell resale tickets for football, World Cup, music and more — directly between verified fans.</p>
+    <h1>Vendor Booths,<br><em>Resale Tickets</em><br>â All in One Place</h1>
+    <p class="hero-sub">Apply for vendor booths at US events or buy and sell resale tickets for football, World Cup, music and more â directly between verified fans.</p>
     <div class="hero-cta-row">
       <button class="hero-cta-primary" onclick="document.querySelector('.mode-tab[data-mode=vendors]').click()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -723,7 +744,7 @@ body.modal-open{overflow:hidden;}
   <div class="mobile-search-inner">
     <div class="mobile-search-wrap">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="eventSearchMobile" placeholder="Search events, cities…" autocomplete="off"/>
+      <input type="text" id="eventSearchMobile" placeholder="Search events, citiesâ¦" autocomplete="off"/>
     </div>
   </div>
 </div>
@@ -733,18 +754,18 @@ body.modal-open{overflow:hidden;}
   <div class="mode-tabs-inner">
     <button class="mode-tab active" data-mode="vendors">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Vendor Booths
+      Vendors
       <span class="mode-tab-badge" id="vendorTabBadge">12</span>
     </button>
     <button class="mode-tab" data-mode="tickets">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
-      Buy Tickets
+      Buy Ticket
       <span class="mode-tab-badge" id="ticketTabBadge">12</span>
     </button>
     <button class="mode-tab" data-mode="sell">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      Sell a Ticket
-      <span class="mode-tab-badge">List Now</span>
+      Sell Ticket
+      <span class="mode-tab-badge">List</span>
     </button>
   </div>
 </div>
@@ -754,18 +775,18 @@ body.modal-open{overflow:hidden;}
   <div class="controls-bar-inner">
     <div class="categories">
       <div data-category="all" class="active">All Events</div>
-      <div data-category="Music">🎵 Music</div>
-      <div data-category="Festivals">🎉 Festivals</div>
-      <div data-category="Arts">🎨 Arts</div>
-      <div data-category="Business">🏢 Business</div>
-      <div data-category="Markets">🛍 Markets</div>
-      <div data-category="Food">🍴 Food</div>
+      <div data-category="Music">ðµ Music</div>
+      <div data-category="Festivals">ð Festivals</div>
+      <div data-category="Arts">ð¨ Arts</div>
+      <div data-category="Business">ð¢ Business</div>
+      <div data-category="Markets">ð Markets</div>
+      <div data-category="Food">ð´ Food</div>
     </div>
     <div class="controls-divider"></div>
     <div class="controls-right">
       <div class="search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="eventSearch" placeholder="Search events, states…" autocomplete="off"/>
+        <input type="text" id="eventSearch" placeholder="Search events, statesâ¦" autocomplete="off"/>
       </div>
     </div>
   </div>
@@ -774,7 +795,7 @@ body.modal-open{overflow:hidden;}
 <!-- VENDOR PANEL -->
 <section class="section" id="vendorPanel">
   <div class="section-header">
-    <h2>USA Vendor Events</h2>
+    <h2>US Vendor Events</h2>
     <span class="results-count" id="resultsCount"></span>
   </div>
   <div class="events-grid" id="eventsGrid"></div>
@@ -786,27 +807,27 @@ body.modal-open{overflow:hidden;}
     <div class="tkt-filter-row">
       <div class="tkt-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="tktSearch" placeholder="Search events, cities, venues…" autocomplete="off"/>
+        <input type="text" id="tktSearch" placeholder="Search events, cities, venuesâ¦" autocomplete="off"/>
       </div>
       <select id="tktSort" class="tkt-sort-select">
         <option value="default">Featured</option>
-        <option value="price-asc">Price: low → high</option>
-        <option value="price-desc">Price: high → low</option>
+        <option value="price-asc">Price: low â high</option>
+        <option value="price-desc">Price: high â low</option>
         <option value="qty-desc">Most available</option>
       </select>
     </div>
     <div class="tkt-sport-pills">
       <div class="tkt-sport-pill active" data-sport="all">All</div>
-      <div class="tkt-sport-pill" data-sport="worldcup">🏆 World Cup</div>
-      <div class="tkt-sport-pill" data-sport="football">⚽ Football</div>
-      <div class="tkt-sport-pill" data-sport="music">🎵 Music</div>
-      <div class="tkt-sport-pill" data-sport="basketball">🏀 Basketball</div>
-      <div class="tkt-sport-pill" data-sport="tennis">🎾 Tennis</div>
+      <div class="tkt-sport-pill" data-sport="worldcup">ð World Cup</div>
+      <div class="tkt-sport-pill" data-sport="football">â½ Football</div>
+      <div class="tkt-sport-pill" data-sport="music">ðµ Music</div>
+      <div class="tkt-sport-pill" data-sport="basketball">ð Basketball</div>
+      <div class="tkt-sport-pill" data-sport="tennis">ð¾ Tennis</div>
     </div>
   </div>
   <div class="tkt-results-row">
     <span class="results-count" id="ticketsResultsCount"></span>
-    <button class="tkt-clear-btn" id="tktClearBtn">✕ Clear filters</button>
+    <button class="tkt-clear-btn" id="tktClearBtn">â Clear filters</button>
   </div>
   <div class="ticket-grid" id="ticketGrid"></div>
 </section>
@@ -818,7 +839,7 @@ body.modal-open{overflow:hidden;}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
     <div class="sell-intro-text">
       <h4>Admin approval required</h4>
-      <p>All listings are reviewed before going live — usually within 24 hours. Upload a clear screenshot of your ticket confirmation to speed up approval. Once approved, buyers can contact you directly via in-app chat.</p>
+      <p>All listings are reviewed before going live â usually within 24 hours. Upload a clear screenshot of your ticket confirmation to speed up approval. Once approved, buyers can contact you directly via in-app chat.</p>
     </div>
   </div>
   <div id="sellFormWrap"></div>
@@ -833,7 +854,7 @@ body.modal-open{overflow:hidden;}
   <div class="countdown-section">
     <div class="countdown-label">
       <p>Starting soon</p>
-      <h3 id="countdownEventName">—</h3>
+      <h3 id="countdownEventName">â</h3>
     </div>
     <div id="countdown">
       <div class="time"><span id="days">00</span><span class="time-label">Days</span></div>
@@ -911,12 +932,13 @@ body.modal-open{overflow:hidden;}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           Share
         </button>
+        <a class="tkt-direct-link" id="tktDirectLink" href="#" target="_blank" style="display:none;"></a>
       </div>
       <div class="tkt-section-label">Quantity</div>
       <div class="tkt-qty-row">
         <span class="tkt-qty-label">Tickets</span>
         <div class="tkt-qty-ctrl">
-          <button class="tkt-qty-btn" id="tktQtyMinus">−</button>
+          <button class="tkt-qty-btn" id="tktQtyMinus">â</button>
           <span class="tkt-qty-num" id="tktQtyNum">1</span>
           <button class="tkt-qty-btn" id="tktQtyPlus">+</button>
         </div>
@@ -931,7 +953,7 @@ body.modal-open{overflow:hidden;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         Confirm purchase
       </button>
-      <p class="tkt-checkout-note">Secure transfer · Buyer guarantee · No hidden fees</p>
+      <p class="tkt-checkout-note">Secure transfer Â· Buyer guarantee Â· No hidden fees</p>
     </div>
   </div>
 </div>
@@ -940,17 +962,17 @@ body.modal-open{overflow:hidden;}
 <div class="tkt-success-modal" id="tktSuccessModal">
   <div class="tkt-success-box">
     <div class="tkt-success-top">
-      <div class="tkt-success-icon">🎟️</div>
+      <div class="tkt-success-icon">ðï¸</div>
       <div class="tkt-success-headline">Purchase confirmed!</div>
       <div class="tkt-success-sub">Contact the seller to arrange transfer.</div>
     </div>
     <div class="tkt-success-body">
       <div class="tkt-ticket-stub">
         <div class="tkt-stub-event" id="stubEventName">Event</div>
-        <div class="tkt-stub-row"><span class="tkt-stub-key">Seller</span><span class="tkt-stub-val" id="stubSeller">—</span></div>
-        <div class="tkt-stub-row"><span class="tkt-stub-key">Qty</span><span class="tkt-stub-val" id="stubQty">—</span></div>
-        <div class="tkt-stub-row"><span class="tkt-stub-key">Total</span><span class="tkt-stub-val" id="stubTotal">—</span></div>
-        <div class="tkt-stub-row"><span class="tkt-stub-key">Date</span><span class="tkt-stub-val" id="stubDate">—</span></div>
+        <div class="tkt-stub-row"><span class="tkt-stub-key">Seller</span><span class="tkt-stub-val" id="stubSeller">â</span></div>
+        <div class="tkt-stub-row"><span class="tkt-stub-key">Qty</span><span class="tkt-stub-val" id="stubQty">â</span></div>
+        <div class="tkt-stub-row"><span class="tkt-stub-key">Total</span><span class="tkt-stub-val" id="stubTotal">â</span></div>
+        <div class="tkt-stub-row"><span class="tkt-stub-key">Date</span><span class="tkt-stub-val" id="stubDate">â</span></div>
         <div class="tkt-barcode">
           <div class="tkt-barcode-bars" id="barcodeEl"></div>
           <div class="tkt-barcode-num" id="barcodeNum"></div>
@@ -1031,7 +1053,7 @@ body.modal-open{overflow:hidden;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
         Apply as vendor
       </button>
-      <p class="modal-apply-note" id="modalApplyNote">Free to apply · Organiser approval</p>
+      <p class="modal-apply-note" id="modalApplyNote">Free to apply Â· Organiser approval</p>
     </div>
   </div>
 </div>
@@ -1061,7 +1083,7 @@ body.modal-open{overflow:hidden;}
 
 <!-- CHAT BUTTON -->
 <button id="openChatBtn" aria-label="Open chat">
-  <div class="chat-btn-icon">💬</div>
+  <div class="chat-btn-icon">ð¬</div>
   <span class="chat-btn-text">Chat</span>
   <span id="unreadBadge"></span>
 </button>
@@ -1071,7 +1093,7 @@ body.modal-open{overflow:hidden;}
   <div class="chat-container">
     <div class="chat-header">
       <div class="chat-admin-info">
-        <div class="chat-avatar" id="chatAvatar">💬</div>
+        <div class="chat-avatar" id="chatAvatar">ð¬</div>
         <div class="chat-header-text">
           <div class="chat-context-name" id="chatContextName">Conversations</div>
           <div class="chat-context-label" id="chatContextLabel">Select a thread below</div>
@@ -1084,13 +1106,13 @@ body.modal-open{overflow:hidden;}
     <div class="chat-context-bar" id="chatContextBar"></div>
     <div id="chatMessages" class="chat-messages">
       <div class="chat-no-convo">
-        <div class="chat-no-convo-icon">💬</div>
+        <div class="chat-no-convo-icon">ð¬</div>
         <div class="chat-no-convo-title">No conversation selected</div>
         <div class="chat-no-convo-sub">Select a thread above to start chatting.</div>
       </div>
     </div>
     <div class="chat-input-area">
-      <input type="text" id="chatInput" placeholder="Type a message…" autocomplete="off" disabled>
+      <input type="text" id="chatInput" placeholder="Type a messageâ¦" autocomplete="off" disabled>
       <button class="chat-send-btn" id="sendChatBtn" aria-label="Send" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
@@ -1099,7 +1121,7 @@ body.modal-open{overflow:hidden;}
 </div>
 
 <!-- OFFLINE BAR -->
-<div id="offline-bar">You're offline — some features may be unavailable</div>
+<div id="offline-bar">You're offline â some features may be unavailable</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1107,7 +1129,7 @@ body.modal-open{overflow:hidden;}
     <div class="footer-grid">
       <div>
         <div class="footer-logo">Vend<span>Hub</span></div>
-        <div class="footer-flag">🇺🇸 USA Marketplace</div>
+        <div class="footer-flag">US Marketplace</div>
         <p>VendHub is America's marketplace for vendor booth applications and peer-to-peer ticket resale. From craft fairs to FIFA World Cup 2026.</p>
       </div>
       <div>
@@ -1115,11 +1137,14 @@ body.modal-open{overflow:hidden;}
         <p>Email: <a href="mailto:info@vendhub.com">info@vendhub.com</a></p>
       </div>
     </div>
-    <div class="footer-bottom">© 2026 VendHub. All Rights Reserved. · USA Vendor & Ticket Marketplace</div>
+    <div class="footer-bottom">Â© 2026 VendHub. All Rights Reserved. Â· USA Vendor & Ticket Marketplace</div>
   </div>
 </footer>
 
+<div class="share-toast" id="shareToast">Link copied to clipboard!</div>
+
 <script type="module">
+// JavaScript remains unchanged - the fix is purely CSS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup,
@@ -1151,20 +1176,20 @@ const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 const DEMO_EVENTS = [
-  {id:'demo-1',_isDemo:true,title:'Chicago Renegade Craft Fair',category:'Markets',location:'Union Park',state:'Illinois',address:'1501 W Randolph St, Chicago, IL 60607',image:'https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=600&q=80',description:"Chicago's favourite indie craft market with 300+ booths.",price:'From $50/booth',max_spots:'300',event_dates:['Jul 12, 2026 • 10:00 AM','Jul 13, 2026 • 10:00 AM'],contact_email:'chicago@renegadecraft.com'},
-  {id:'demo-2',_isDemo:true,title:'Austin Sustainable Makers Market',category:'Markets',location:'Republic Square Park',state:'Texas',address:'422 W 4th St, Austin, TX 78701',image:'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80',description:"Eco-conscious market with sustainable makers.",price:'$45 per space',max_spots:'80',event_dates:['Aug 2, 2026 • 9:00 AM'],contact_email:'info@austinsustainable.com'},
-  {id:'demo-3',_isDemo:true,title:'New Orleans Jazz Fest',category:'Festivals',location:'Fair Grounds',state:'Louisiana',address:'1751 Gentilly Blvd, New Orleans, LA',image:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80',description:"Jazz Fest's Vendor Village with 400+ artisans.",price:'$65 per booth',max_spots:'400',event_dates:['May 1, 2026 • 11:00 AM'],contact_email:'vendors@nojazzfest.com'},
-  {id:'demo-4',_isDemo:true,title:'Ann Arbor Art Fair',category:'Arts',location:'Downtown Ann Arbor',state:'Michigan',address:'South University Ave, Ann Arbor, MI',image:'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600&q=80',description:"Premier juried art fair with 1,000 artists.",price:'$40 per table',max_spots:'1000',event_dates:['Jul 16, 2026 • 10:00 AM'],contact_email:'info@artfair.org'},
+  {id:'demo-1',_isDemo:true,title:'Chicago Renegade Craft Fair',category:'Markets',location:'Union Park',state:'Illinois',address:'1501 W Randolph St, Chicago, IL 60607',image:'https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=600&q=80',description:"Chicago's favourite indie craft market with 300+ booths.",price:'From $50/booth',max_spots:'300',event_dates:['Jul 12, 2026 â¢ 10:00 AM','Jul 13, 2026 â¢ 10:00 AM'],contact_email:'chicago@renegadecraft.com'},
+  {id:'demo-2',_isDemo:true,title:'Austin Sustainable Makers Market',category:'Markets',location:'Republic Square Park',state:'Texas',address:'422 W 4th St, Austin, TX 78701',image:'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80',description:"Eco-conscious market with sustainable makers.",price:'$45 per space',max_spots:'80',event_dates:['Aug 2, 2026 â¢ 9:00 AM'],contact_email:'info@austinsustainable.com'},
+  {id:'demo-3',_isDemo:true,title:'New Orleans Jazz Fest',category:'Festivals',location:'Fair Grounds',state:'Louisiana',address:'1751 Gentilly Blvd, New Orleans, LA',image:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80',description:"Jazz Fest's Vendor Village with 400+ artisans.",price:'$65 per booth',max_spots:'400',event_dates:['May 1, 2026 â¢ 11:00 AM'],contact_email:'vendors@nojazzfest.com'},
+  {id:'demo-4',_isDemo:true,title:'Ann Arbor Art Fair',category:'Arts',location:'Downtown Ann Arbor',state:'Michigan',address:'South University Ave, Ann Arbor, MI',image:'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600&q=80',description:"Premier juried art fair with 1,000 artists.",price:'$40 per table',max_spots:'1000',event_dates:['Jul 16, 2026 â¢ 10:00 AM'],contact_email:'info@artfair.org'},
 ];
 
 const DEMO_LISTINGS = [
-  {id:'tkt-1',sport:'worldcup',title:'FIFA World Cup 2026 — USA vs Mexico',venue:'SoFi Stadium',city:'Los Angeles, CA',date:'Jun 22, 2026',time:'5:00 PM PT',image:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80',price:320,qty:2,seat:'Section 118, Row F',seller:{name:'Carlos M.',rating:'4.9 ⭐',sales:62,initial:'C',user_id:'seller-demo-1'}},
-  {id:'tkt-2',sport:'worldcup',title:'FIFA World Cup 2026 — Brazil vs Argentina',venue:'MetLife Stadium',city:'East Rutherford, NJ',date:'Jul 4, 2026',time:'8:00 PM ET',image:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80',price:780,qty:2,seat:'Section 138',seller:{name:'Priya S.',rating:'4.8 ⭐',sales:28,initial:'P',user_id:'seller-demo-2'}},
-  {id:'tkt-3',sport:'music',title:"Beyoncé — Renaissance Tour",venue:'United Center',city:'Chicago, IL',date:'Aug 14, 2026',time:'8:00 PM CT',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',price:280,qty:2,seat:'Section 113',seller:{name:'Lisa B.',rating:'5.0 ⭐',sales:52,initial:'L',user_id:'seller-demo-3'}},
-  {id:'tkt-4',sport:'basketball',title:'NBA Finals 2026 — Game 5',venue:'Crypto.com Arena',city:'Los Angeles, CA',date:'Jun 19, 2026',time:'9:00 PM ET',image:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',price:750,qty:2,seat:'Section 108',seller:{name:'Jordan T.',rating:'4.8 ⭐',sales:41,initial:'J',user_id:'seller-demo-4'}},
+  {id:'tkt-1',sport:'worldcup',title:'FIFA World Cup 2026 â USA vs Mexico',venue:'SoFi Stadium',city:'Los Angeles, CA',date:'Jun 22, 2026',time:'5:00 PM PT',image:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80',price:320,qty:2,seat:'Section 118, Row F',seller:{name:'Carlos M.',rating:'4.9 â­',sales:62,initial:'C',user_id:'seller-demo-1'}},
+  {id:'tkt-2',sport:'worldcup',title:'FIFA World Cup 2026 â Brazil vs Argentina',venue:'MetLife Stadium',city:'East Rutherford, NJ',date:'Jul 4, 2026',time:'8:00 PM ET',image:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80',price:780,qty:2,seat:'Section 138',seller:{name:'Priya S.',rating:'4.8 â­',sales:28,initial:'P',user_id:'seller-demo-2'}},
+  {id:'tkt-3',sport:'music',title:"BeyoncÃ© â Renaissance Tour",venue:'United Center',city:'Chicago, IL',date:'Aug 14, 2026',time:'8:00 PM CT',image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',price:280,qty:2,seat:'Section 113',seller:{name:'Lisa B.',rating:'5.0 â­',sales:52,initial:'L',user_id:'seller-demo-3'}},
+  {id:'tkt-4',sport:'basketball',title:'NBA Finals 2026 â Game 5',venue:'Crypto.com Arena',city:'Los Angeles, CA',date:'Jun 19, 2026',time:'9:00 PM ET',image:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=80',price:750,qty:2,seat:'Section 108',seller:{name:'Jordan T.',rating:'4.8 â­',sales:41,initial:'J',user_id:'seller-demo-4'}},
 ];
 
-const SPORT_LABEL = {worldcup:'🏆 World Cup 2026',football:'⚽ Football',basketball:'🏀 Basketball',tennis:'🎾 Tennis',music:'🎵 Music',boxing:'🥊 Boxing'};
+const SPORT_LABEL = {worldcup:'ð World Cup 2026',football:'â½ Football',basketball:'ð Basketball',tennis:'ð¾ Tennis',music:'ðµ Music',boxing:'ð¥ Boxing'};
 
 let currentMode = 'vendors';
 let vendorFilter = {search:'',category:'all'};
@@ -1185,9 +1210,10 @@ let countdownInterval = null;
 let chatUnsubs = {};
 let unreadCounts = {};
 let lastSeenTimestamps = {};
+let listingToPurchaseMap = {};
 
 const $ = id => document.getElementById(id);
-const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
 
 setPersistence(auth, browserLocalPersistence).catch(e => console.warn('Auth persist error:', e));
 
@@ -1211,6 +1237,7 @@ onAuthStateChanged(auth, user => {
     $('openChatBtn').classList.remove('visible');
     $('appCartBtn').classList.remove('visible');
     userApplicationsMap = {}; myListings = []; purchasedTickets = [];
+    listingToPurchaseMap = {};
     unreadCounts = {}; lastSeenTimestamps = {};
     Object.values(chatUnsubs).forEach(u => u && u());
     chatUnsubs = {};
@@ -1248,6 +1275,9 @@ function subscribePurchases(user) {
       const ticketId = d.orderId || ds.id;
       if (!seenIds.has(ticketId)) {
         seenIds.add(ticketId);
+        if (d.listingId) {
+          listingToPurchaseMap[d.listingId] = ds.id;
+        }
         newTickets.push({id:ticketId,listingId:d.listingId,event:d.eventName||d.ticketName||'Unknown Event',seller:{name:d.sellerName||'Seller',initial:d.sellerInitial||'?'},qty:d.qty||1,total:d.totalPrice||0,date:d.date||'',sport:d.sport||'other',seat:d.seat||'',venue:d.venue||'',city:d.city||''});
       }
     });
@@ -1269,19 +1299,37 @@ function startUnreadListeners() {
     });
   });
   purchasedTickets.forEach(t => {
-    if (!t.listingId) return;
-    const key='ticket_'+t.listingId;
+    if(!t.listingId) return;
+    const purchaseId = listingToPurchaseMap[t.listingId];
+    if (!purchaseId) return;
+    const key='purchase_'+purchaseId;
     if (chatUnsubs['unread_'+key]) return;
-    chatUnsubs['unread_'+key] = onSnapshot(query(collection(db,'ticket_listings',t.listingId,'conversation'),orderBy('timestamp','asc')), snap => {
+    chatUnsubs['unread_'+key] = onSnapshot(query(collection(db,'purchases',purchaseId,'conversation'),orderBy('timestamp','asc')), snap => {
       const lastSeen=lastSeenTimestamps[key]||new Date(0);
       let n=0; snap.forEach(ds => { const d=ds.data(); if(d.user_id!==uid&&d.timestamp?.toDate&&d.timestamp.toDate()>lastSeen) n++; });
       unreadCounts[key]=n; updateUnreadBadge(); buildChatContextBar();
     });
   });
-  myListings.forEach(l => {
-    const key='ticket_'+l.id;
+  myListings.forEach(async l => {
+    const purchaseId = listingToPurchaseMap[l.id];
+    if (!purchaseId) {
+      try {
+        const purchasesQuery = query(collection(db, 'purchases'), where('listingId', '==', l.id));
+        const snapshot = await getDocs(purchasesQuery);
+        if (!snapshot.empty) {
+          const firstPurchase = snapshot.docs[0];
+          listingToPurchaseMap[l.id] = firstPurchase.id;
+        }
+      } catch (error) {
+        console.error('Error finding purchase for listing:', error);
+      }
+    }
+    if (!listingToPurchaseMap[l.id]) return;
+    const alreadyShown=purchasedTickets.some(t=>t.listingId===l.id);
+    if(alreadyShown)return;
+    const key='listing_'+l.id;
     if (chatUnsubs['unread_'+key]) return;
-    chatUnsubs['unread_'+key] = onSnapshot(query(collection(db,'ticket_listings',l.id,'conversation'),orderBy('timestamp','asc')), snap => {
+    chatUnsubs['unread_'+key] = onSnapshot(query(collection(db,'purchases',listingToPurchaseMap[l.id],'conversation'),orderBy('timestamp','asc')), snap => {
       const lastSeen=lastSeenTimestamps[key]||new Date(0);
       let n=0; snap.forEach(ds => { const d=ds.data(); if(d.user_id!==uid&&d.timestamp?.toDate&&d.timestamp.toDate()>lastSeen) n++; });
       unreadCounts[key]=n; updateUnreadBadge(); buildChatContextBar();
@@ -1324,8 +1372,8 @@ async function loadEvents() {
       const dates=collectDates(d);
       if(!dates.length) return;
       let s,e;
-      try{s=new Date(dates[0].split('•')[0].trim());}catch(_){s=new Date();}
-      try{e=new Date(dates.at(-1).split('•')[0].trim());}catch(_){e=new Date();}
+      try{s=new Date(dates[0].split('â¢')[0].trim());}catch(_){s=new Date();}
+      try{e=new Date(dates.at(-1).split('â¢')[0].trim());}catch(_){e=new Date();}
       if(isNaN(s.getTime()))s=new Date();
       if(isNaN(e.getTime()))e=s;
       e.setHours(23,59,59,999);
@@ -1342,8 +1390,8 @@ async function loadEvents() {
 function normDemo(d) {
   const dates=collectDates(d);
   let s,e;
-  try{s=new Date(dates[0].split('•')[0].trim());}catch(_){s=new Date();}
-  try{e=new Date(dates.at(-1).split('•')[0].trim());}catch(_){e=new Date();}
+  try{s=new Date(dates[0].split('â¢')[0].trim());}catch(_){s=new Date();}
+  try{e=new Date(dates.at(-1).split('â¢')[0].trim());}catch(_){e=new Date();}
   if(isNaN(s.getTime()))s=new Date();
   if(isNaN(e.getTime()))e=s;
   e.setHours(23,59,59,999);
@@ -1363,7 +1411,7 @@ function renderVendorEvents() {
   if(q) arr=arr.filter(e=>['title','location','address','state','description'].some(k=>(e[k]||'').toLowerCase().includes(q)));
   arr.sort((a,b)=>{const aP=a.endDate<today,bP=b.endDate<today;if(aP!==bP) return aP?1:-1;if(!aP&&!bP) return a.startDate-b.startDate;return b.endDate-a.endDate;});
   const grid=$('eventsGrid'); grid.innerHTML='';
-  if(!arr.length){grid.innerHTML=`<div class="events-empty"><div class="events-empty-icon">🔍</div><div class="events-empty-title">No events found</div><div class="events-empty-sub">Try adjusting your search or filters.</div></div>`;$('resultsCount').innerHTML=''; return;}
+  if(!arr.length){grid.innerHTML=`<div class="events-empty"><div class="events-empty-icon">ð</div><div class="events-empty-title">No events found</div><div class="events-empty-sub">Try adjusting your search or filters.</div></div>`;$('resultsCount').innerHTML=''; return;}
   const up=arr.filter(e=>e.endDate>=today),past=arr.filter(e=>e.endDate<today);
   up.forEach(d=>renderVendorCard(d,false));
   if(past.length){const div=document.createElement('div'); div.className='past-section-divider';div.innerHTML=`<div class="past-section-divider-line"></div><div class="past-section-divider-label">Past events</div><div class="past-section-divider-line"></div>`;grid.appendChild(div); past.forEach(d=>renderVendorCard(d,true));}
@@ -1374,8 +1422,8 @@ function renderVendorCard(data,isPast) {
   const dates=data.dateStrings||collectDates(data);
   const card=document.createElement('div'); card.className=`event-card${isPast?' is-past':''}`;
   const calSVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`;
-  const firstDate=dates[0]?dates[0].split('•')[0].trim():'';
-  card.innerHTML=`<div class="event-card-img-wrap"><img src="${data.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(data.title||'')}" loading="lazy"><span class="event-card-category">${data.category||'Event'}</span>${isPast?'<span class="past-badge">Past</span>':''}${data._isDemo?'<span class="demo-badge">Featured</span>':''}</div><div class="event-content"><h3>${esc(data.title||'')}</h3><div class="event-date-row"><div class="event-date-badge">${calSVG}${firstDate}</div>${dates.length>1?`<span class="event-date-more">+${dates.length-1} more</span>`:''}</div><div class="event-location">${esc(data.location||'')}</div>${data.address||data.state?`<div class="event-address">${esc(data.address||'')}${data.state?' · '+esc(data.state):''}</div>`:''}</div>`;
+  const firstDate=dates[0]?dates[0].split('â¢')[0].trim():'';
+  card.innerHTML=`<div class="event-card-img-wrap"><img src="${data.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(data.title||'')}" loading="lazy"><span class="event-card-category">${data.category||'Event'}</span>${isPast?'<span class="past-badge">Past</span>':''}${data._isDemo?'<span class="demo-badge">Featured</span>':''}</div><div class="event-content"><h3>${esc(data.title||'')}</h3><div class="event-date-row"><div class="event-date-badge">${calSVG}${firstDate}</div>${dates.length>1?`<span class="event-date-more">+${dates.length-1} more</span>`:''}</div><div class="event-location">${esc(data.location||'')}</div>${data.address||data.state?`<div class="event-address">${esc(data.address||'')}${data.state?' Â· '+esc(data.state):''}</div>`:''}</div>`;
   card.addEventListener('click',()=>openVendorModal(data,isPast));
   $('eventsGrid').appendChild(card);
 }
@@ -1412,19 +1460,19 @@ async function renderTicketListings() {
   const grid=$('ticketGrid'); grid.innerHTML='';
   $('tktClearBtn').style.display=(tktFilter.sport!=='all'||tktFilter.search)?'block':'none';
   if(!arr.length){
-    grid.innerHTML=`<div class="events-empty" style="grid-column:1/-1"><div class="events-empty-icon">🎟</div><div class="events-empty-title">No tickets found</div><div class="events-empty-sub">Try adjusting filters or search.</div></div>`;
+    grid.innerHTML=`<div class="events-empty" style="grid-column:1/-1"><div class="events-empty-icon">ð</div><div class="events-empty-title">No tickets found</div><div class="events-empty-sub">Try adjusting filters or search.</div></div>`;
   } else {
     arr.forEach(listing=>{
       const avail=listing.qty<=2?'few':'available';
       const card=document.createElement('div'); card.className='ticket-card';
 
-      // Extract seller info using getField with fallbacks
-      const sellerName = getField(listing,'seller.name','sellerName','user_name','ownerName','vendorName') || 'Seller';
-      const sellerInitial = getField(listing,'seller.initial','sellerInitial') || (sellerName ? sellerName.charAt(0).toUpperCase() : '?');
-      const sellerRating = getField(listing,'seller.rating','rating','sellerRating') || '';
-      const sellerSales = getField(listing,'seller.sales','sales','sellerSales') || 0;
+      const sellerName = getField(listing,'seller.name','sellerName','seller','user_name','ownerName','vendorName') || 'Seller';
+      const sellerInitial = getField(listing,'seller.initial','sellerInitial','seller') || (sellerName ? sellerName.charAt(0).toUpperCase() : '?');
+      const sellerRating = getField(listing,'seller.rating','rating','sellerRating')||'';
+      const sellerSales = getField(listing,'seller.sales','sales','sellerSales')||0;
 
-      card.innerHTML=`<div class="tc-img"><img src="${listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(listing.title)}" loading="lazy"><span class="tc-sport-pill ${listing.sport}">${SPORT_LABEL[listing.sport]||listing.sport}</span><span class="tc-resale-flag">Resale</span><div class="tc-img-price"><span class="tc-img-price-label">From</span>$${Number(listing.price).toLocaleString()}</div></div><div class="tc-body"><div class="tc-title">${esc(listing.title)}</div><div class="tc-meta"><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(listing.venue)} · ${esc(listing.city)}</div><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(listing.date)} · ${esc(listing.time||'TBC')}</div>${listing.seat?`<div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>${esc(listing.seat)}</div>`:''}</div><div class="tc-seller"><div class="tc-seller-av">${esc(sellerInitial)}</div><div style="flex:1;min-width:0;"><div class="tc-seller-name">${esc(sellerName)}</div><div class="tc-seller-rating">${esc(sellerRating)} · ${sellerSales} sales</div></div><span class="tc-verified">Verified</span></div><div class="tc-avail-row"><span class="tc-avail-count">${listing.qty} ticket${listing.qty!==1?'s':''} available</span><span class="tc-avail-pill ${avail}">${listing.qty<=2?'Few left':'Available'}</span></div><button class="tc-buy-btn ${listing.sport}">View & buy</button></div>`;
+      const shareUrl = getTicketShareUrl(listing);
+      card.innerHTML=`<div class="tc-img"><img src="${listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(listing.title)}" loading="lazy"><span class="tc-sport-pill ${listing.sport}">${SPORT_LABEL[listing.sport]||listing.sport}</span><span class="tc-resale-flag">Resale</span><div class="tc-img-price"><span class="tc-img-price-label">From</span>$${Number(listing.price).toLocaleString()}</div></div><div class="tc-body"><div class="tc-title">${esc(listing.title)}</div><div class="tc-meta"><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(listing.venue)} Â· ${esc(listing.city)}</div><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(listing.date)} Â· ${esc(listing.time||'TBC')}</div>${listing.seat?`<div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>${esc(listing.seat)}</div>`:''}</div><div class="tc-seller"><div class="tc-seller-av">${esc(sellerInitial)}</div><div style="flex:1;min-width:0;"><div class="tc-seller-name">${esc(sellerName)}</div><div class="tc-seller-rating">${esc(sellerRating)} Â· ${sellerSales} sales</div></div><span class="tc-verified">Verified</span></div><div class="tc-avail-row"><span class="tc-avail-count">${listing.qty} ticket${listing.qty!==1?'s':''} available</span><span class="tc-avail-pill ${avail}">${listing.qty<=2?'Few left':'Available'}</span></div><button class="tc-buy-btn ${listing.sport}">View & buy</button><a href="${shareUrl}" class="tc-link-btn" title="Direct link to this ticket" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a></div>`;
       card.querySelector('.tc-buy-btn').addEventListener('click', e => {
         e.stopPropagation();
         openTicketModal(listing);
@@ -1437,6 +1485,7 @@ async function renderTicketListings() {
   $('tickerListings').textContent=all.length;
   $('ticketTabBadge').textContent=all.length;
 }
+
 function getField(obj, ...keys) {
     for (const k of keys) {
       if (!obj) return null;
@@ -1444,44 +1493,8 @@ function getField(obj, ...keys) {
       if (val !== undefined && val !== null) return val;
     }
     return null;
-  }
-
-  loadEvents();
-function openTicketModal(listing) {
-  tktState={listing,qty:1};
-  $('tktModalImg').src=listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80';
-  $('tktModalTitle').textContent=listing.title;
-  $('tktModalVenue').textContent=`${listing.venue} · ${listing.city}`;
-  const pill=$('tktModalSportPill');
-  pill.textContent=SPORT_LABEL[listing.sport]||listing.sport;
-  pill.className=`tc-sport-pill ${listing.sport}`;
-  $('tktInfoChips').innerHTML=[
-    `<span class="tkt-info-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${listing.date}</span>`,
-    `<span class="tkt-info-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${listing.city}</span>`,
-    listing.seat?`<span class="tkt-info-chip">${esc(listing.seat)}</span>`:'',
-    `<span class="tkt-info-chip">$${listing.price}/ticket</span>`,
-  ].join('');
-const sellerName = getField(listing,'seller.name','sellerName','user_name','ownerName','vendorName');
-const sellerInitial = sellerName ? sellerName.charAt(0).toUpperCase() : '?';
-const sellerRating = getField(listing,'seller.rating','rating','sellerRating')||'';
-const sellerSales = getField(listing,'seller.sales','sales','sellerSales')||0;
-$('tktSellerAv').textContent = sellerInitial;
-$('tktSellerName').textContent = esc(sellerName||'Seller');
-$('tktSellerMeta').textContent = `${sellerRating} · ${sellerSales} sales`;
-  $('tktQtyNum').textContent='1';
-  $('tktQtyMinus').disabled=true;
-  $('tktQtyPlus').disabled=listing.qty<=1;
-  updateTktTotal();
-  $('tktSellerChatBtn').onclick = () => {
-    $('tktModal').classList.remove('open'); document.body.classList.remove('modal-open');
-    if(!auth.currentUser){pendingLoginAction=()=>openTicketChat(listing);showLoginModal();}
-    else openTicketChat(listing);
-  };
-  $('tktShareBtn').onclick = () => shareTicket(listing);
-  $('tktModal').classList.add('open'); document.body.classList.add('modal-open');
 }
 
-// ===== SHARE LINK SYSTEM =====
 function getTicketShareUrl(listing) {
   return window.location.origin + window.location.pathname + '#ticket/' + encodeURIComponent(listing.id);
 }
@@ -1523,6 +1536,12 @@ async function openTicketFromId(ticketId) {
       openTicketModal(listing);
       return true;
     }
+    const demoListing = DEMO_LISTINGS.find(l => l.id === ticketId);
+    if (demoListing) {
+      openTicketModal(demoListing);
+      return true;
+    }
+    console.warn('Ticket not found:', ticketId);
     return false;
   } catch (err) {
     console.error('Error fetching ticket:', err);
@@ -1538,6 +1557,48 @@ function handleIncomingTicketLink() {
       setTimeout(() => openTicketFromId(ticketId), 1000);
     }
   }
+}
+
+function openTicketModal(listing) {
+  tktState={listing,qty:1};
+  $('tktModalImg').src=listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80';
+  $('tktModalTitle').textContent=listing.title;
+  $('tktModalVenue').textContent=`${listing.venue} Â· ${listing.city}`;
+  const pill=$('tktModalSportPill');
+  pill.textContent=SPORT_LABEL[listing.sport]||listing.sport;
+  pill.className=`tc-sport-pill ${listing.sport}`;
+  $('tktInfoChips').innerHTML=[
+    `<span class="tkt-info-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${listing.date}</span>`,
+    `<span class="tkt-info-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${listing.city}</span>`,
+    listing.seat?`<span class="tkt-info-chip">${esc(listing.seat)}</span>`:'',
+    `<span class="tkt-info-chip">$${listing.price}/ticket</span>`,
+  ].join('');
+
+  const sellerName = getField(listing,'seller.name','sellerName','seller','user_name','ownerName','vendorName');
+  const sellerInitial = sellerName ? sellerName.charAt(0).toUpperCase() : '?';
+  const sellerRating = getField(listing,'seller.rating','rating','sellerRating')||'';
+  const sellerSales = getField(listing,'seller.sales','sales','sellerSales')||0;
+
+  $('tktSellerAv').textContent = sellerInitial;
+  $('tktSellerName').textContent = esc(sellerName||'Seller');
+  $('tktSellerMeta').textContent = `${sellerRating} Â· ${sellerSales} sales`;
+
+  $('tktQtyNum').textContent='1';
+  $('tktQtyMinus').disabled=true;
+  $('tktQtyPlus').disabled=listing.qty<=1;
+  updateTktTotal();
+
+  const shareUrl = getTicketShareUrl(listing);
+  $('tktDirectLink').href = shareUrl;
+  $('tktShareBtn').onclick = () => shareTicket(listing);
+
+  $('tktSellerChatBtn').onclick = () => {
+    $('tktModal').classList.remove('open'); document.body.classList.remove('modal-open');
+    if(!auth.currentUser){pendingLoginAction=()=>openTicketChat(listing);showLoginModal();}
+    else openTicketChat(listing);
+  };
+
+  $('tktModal').classList.add('open'); document.body.classList.add('modal-open');
 }
 
 function updateTktTotal() {
@@ -1566,7 +1627,38 @@ async function completePurchase() {
   const user=auth.currentUser;
   if(l.seller?.user_id&&l.seller.user_id===user.uid){alert("You can't purchase your own listing.");return;}
   try{
-    await addDoc(collection(db,'purchases'),{orderId,buyerName:user.displayName||'Buyer',buyerEmail:user.email,buyer_id:user.uid,eventName:l.title,sport:l.sport,venue:l.venue,city:l.city,date:l.date,qty:tktState.qty,price:l.price,totalPrice:total,sellerName:l.seller?.name||'Seller',sellerInitial:l.seller?.initial||'?',sellerId:l.seller?.user_id||l.user_id||'',listingId:l.id,seat:l.seat||'',purchaseDate:serverTimestamp(),status:'confirmed'});
+    const purchaseRef = await addDoc(collection(db,'purchases'),{
+      orderId,
+      buyerName:user.displayName||'Buyer',
+      buyerEmail:user.email,
+      buyer_id:user.uid,
+      eventName:l.title,
+      sport:l.sport,
+      venue:l.venue,
+      city:l.city,
+      date:l.date,
+      qty:tktState.qty,
+      price:l.price,
+      totalPrice:total,
+      sellerName:l.seller?.name||'Seller',
+      sellerInitial:l.seller?.initial||'?',
+      sellerId:l.seller?.user_id||l.user_id||'',
+      listingId:l.id,
+      seat:l.seat||'',
+      purchaseDate:serverTimestamp(),
+      status:'confirmed'
+    });
+    listingToPurchaseMap[l.id] = purchaseRef.id;
+    await addDoc(collection(db, 'purchases', purchaseRef.id, 'conversation'), {
+      sender: 'buyer',
+      senderName: user.displayName || user.email || 'Buyer',
+      message: `New purchase: ${tktState.qty} x ${l.title} for $${total.toFixed(2)}`,
+      messageType: 'text',
+      timestamp: serverTimestamp(),
+      user_id: user.uid,
+      user_email: user.email,
+      read: false
+    });
   }catch(e){console.error('Purchase error:',e);alert('Error saving purchase. Please try again.');return;}
   $('tktModal').classList.remove('open'); document.body.classList.remove('modal-open');
   $('stubEventName').textContent=l.title;
@@ -1580,17 +1672,28 @@ async function completePurchase() {
   $('tktSuccessModal').classList.add('open'); document.body.classList.add('modal-open');
 }
 
-$('tktSuccessClose').addEventListener('click',()=>{$('tktSuccessModal').classList.remove('open');document.body.classList.remove('modal-open');openTicketChat(tktState.listing);});
+$('tktSuccessClose').addEventListener('click',()=>{
+  $('tktSuccessModal').classList.remove('open');document.body.classList.remove('modal-open');
+  if (tktState.listing) {
+    const listingId = tktState.listing.id;
+    const purchaseId = listingToPurchaseMap[listingId];
+    if (purchaseId) {
+      openPurchaseChat(purchaseId, tktState.listing);
+    } else {
+      openTicketChat(tktState.listing);
+    }
+  }
+});
 $('tktSuccessDashboard').addEventListener('click',()=>{$('tktSuccessModal').classList.remove('open');document.body.classList.remove('modal-open');openDrawer('tickets');});
 $('tktSuccessModal').addEventListener('click',e=>{if(e.target===$('tktSuccessModal')){$('tktSuccessModal').classList.remove('open');document.body.classList.remove('modal-open');}});
 
 function renderSellForm() {
   const wrap=$('sellFormWrap');
   if(!auth.currentUser){
-    wrap.innerHTML=`<div class="auth-gate"><div class="auth-gate-icon">🔐</div><div class="auth-gate-title">Sign in to list tickets</div><div class="auth-gate-sub">Create a free account to list your tickets for resale. Admin approval required before going live.</div><button class="auth-gate-btn" id="sellAuthGateBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Sign in / Create account</button></div>`;
+    wrap.innerHTML=`<div class="auth-gate"><div class="auth-gate-icon">ð</div><div class="auth-gate-title">Sign in to list tickets</div><div class="auth-gate-sub">Create a free account to list your tickets for resale. Admin approval required before going live.</div><button class="auth-gate-btn" id="sellAuthGateBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Sign in / Create account</button></div>`;
     $('sellAuthGateBtn').addEventListener('click',showLoginModal); return;
   }
-  wrap.innerHTML=`<div class="sell-form-card"><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Event details</legend><div class="form-row"><label class="form-label form-label-required">Event name</label><input type="text" class="form-input" id="sellEventName" placeholder="e.g. FIFA World Cup 2026 — USA vs Mexico"/></div><div class="form-grid-2"><div class="form-row"><label class="form-label form-label-required">Sport / Category</label><select class="form-select" id="sellCategory"><option value="">Select category…</option><option value="football">⚽ Football / Soccer</option><option value="worldcup">🏆 FIFA World Cup 2026</option><option value="basketball">🏀 Basketball (NBA)</option><option value="tennis">🎾 Tennis</option><option value="music">🎵 Music / Concert</option><option value="boxing">🥊 Boxing / MMA</option></select></div><div class="form-row"><label class="form-label form-label-required">Event date</label><input type="date" class="form-input" id="sellDate"/></div></div><div class="form-row"><label class="form-label form-label-required">Venue &amp; city</label><input type="text" class="form-input" id="sellVenue" placeholder="e.g. SoFi Stadium, Los Angeles, CA"/></div></fieldset><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Ticket details</legend><div class="form-grid-2"><div class="form-row"><label class="form-label form-label-required">Number of tickets</label><input type="number" class="form-input" id="sellQty" min="1" max="20" placeholder="e.g. 2"/></div><div class="form-row"><label class="form-label form-label-required">Price per ticket (USD)</label><input type="number" class="form-input" id="sellPrice" min="1" placeholder="e.g. 250"/></div></div><div class="form-row"><label class="form-label">Seat section / row</label><input type="text" class="form-input" id="sellSeat" placeholder="e.g. Section 112, Row F, Seats 14–15"/></div><div class="form-row"><label class="form-label">Additional notes</label><textarea class="form-textarea" id="sellNotes" placeholder="Ticket type, transfer method, restrictions…"></textarea></div></fieldset><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Proof of ownership</legend><div class="form-row"><label class="form-label form-label-required">Ticket proof image</label><div class="file-upload-zone" id="uploadZone"><input type="file" id="proofImageInput" accept="image/*"/><span class="file-upload-icon">🎟️</span><div class="file-upload-title">Upload booking confirmation</div><div class="file-upload-sub">JPG, PNG or WEBP · max 10 MB</div><div class="file-preview" id="filePreview"><img id="previewImg" src="" alt="Ticket proof"/><button class="file-preview-remove" id="removeProofBtn" type="button">✕</button></div></div></div></fieldset><div class="sell-trust-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><p>VendHub is peer-to-peer. All listings are reviewed before going live. Buyers contact sellers directly via in-app chat for safe transfer.</p></div><button class="sell-submit-btn" id="sellSubmitBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Submit for approval</button></div>`;
+  wrap.innerHTML=`<div class="sell-form-card"><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Event details</legend><div class="form-row"><label class="form-label form-label-required">Event name</label><input type="text" class="form-input" id="sellEventName" placeholder="e.g. FIFA World Cup 2026 â USA vs Mexico"/></div><div class="form-grid-2"><div class="form-row"><label class="form-label form-label-required">Sport / Category</label><select class="form-select" id="sellCategory"><option value="">Select categoryâ¦</option><option value="football">â½ Football / Soccer</option><option value="worldcup">ð FIFA World Cup 2026</option><option value="basketball">ð Basketball (NBA)</option><option value="tennis">ð¾ Tennis</option><option value="music">ðµ Music / Concert</option><option value="boxing">ð¥ Boxing / MMA</option></select></div><div class="form-row"><label class="form-label form-label-required">Event date</label><input type="date" class="form-input" id="sellDate"/></div></div><div class="form-row"><label class="form-label form-label-required">Venue &amp; city</label><input type="text" class="form-input" id="sellVenue" placeholder="e.g. SoFi Stadium, Los Angeles, CA"/></div></fieldset><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Ticket details</legend><div class="form-grid-2"><div class="form-row"><label class="form-label form-label-required">Number of tickets</label><input type="number" class="form-input" id="sellQty" min="1" max="20" placeholder="e.g. 2"/></div><div class="form-row"><label class="form-label form-label-required">Price per ticket (USD)</label><input type="number" class="form-input" id="sellPrice" min="1" placeholder="e.g. 250"/></div></div><div class="form-row"><label class="form-label">Seat section / row</label><input type="text" class="form-input" id="sellSeat" placeholder="e.g. Section 112, Row F, Seats 14â15"/></div><div class="form-row"><label class="form-label">Additional notes</label><textarea class="form-textarea" id="sellNotes" placeholder="Ticket type, transfer method, restrictionsâ¦"></textarea></div></fieldset><fieldset class="form-fieldset"><legend class="form-fieldset-legend">Proof of ownership</legend><div class="form-row"><label class="form-label form-label-required">Ticket proof image</label><div class="file-upload-zone" id="uploadZone"><input type="file" id="proofImageInput" accept="image/*"/><span class="file-upload-icon">ðï¸</span><div class="file-upload-title">Upload booking confirmation</div><div class="file-upload-sub">JPG, PNG or WEBP Â· max 10 MB</div><div class="file-preview" id="filePreview"><img id="previewImg" src="" alt="Ticket proof"/><button class="file-preview-remove" id="removeProofBtn" type="button">â</button></div></div></div></fieldset><div class="sell-trust-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><p>VendHub is peer-to-peer. All listings are reviewed before going live. Buyers contact sellers directly via in-app chat for safe transfer.</p></div><button class="sell-submit-btn" id="sellSubmitBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Submit for approval</button></div>`;
   const uploadZone=$('uploadZone'),proofInput=$('proofImageInput'),filePreview=$('filePreview'),previewImg=$('previewImg');
   uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('drag-over');});
   uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('drag-over'));
@@ -1626,7 +1729,7 @@ async function handleSellSubmit() {
   if(!event||!category||!date||!venue||qty<1||price<1){alert('Please fill all required fields.');return;}
   if(!proofImageFile){alert('Please upload a ticket proof image.');return;}
   const btn=$('sellSubmitBtn');
-  btn.disabled=true; btn.textContent='Uploading…';
+  btn.disabled=true; btn.textContent='Uploadingâ¦';
   let proofImageURL='';
   try{
     const imgRef=storageRef(storage,`ticket_proofs/${user.uid}/${Date.now()}_${proofImageFile.name}`);
@@ -1634,7 +1737,7 @@ async function handleSellSubmit() {
     proofImageURL=await getDownloadURL(snap.ref);
   }catch(e){console.warn('Image upload warning:',e);}
   try{
-    btn.textContent='Saving…';
+    btn.textContent='Savingâ¦';
     const seat=($('sellSeat')||{}).value?.trim()||'';
     const notes=($('sellNotes')||{}).value?.trim()||'';
     const city=venue.split(',').slice(-2).join(',').trim();
@@ -1656,7 +1759,7 @@ function showListingSuccess() {
   const banner=document.createElement('div');
   banner.id='listingSuccessBanner';
   banner.style.cssText='display:flex;align-items:flex-start;gap:14px;padding:20px 22px;border-radius:var(--r-lg);background:linear-gradient(135deg,rgba(22,101,52,.07),rgba(22,163,74,.10));border:1px solid rgba(22,163,74,.28);margin-top:20px;animation:slideUp .3s var(--spring);';
-  banner.innerHTML=`<div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-md));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;color:#fff;">✓</div><div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;">Listing submitted!</div><div style="font-size:13px;color:var(--ink-80);line-height:1.7;">Pending admin review — usually within 24 hours. Once approved it'll appear on the marketplace.</div><div style="margin-top:10px;display:flex;gap:8px;"><button onclick="document.querySelectorAll('.mode-tab')[1].click()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;background:var(--green);color:#fff;border:none;cursor:pointer;">Browse tickets →</button><button onclick="document.getElementById('listingSuccessBanner').remove()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:600;background:var(--paper);border:1.5px solid var(--ink-10);cursor:pointer;color:var(--ink);">Dismiss</button></div></div>`;
+  banner.innerHTML=`<div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-md));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;color:#fff;">â</div><div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;">Listing submitted!</div><div style="font-size:13px;color:var(--ink-80);line-height:1.7;">Pending admin review â usually within 24 hours. Once approved it'll appear on the marketplace.</div><div style="margin-top:10px;display:flex;gap:8px;"><button onclick="document.querySelectorAll('.mode-tab')[1].click()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;background:var(--green);color:#fff;border:none;cursor:pointer;">Browse tickets â</button><button onclick="document.getElementById('listingSuccessBanner').remove()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:11px;font-weight:600;background:var(--paper);border:1.5px solid var(--ink-10);cursor:pointer;color:var(--ink);">Dismiss</button></div></div>`;
   const btn=$('sellSubmitBtn');
   if(btn)btn.parentNode.insertBefore(banner,btn.nextSibling);
   banner.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1668,9 +1771,9 @@ function renderMyListings() {
   section.style.display=''; grid.innerHTML='';
   myListings.forEach(l=>{
     const sc=l.approvalStatus==='approved'?'state-approved':l.approvalStatus==='rejected'?'state-rejected':'state-pending';
-    const sl=l.approvalStatus==='approved'?'Live ✓':l.approvalStatus==='rejected'?'Rejected':'Pending';
+    const sl=l.approvalStatus==='approved'?'Live â':l.approvalStatus==='rejected'?'Rejected':'Pending';
     const card=document.createElement('div'); card.className=`my-listing-card ${sc}`;
-    card.innerHTML=`<div class="mlc-header"><div class="mlc-title">${esc(l.title)}</div><span class="mlc-status ${l.approvalStatus||'pending'}">${sl}</span></div><div class="mlc-body">${l.proofImageURL?`<img class="mlc-proof-thumb" src="${l.proofImageURL}" alt="Proof">`:''}<div class="mlc-meta">${esc(l.venue||'')} · ${esc(l.city||'')}<br>${esc(l.date||'')} · ${l.qty} ticket${l.qty!==1?'s':''}</div><div class="mlc-price">$${Number(l.price||0).toLocaleString()}<span class="mlc-price-unit"> /ticket</span></div>${l.approvalStatus==='rejected'&&l.rejectionReason?`<div class="mlc-rejection-msg">Reason: ${esc(l.rejectionReason)}</div>`:''}<div class="mlc-status-msg ${l.approvalStatus||'pending'}">${l.approvalStatus==='approved'?'✓ Live on marketplace':l.approvalStatus==='rejected'?'':' ⏳ Awaiting approval'}</div></div>`;
+    card.innerHTML=`<div class="mlc-header"><div class="mlc-title">${esc(l.title)}</div><span class="mlc-status ${l.approvalStatus||'pending'}">${sl}</span></div><div class="mlc-body">${l.proofImageURL?`<img class="mlc-proof-thumb" src="${l.proofImageURL}" alt="Proof">`:''}<div class="mlc-meta">${esc(l.venue||'')} Â· ${esc(l.city||'')}<br>${esc(l.date||'')} Â· ${l.qty} ticket${l.qty!==1?'s':''}</div><div class="mlc-price">$${Number(l.price||0).toLocaleString()}<span class="mlc-price-unit"> /ticket</span></div>${l.approvalStatus==='rejected'&&l.rejectionReason?`<div class="mlc-rejection-msg">Reason: ${esc(l.rejectionReason)}</div>`:''}<div class="mlc-status-msg ${l.approvalStatus||'pending'}">${l.approvalStatus==='approved'?'â Live on marketplace':l.approvalStatus==='rejected'?'':' â³ Awaiting approval'}</div></div>`;
     grid.appendChild(card);
   });
 }
@@ -1690,10 +1793,10 @@ function openVendorModal(data,isPast) {
   $('modalTitle').textContent=data.title||'Event';
   const chips=$('modalMetaChips'); chips.innerHTML='';
   if(isPast)chips.innerHTML+=`<span class="modal-meta-chip past">Past event</span>`;
-  if(data.state)chips.innerHTML+=`<span class="modal-meta-chip">🇺🇸 ${data.state}</span>`;
+  if(data.state)chips.innerHTML+=`<span class="modal-meta-chip">ðºð¸ ${data.state}</span>`;
   if(data.price)chips.innerHTML+=`<span class="modal-meta-chip gold">${data.price}</span>`;
-  $('modalDatesGrid').innerHTML=dates.map((raw,i)=>{const p=raw.split('•');const d=p[0].trim();const t=(p[1]||'').trim();return `<div class="modal-date-row"><div class="modal-date-num">${i+1}</div><div><div class="modal-date-main">${d}</div>${t?`<div class="modal-date-time">${t}</div>`:''}</div></div>`;}).join('');
-  $('modalLocation').textContent=data.location||'—';
+  $('modalDatesGrid').innerHTML=dates.map((raw,i)=>{const p=raw.split('â¢');const d=p[0].trim();const t=(p[1]||'').trim();return `<div class="modal-date-row"><div class="modal-date-num">${i+1}</div><div><div class="modal-date-main">${d}</div>${t?`<div class="modal-date-time">${t}</div>`:''}</div></div>`;}).join('');
+  $('modalLocation').textContent=data.location||'â';
   $('modalLocationAddr').textContent=[data.address,data.state].filter(Boolean).join(', ');
   const ml=$('modalMapsLink');
   const mq=[data.location,data.address,data.state].filter(Boolean).join(', ');
@@ -1708,8 +1811,8 @@ function openVendorModal(data,isPast) {
     contacts.forEach(c=>{const a=document.createElement('a');a.className='modal-contact-item';a.href=c.href;if(c.external){a.target='_blank';a.rel='noopener';}a.innerHTML=`<div class="modal-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--gold)"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="modal-contact-info"><div class="modal-contact-label">${c.label}</div><div class="modal-contact-value">${c.value}</div></div>`;cr.appendChild(a);});
   }else{$('modalContactBlock').style.display='none';}
   const ab=$('applyBtn');
-  if(isPast){ab.disabled=true;ab.textContent='Event ended';}else{ab.disabled=false;ab.textContent='Apply as vendor';}
-  $('modalApplyNote').textContent=isPast?'Applications closed.':'Free to apply · Organiser approval';
+  if(isPast){ab.disabled=true;ab.textContent='Event ended';}else{ab.disabled=false;ab.textContent='Apply as vendor'}
+  $('modalApplyNote').textContent=isPast?'Applications closed.':'Free to apply Â· Organiser approval';
   $('eventModal').style.display='flex'; document.body.classList.add('modal-open');
 }
 
@@ -1756,7 +1859,7 @@ function refreshAllDrawerTabs(){renderVendorAppsTab();renderTicketsTab();renderL
 function renderVendorAppsTab(){
   const panel=$('dtab-vendor'); panel.innerHTML='';
   const apps=Object.entries(userApplicationsMap);
-  if(!apps.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">🏪</div><div class="drawer-empty-title">No applications yet</div><div class="drawer-empty-sub">Browse vendor events and apply for booths.</div></div>`;return;}
+  if(!apps.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">ðª</div><div class="drawer-empty-title">No applications yet</div><div class="drawer-empty-sub">Browse vendor events and apply for booths.</div></div>`;return;}
   apps.forEach(([key,vid])=>{
     const evName=key.charAt(0).toUpperCase()+key.slice(1);
     const card=document.createElement('div'); card.className='app-card pending';
@@ -1768,31 +1871,38 @@ function renderVendorAppsTab(){
 
 function renderTicketsTab(){
   const panel=$('dtab-tickets'); panel.innerHTML='';
-  if(!purchasedTickets.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">🎟️</div><div class="drawer-empty-title">No tickets yet</div><div class="drawer-empty-sub">Purchase tickets to see them here.</div></div>`;return;}
+  if(!purchasedTickets.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">ðï¸</div><div class="drawer-empty-title">No tickets yet</div><div class="drawer-empty-sub">Purchase tickets to see them here.</div></div>`;return;}
   purchasedTickets.forEach(t=>{
     const card=document.createElement('div'); card.className='ticket-receipt';
-    card.innerHTML=`<div class="ticket-receipt-header"><span class="ticket-receipt-event">${esc(t.event)}</span><span class="ticket-receipt-badge">${SPORT_LABEL[t.sport]||t.sport}</span></div><div class="ticket-receipt-body"><div class="ticket-receipt-row"><span>Seller</span><strong>${esc(t.seller?.name||'—')}</strong></div>${t.venue?`<div class="ticket-receipt-row"><span>Venue</span><strong>${esc(t.venue)}</strong></div>`:''}${t.date?`<div class="ticket-receipt-row"><span>Date</span><strong>${esc(t.date)}</strong></div>`:''}<div class="ticket-receipt-row"><span>Qty</span><strong>${t.qty} ticket${t.qty>1?'s':''}</strong></div>${t.seat?`<div class="ticket-receipt-row"><span>Seat</span><strong>${esc(t.seat)}</strong></div>`:''}<div class="ticket-receipt-row"><span>Order</span><strong>${esc(t.id)}</strong></div></div><div class="ticket-receipt-total"><span class="ticket-receipt-total-label">Total paid</span><span class="ticket-receipt-total-val">$${t.total.toLocaleString('en-US',{minimumFractionDigits:2})}</span></div><button class="ticket-receipt-chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Message seller →</button>`;
-    card.querySelector('.ticket-receipt-chat').addEventListener('click',()=>{closeDrawer();const listing=[...DEMO_LISTINGS,...myListings].find(l=>l.id===t.listingId)||{id:t.listingId,title:t.event,seller:t.seller};openTicketChat(listing);});
+    card.innerHTML=`<div class="ticket-receipt-header"><span class="ticket-receipt-event">${esc(t.event)}</span><span class="ticket-receipt-badge">${SPORT_LABEL[t.sport]||t.sport}</span></div><div class="ticket-receipt-body"><div class="ticket-receipt-row"><span>Seller</span><strong>${esc(t.seller?.name||'â')}</strong></div>${t.venue?`<div class="ticket-receipt-row"><span>Venue</span><strong>${esc(t.venue)}</strong></div>`:''}${t.date?`<div class="ticket-receipt-row"><span>Date</span><strong>${esc(t.date)}</strong></div>`:''}<div class="ticket-receipt-row"><span>Qty</span><strong>${t.qty} ticket${t.qty>1?'s':''}</strong></div>${t.seat?`<div class="ticket-receipt-row"><span>Seat</span><strong>${esc(t.seat)}</strong></div>`:''}<div class="ticket-receipt-row"><span>Order</span><strong>${esc(t.id)}</strong></div></div><div class="ticket-receipt-total"><span class="ticket-receipt-total-label">Total paid</span><span class="ticket-receipt-total-val">$${t.total.toLocaleString('en-US',{minimumFractionDigits:2})}</span></div><button class="ticket-receipt-chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Message seller â</button>`;
+    card.querySelector('.ticket-receipt-chat').addEventListener('click',()=>{
+      closeDrawer();
+      const listing=[...DEMO_LISTINGS,...myListings].find(l=>l.id===t.listingId)||{id:t.listingId,title:t.event,seller:t.seller};
+      openPurchaseChat(listingToPurchaseMap[t.listingId] || t.listingId, listing);
+    });
     panel.appendChild(card);
   });
 }
 
 function renderListingsTab(){
   const panel=$('dtab-listings'); panel.innerHTML='';
-  if(!myListings.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">📋</div><div class="drawer-empty-title">No listings yet</div><div class="drawer-empty-sub">List a ticket to get started.</div></div>`;return;}
+  if(!myListings.length){panel.innerHTML=`<div class="drawer-empty"><div class="drawer-empty-icon">ð</div><div class="drawer-empty-title">No listings yet</div><div class="drawer-empty-sub">List a ticket to get started.</div></div>`;return;}
   myListings.forEach(l=>{
     const sc=l.approvalStatus==='approved'?'approved':l.approvalStatus==='rejected'?'rejected':'pending';
-    const sl=l.approvalStatus==='approved'?'Live ✓':l.approvalStatus==='rejected'?'Rejected':'Pending';
+    const sl=l.approvalStatus==='approved'?'Live â':l.approvalStatus==='rejected'?'Rejected':'Pending';
     const card=document.createElement('div'); card.className=`app-card ${sc==='approved'?'approved':sc==='rejected'?'rejected':'pending'}`;
-    card.innerHTML=`<div class="app-card-info"><div class="app-card-title">${esc(l.title)}</div><div class="app-card-meta">$${Number(l.price||0).toLocaleString()}/ticket · ${l.qty} available${l.rejectionReason?'<br>Reason: '+esc(l.rejectionReason):''}</div></div><span class="app-status-pill ${sc}">${sl}</span>`;
+    card.innerHTML=`<div class="app-card-info"><div class="app-card-title">${esc(l.title)}</div><div class="app-card-meta">$${Number(l.price||0).toLocaleString()}/ticket Â· ${l.qty} available${l.rejectionReason?'<br>Reason: '+esc(l.rejectionReason):''}</div></div><span class="app-status-pill ${sc}">${sl}</span>`;
     panel.appendChild(card);
   });
 }
 
-$('openChatBtn').addEventListener('click',()=>{
-  if(!auth.currentUser){pendingLoginAction=()=>openChatModal();showLoginModal();return;}
+function openPurchaseChat(purchaseId, listing) {
+  if(!auth.currentUser){pendingLoginAction=()=>openPurchaseChat(purchaseId, listing);showLoginModal();return;}
+  activeConvId = purchaseId;
+  activeConvType = 'purchase';
+  activeConvLabel = listing?.title || 'Ticket Conversation';
   openChatModal();
-});
+}
 
 function openTicketChat(listing){
   if(!auth.currentUser){pendingLoginAction=()=>{activeConvId=listing.id;activeConvLabel=listing.title;activeConvType='ticket';openChatModal();};showLoginModal();return;}
@@ -1802,18 +1912,26 @@ function openTicketChat(listing){
 function openChatModal(){
   $('chatModal').classList.add('open'); document.body.classList.add('modal-open');
   buildChatContextBar();
-  if(activeConvId){loadChatForConv(activeConvType,activeConvId,activeConvLabel);}
+  if(activeConvId){
+    loadChatForConv(activeConvType, activeConvId, activeConvLabel);
+  }
   else{
     const firstVendor=Object.entries(userApplicationsMap)[0];
     const firstTicket=purchasedTickets[0];
     const firstListing=myListings[0];
     if(firstVendor){activeConvId=firstVendor[1];activeConvType='vendor';activeConvLabel=firstVendor[0];loadChatForConv('vendor',firstVendor[1],firstVendor[0]);}
-    else if(firstTicket&&firstTicket.listingId){activeConvId=firstTicket.listingId;activeConvType='ticket';activeConvLabel=firstTicket.event;loadChatForConv('ticket',firstTicket.listingId,firstTicket.event);}
+    else if(firstTicket&&firstTicket.listingId){
+      const purchaseId = listingToPurchaseMap[firstTicket.listingId];
+      activeConvId=purchaseId || firstTicket.listingId;
+      activeConvType='purchase';
+      activeConvLabel=firstTicket.event;
+      loadChatForConv('purchase', activeConvId, firstTicket.event);
+    }
     else if(firstListing){activeConvId=firstListing.id;activeConvType='ticket';activeConvLabel=firstListing.title;loadChatForConv('ticket',firstListing.id,firstListing.title);}
   }
 }
 
-function buildChatContextBar(){
+async function buildChatContextBar(){
   const bar=$('chatContextBar'); bar.innerHTML='';
   let hasConvs=false;
   Object.entries(userApplicationsMap).forEach(([key,vid])=>{
@@ -1823,33 +1941,63 @@ function buildChatContextBar(){
     const unread=(unreadCounts['vendor_'+vid]||0);
     const btn=document.createElement('button');
     btn.className=`chat-ctx-tab vendor-ctx${isActive?' active':''}${unread>0?' has-unread':''}`;
-    btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>${esc(evName.length>18?evName.slice(0,18)+'…':evName)}<span class="unread-dot"></span>`;
+    btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>${esc(evName.length>18?evName.slice(0,18)+'â¦':evName)}<span class="unread-dot"></span>`;
     btn.addEventListener('click',()=>{activeConvId=vid;activeConvType='vendor';activeConvLabel=evName;markRead('vendor',vid);buildChatContextBar();loadChatForConv('vendor',vid,evName);});
     bar.appendChild(btn);
   });
-  purchasedTickets.forEach(t=>{
+  purchasedTickets.forEach(async t=>{
     if(!t.listingId)return;
     hasConvs=true;
-    const isActive=activeConvId===t.listingId&&activeConvType==='ticket';
-    const unread=(unreadCounts['ticket_'+t.listingId]||0);
+    const purchaseId = listingToPurchaseMap[t.listingId];
+    if (!purchaseId) return;
+    const isActive=activeConvId===purchaseId&&activeConvType==='purchase';
+    const unread=(unreadCounts['purchase_'+purchaseId]||0);
     const btn=document.createElement('button');
     const label=(t.event||'Ticket').slice(0,20);
     btn.className=`chat-ctx-tab ticket-ctx${isActive?' active':''}${unread>0?' has-unread':''}`;
     btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg>${esc(label)}<span class="unread-dot"></span>`;
-    btn.addEventListener('click',()=>{activeConvId=t.listingId;activeConvType='ticket';activeConvLabel=t.event;markRead('ticket',t.listingId);buildChatContextBar();loadChatForConv('ticket',t.listingId,t.event);});
+    btn.addEventListener('click',()=>{
+      activeConvId=purchaseId;
+      activeConvType='purchase';
+      activeConvLabel=t.event;
+      markRead('purchase',purchaseId);
+      buildChatContextBar();
+      loadChatForConv('purchase',purchaseId,t.event);
+    });
     bar.appendChild(btn);
   });
-  myListings.forEach(l=>{
+  myListings.forEach(async l=>{
+    const purchaseId = listingToPurchaseMap[l.id];
+    if (!purchaseId) {
+      try {
+        const purchasesQuery = query(collection(db, 'purchases'), where('listingId', '==', l.id));
+        const snapshot = await getDocs(purchasesQuery);
+        if (!snapshot.empty) {
+          const firstPurchase = snapshot.docs[0];
+          listingToPurchaseMap[l.id] = firstPurchase.id;
+        }
+      } catch (error) {
+        console.error('Error finding purchase for listing:', error);
+      }
+    }
+    if (!listingToPurchaseMap[l.id]) return;
     const alreadyShown=purchasedTickets.some(t=>t.listingId===l.id);
     if(alreadyShown)return;
     hasConvs=true;
-    const isActive=activeConvId===l.id&&activeConvType==='ticket';
-    const unread=(unreadCounts['ticket_'+l.id]||0);
+    const isActive=activeConvId===listingToPurchaseMap[l.id]&&activeConvType==='purchase';
+    const unread=(unreadCounts['purchase_'+listingToPurchaseMap[l.id]]||0);
     const label=('My: '+(l.title||'')).slice(0,22);
     const btn=document.createElement('button');
     btn.className=`chat-ctx-tab ticket-ctx${isActive?' active':''}${unread>0?' has-unread':''}`;
     btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>${esc(label)}<span class="unread-dot"></span>`;
-    btn.addEventListener('click',()=>{activeConvId=l.id;activeConvType='ticket';activeConvLabel=l.title;markRead('ticket',l.id);buildChatContextBar();loadChatForConv('ticket',l.id,l.title);});
+    btn.addEventListener('click',()=>{
+      activeConvId=listingToPurchaseMap[l.id];
+      activeConvType='purchase';
+      activeConvLabel=l.title;
+      markRead('purchase',listingToPurchaseMap[l.id]);
+      buildChatContextBar();
+      loadChatForConv('purchase',listingToPurchaseMap[l.id],l.title);
+    });
     bar.appendChild(btn);
   });
   if(!hasConvs){
@@ -1860,28 +2008,54 @@ function buildChatContextBar(){
   }
 }
 
-function loadChatForConv(type,id,label){
+async function loadChatForConv(type,id,label){
   if(unsubChat){unsubChat();unsubChat=null;}
   const user=auth.currentUser;
   if(!user||!id){showNoChatSelected();return;}
   markRead(type,id);
-  const isSeller=type==='ticket'&&myListings.some(l=>l.id===id);
+  let conversationPath;
+  let isSeller = false;
+  if(type==='vendor'){
+    conversationPath = collection(db,'vendors',id,'conversation');
+  } else if(type==='purchase') {
+    conversationPath = collection(db,'purchases',id,'conversation');
+    try {
+      const purchaseDoc = await getDoc(doc(db, 'purchases', id));
+      if (purchaseDoc.exists()) {
+        const purchaseData = purchaseDoc.data();
+        isSeller = purchaseData.sellerId === user.uid || purchaseData.seller_id === user.uid;
+      }
+    } catch (error) {
+      console.error('Error checking purchase:', error);
+    }
+  } else {
+    const purchaseId = await getPurchaseIdForListing(id);
+    if (purchaseId) {
+      conversationPath = collection(db,'purchases',purchaseId,'conversation');
+    } else {
+      conversationPath = collection(db,'ticket_listings',id,'conversation');
+    }
+  }
   $('chatContextName').textContent=label||'Chat';
   $('chatAvatar').textContent=(label||'C').charAt(0).toUpperCase();
-  $('chatContextLabel').textContent=type==='vendor'?'Event Coordinator':isSeller?'Buyer enquiries':'Seller conversation';
-  $('chatInput').disabled=false; $('chatInput').placeholder='Type a message…'; $('sendChatBtn').disabled=false;
+  $('chatContextLabel').textContent=type==='vendor'?'Event Coordinator':isSeller?'Buyer conversation':'Seller conversation';
+  $('chatInput').disabled=false; $('chatInput').placeholder='Type a messageâ¦'; $('sendChatBtn').disabled=false;
   const msgs=$('chatMessages'); msgs.innerHTML='';
-  const colPath=type==='vendor'?collection(db,'vendors',id,'conversation'):collection(db,'ticket_listings',id,'conversation');
-  unsubChat=onSnapshot(query(colPath,orderBy('timestamp','asc')),snap=>{
+  unsubChat=onSnapshot(query(conversationPath,orderBy('timestamp','asc')),snap=>{
     msgs.innerHTML='';
-    if(snap.empty){msgs.innerHTML=`<div class="chat-empty"><div class="chat-empty-icon">${type==='vendor'?'👋':'🎟️'}</div><span>${type==='vendor'?'Start a conversation with the event coordinator':'No messages yet — start the conversation!'}</span></div>`;return;}
+    if(snap.empty){msgs.innerHTML=`<div class="chat-empty"><div class="chat-empty-icon">${type==='vendor'?'ð':'ðï¸'}</div><span>${type==='vendor'?'Start a conversation with the event coordinator':'No messages yet â start the conversation!'}</span></div>`;return;}
     snap.forEach(ds=>{
       const d=ds.data();
       if(!d.timestamp)return;
       const isMe=user&&(d.user_id===user.uid||d.user_email===user.email);
       const isAdmin=(d.sender==='admin'||d.senderName==='Admin');
       let shouldShow=false;
-      if(type==='vendor'){shouldShow=isMe||(d.sender==='admin'||d.sender==='coordinator'||d.sender==='vendor'||!d.user_id);}
+      if(type==='vendor'){
+        shouldShow=isMe||(d.sender==='admin'||d.sender==='coordinator'||d.sender==='vendor'||!d.user_id);
+      }
+      else if(type==='purchase'){
+        shouldShow=true;
+      }
       else{
         const isPurchaser=purchasedTickets.some(t=>t.listingId===id);
         const isMyListing=myListings.some(l=>l.id===id);
@@ -1893,11 +2067,11 @@ function loadChatForConv(type,id,label){
       appendMsg(msgs,d.message||'',d.timestamp?.toDate?d.timestamp.toDate():new Date(),isMe,isAdmin,d.senderName||'');
     });
     msgs.scrollTop=msgs.scrollHeight;
-  },err=>{console.error('Chat listener error:',err);msgs.innerHTML='<div class="chat-empty"><div class="chat-empty-icon">⚠️</div><span>Unable to load messages. Check your connection.</span></div>';});
+  },err=>{console.error('Chat listener error:',err);msgs.innerHTML='<div class="chat-empty"><div class="chat-empty-icon">â ï¸</div><span>Unable to load messages. Check your connection.</span></div>';});
 }
 
 function showNoChatSelected(){
-  $('chatMessages').innerHTML=`<div class="chat-no-convo"><div class="chat-no-convo-icon">💬</div><div class="chat-no-convo-title">No conversation selected</div><div class="chat-no-convo-sub">Select a thread above to start chatting.</div></div>`;
+  $('chatMessages').innerHTML=`<div class="chat-no-convo"><div class="chat-no-convo-icon">ð¬</div><div class="chat-no-convo-title">No conversation selected</div><div class="chat-no-convo-sub">Select a thread above to start chatting.</div></div>`;
   $('chatInput').disabled=true; $('chatInput').placeholder='Select a conversation first'; $('sendChatBtn').disabled=true;
 }
 
@@ -1911,22 +2085,91 @@ function appendMsg(container,text,ts,isMe,isAdmin=false,senderName=''){
   row.appendChild(bubble); row.appendChild(time); container.appendChild(row); container.scrollTop=container.scrollHeight;
 }
 
+async function getPurchaseIdForListing(listingId) {
+  const user = auth.currentUser;
+  if (!user) return null;
+  try {
+    if (listingToPurchaseMap[listingId]) {
+      return listingToPurchaseMap[listingId];
+    }
+    const purchasesQuery = query(collection(db, 'purchases'), where('listingId', '==', listingId), where('buyer_id', '==', user.uid));
+    const snapshot = await getDocs(purchasesQuery);
+    if (!snapshot.empty) {
+      const purchaseDoc = snapshot.docs[0];
+      listingToPurchaseMap[listingId] = purchaseDoc.id;
+      return purchaseDoc.id;
+    }
+    const listingDoc = await getDoc(doc(db, 'ticket_listings', listingId));
+    if (listingDoc.exists()) {
+      const listingData = listingDoc.data();
+      if (listingData.user_id === user.uid || listingData.seller?.user_id === user.uid) {
+        const sellerPurchasesQuery = query(collection(db, 'purchases'), where('listingId', '==', listingId));
+        const sellerSnapshot = await getDocs(sellerPurchasesQuery);
+        if (!sellerSnapshot.empty) {
+          const purchaseDoc = sellerSnapshot.docs[0];
+          listingToPurchaseMap[listingId] = purchaseDoc.id;
+          return purchaseDoc.id;
+        }
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting purchase for listing:', error);
+    return null;
+  }
+}
+
 $('closeChat').addEventListener('click',()=>{$('chatModal').classList.remove('open');document.body.classList.remove('modal-open');if(unsubChat){unsubChat();unsubChat=null;}});
-$('sendChatBtn').addEventListener('click',sendChatMessage);
-$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMessage();}});
 
 async function sendChatMessage(){
   const user=auth.currentUser; const msg=$('chatInput').value.trim();
   if(!msg||!user||!activeConvId)return;
   $('chatInput').value=''; $('chatInput').disabled=true; $('sendChatBtn').disabled=true;
   try{
-    const isSeller=activeConvType==='ticket'&&myListings.some(l=>l.id===activeConvId);
-    const senderType=activeConvType==='vendor'?'vendor':(isSeller?'seller':'buyer');
-    const colPath=activeConvType==='vendor'?collection(db,'vendors',activeConvId,'conversation'):collection(db,'ticket_listings',activeConvId,'conversation');
-    await addDoc(colPath,{sender:senderType,senderName:user.displayName||user.email||'User',message:msg,messageType:'text',timestamp:serverTimestamp(),user_id:user.uid,user_email:user.email,...(activeConvType==='vendor'?{read_by_admin:false,read_by_vendor:true}:{})});
+    let conversationPath;
+    let senderType;
+    if(activeConvType==='vendor'){
+      senderType='vendor';
+      conversationPath=collection(db,'vendors',activeConvId,'conversation');
+    } else if(activeConvType==='purchase') {
+      conversationPath=collection(db,'purchases',activeConvId,'conversation');
+      senderType='buyer';
+      try {
+        const purchaseDoc = await getDoc(doc(db, 'purchases', activeConvId));
+        if (purchaseDoc.exists()) {
+          const purchaseData = purchaseDoc.data();
+          if (purchaseData.sellerId === user.uid || purchaseData.seller_id === user.uid) {
+            senderType = 'seller';
+          }
+        }
+      } catch (error) {
+        console.error('Error checking sender type:', error);
+      }
+    } else {
+      const purchaseId = await getPurchaseIdForListing(activeConvId);
+      if (purchaseId) {
+        conversationPath = collection(db,'purchases',purchaseId,'conversation');
+      } else {
+        conversationPath = collection(db,'ticket_listings',activeConvId,'conversation');
+      }
+      senderType = myListings.some(l=>l.id===activeConvId)?'seller':'buyer';
+    }
+    await addDoc(conversationPath,{
+      sender:senderType,
+      senderName:user.displayName||user.email||'User',
+      message:msg,
+      messageType:'text',
+      timestamp:serverTimestamp(),
+      user_id:user.uid,
+      user_email:user.email,
+      read:false
+    });
   }catch(e){console.error('Send error:',e);$('chatInput').value=msg;alert('Failed to send. Please try again.');}
   finally{$('chatInput').disabled=false;$('sendChatBtn').disabled=false;$('chatInput').focus();}
 }
+
+$('sendChatBtn').addEventListener('click',sendChatMessage);
+$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMessage();}});
 
 function showLoginModal(){$('loginModal').classList.add('open');}
 document.querySelector('.close-login').onclick=()=>$('loginModal').classList.remove('open');
@@ -2008,13 +2251,14 @@ window.addEventListener('online',()=>$('offline-bar').classList.remove('show'));
 window.addEventListener('offline',()=>$('offline-bar').classList.add('show'));
 if(!navigator.onLine)$('offline-bar').classList.add('show');
 
-// Handle incoming share links
 window.addEventListener('load', handleIncomingTicketLink);
 window.addEventListener('hashchange', handleIncomingTicketLink);
 
 onAuthStateChanged(auth,user=>{
   if(!user){Object.values(chatUnsubs).forEach(u=>{if(u)u();});chatUnsubs={};if(unsubChat){unsubChat();unsubChat=null;}}
 });
+
+loadEvents();
 </script>
 
 <div class="share-toast" id="shareToast">Link copied to clipboard!</div>

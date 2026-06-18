@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Edit Events — VendHub</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -17,11 +17,42 @@
   --radius:14px; --radius-sm:9px;
   --transition:0.25s cubic-bezier(0.4,0,0.2,1);
   --ticket-purple:#6366f1;
+  --mobile-header-h:56px;
+  --mobile-nav-h:56px;
 }
-*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
 body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--black); min-height:100vh; display:flex; -webkit-font-smoothing:antialiased; }
 
-/* ── SIDEBAR ── */
+/* Mobile Navigation */
+.mobile-nav-bar {
+  position:fixed; bottom:0; left:0; right:0; height:var(--mobile-nav-h); background:var(--black);
+  display:flex; align-items:center; justify-content:space-around; padding:0 8px; z-index:300;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.15);
+  transform:translateY(100%); transition:transform var(--transition);
+}
+.mobile-nav-bar.active { transform:translateY(0); }
+.mobile-nav-item {
+  display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; padding:4px 8px;
+  border-radius:var(--radius-sm); transition:all var(--transition); min-width:60px;
+}
+.mobile-nav-item:hover { background:rgba(255,255,255,0.08); }
+.mobile-nav-item.active { background:rgba(201,168,76,0.15); }
+.mobile-nav-item svg { width:20px; height:20px; color:rgba(255,255,255,0.55); transition:color var(--transition); }
+.mobile-nav-item.active svg { color:var(--gold-light); }
+.mobile-nav-item span { font-size:9px; font-weight:600; color:rgba(255,255,255,0.45); letter-spacing:0.04em; transition:color var(--transition); }
+.mobile-nav-item.active span { color:var(--gold-light); }
+
+.mobile-menu-btn {
+  background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.55); padding:6px;
+  border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center;
+  transition:all var(--transition);
+}
+.mobile-menu-btn:hover { background:rgba(255,255,255,0.08); color:var(--white); }
+.mobile-menu-btn svg { width:18px; height:18px; }
+
+/* Sidebar */
 .sidebar { width:var(--sidebar-w); background:var(--black); min-height:100vh; display:flex; flex-direction:column; flex-shrink:0; position:sticky; top:0; height:100vh; overflow-y:auto; }
 .sidebar-logo { padding:28px 24px 20px; border-bottom:1px solid rgba(255,255,255,0.08); }
 .sidebar-logo a { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; color:var(--white); text-decoration:none; }
@@ -44,7 +75,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .logout-btn:hover { color:#ef4444; }
 .logout-btn svg { width:16px; height:16px; display:block; }
 
-/* ── MAIN ── */
+/* Main */
 .main { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; }
 .topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 32px; height:60px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-shrink:0; position:sticky; top:0; z-index:50; box-shadow:var(--shadow-sm); }
 .topbar-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:900; color:var(--black); }
@@ -59,14 +90,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .add-btn svg { width:14px; height:14px; }
 .page-body { padding:28px 32px; flex:1; overflow-y:auto; }
 
-/* ── TABS ── */
+/* Tabs */
 .tab-row { display:flex; gap:4px; margin-bottom:24px; border-bottom:1px solid var(--border); }
 .tab-btn { padding:10px 18px; border:none; background:none; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:var(--transition); }
 .tab-btn:hover { color:var(--black); }
 .tab-btn.active { color:var(--black); border-bottom-color:var(--gold); }
 .tab-btn.tickets-active { color:var(--ticket-purple); border-bottom-color:var(--ticket-purple); }
 
-/* ── STATS ── */
+/* Stats */
 .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; margin-bottom:28px; }
 .stat-card { background:var(--white); border-radius:var(--radius); padding:18px 20px; border:1px solid var(--border); box-shadow:var(--shadow-sm); position:relative; overflow:hidden; }
 .stat-card::after { content:""; position:absolute; top:0; right:0; width:60px; height:60px; border-radius:0 var(--radius) 0 60px; opacity:0.07; }
@@ -79,21 +110,21 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .stat-value { font-family:'Playfair Display',serif; font-size:30px; font-weight:900; color:var(--black); line-height:1; }
 .stat-sub { font-size:12px; color:var(--muted); margin-top:4px; }
 
-/* ── FILTERS ── */
+/* Filters */
 .controls-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
 .filter-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
 .filter-tab { padding:6px 15px; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; border:1.5px solid var(--border); background:var(--white); color:var(--slate); transition:var(--transition); user-select:none; }
 .filter-tab:hover { background:var(--cream); }
 .filter-tab.active { background:var(--black); color:var(--white); border-color:var(--black); }
 
-/* ── TABLE ── */
+/* Table */
 .table-wrap { background:var(--white); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; box-shadow:var(--shadow-sm); }
 .table-header { display:flex; align-items:center; justify-content:space-between; padding:16px 22px; border-bottom:1px solid var(--border); }
 .table-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:var(--black); }
 .table-count { font-size:12px; color:var(--muted); font-weight:500; }
 #eventsList, #ticketsList { display:flex; flex-direction:column; }
 
-/* ── EVENT ROW ── */
+/* Event Row */
 .event-row { display:flex; align-items:center; gap:16px; padding:16px 22px; border-bottom:1px solid #f5f5f5; transition:background var(--transition); animation:fadeIn 0.2s ease both; }
 .event-row:last-child { border-bottom:none; }
 .event-row:hover { background:#fdfcf8; }
@@ -113,7 +144,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .badge-pending { background:#fff7ed; border:1px solid #fed7aa; color:#ea580c; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
 .badge-approved { background:#d1fae5; border:1px solid #a7f3d0; color:#065f46; font-size:11px; font-weight:700; padding:2px 10px; border-radius:12px; display:inline-flex; align-items:center; }
 
-/* professional date row */
+/* Date row */
 .event-dates-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
 .event-date-first { display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07)); border:1px solid rgba(201,168,76,0.32); color:var(--gold-dark); font-size:11.5px; font-weight:700; padding:3px 10px 3px 7px; border-radius:20px; white-space:nowrap; }
 .event-date-first svg { width:11px; height:11px; flex-shrink:0; opacity:0.75; }
@@ -132,7 +163,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .btn-delete:hover { background:#fecaca; transform:translateY(-1px); }
 .btn-delete svg { width:13px; height:13px; }
 
-/* ── SKELETON ── */
+/* Skeleton */
 .skeleton-row { display:flex; align-items:center; gap:16px; padding:16px 22px; border-bottom:1px solid #f5f5f5; }
 .sk { background:#f0f0f0; border-radius:8px; animation:shimmer 1.4s ease-in-out infinite; }
 .sk-thumb { width:64px; height:64px; border-radius:var(--radius-sm); flex-shrink:0; }
@@ -142,13 +173,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .sk-btn { height:34px; width:72px; border-radius:var(--radius-sm); flex-shrink:0; }
 @keyframes shimmer { 0%,100%{opacity:0.5} 50%{opacity:1} }
 
-/* ── EMPTY STATE ── */
+/* Empty State */
 .empty-state { text-align:center; padding:56px 24px; display:flex; flex-direction:column; align-items:center; gap:14px; }
 .empty-state svg { width:40px; height:40px; color:var(--muted); opacity:0.4; }
 .empty-state h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--black); }
 .empty-state p { font-size:14px; color:var(--muted); }
 
-/* ── DELETE MODAL ── */
+/* Delete Modal */
 .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.6); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); z-index:1000; align-items:center; justify-content:center; padding:20px; }
 .modal-backdrop.open { display:flex; }
 .confirm-modal { background:var(--white); width:100%; max-width:420px; border-radius:20px; overflow:hidden; box-shadow:var(--shadow-lg); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
@@ -174,7 +205,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .btn-confirm-delete.loading .del-spinner { display:block; }
 .btn-confirm-delete.loading .del-btn-text { display:none; }
 
-/* TICKET EDIT MODAL */
+/* Ticket Edit Modal */
 .ticket-edit-modal { background:var(--white); width:100%; max-width:600px; border-radius:20px; overflow:hidden; box-shadow:var(--shadow-lg); animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
 .ticket-edit-header { background:linear-gradient(135deg, #6366f1, #4f46e5); padding:22px 26px 18px; position:relative; overflow:hidden; color:var(--white); }
 .ticket-edit-header h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:900; position:relative; z-index:1; }
@@ -200,7 +231,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .ticket-preview-placeholder svg { width:28px; height:28px; opacity:0.4; }
 .ticket-preview-placeholder span { font-size:12.5px; }
 
-/* ── TOAST ── */
+/* Toast */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--charcoal); color:var(--white); padding:11px 22px; border-radius:30px; font-size:14px; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,0.3); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
 .toast.show { transform:translateX(-50%) translateY(0); }
 .toast.success { background:#14532d; }
@@ -210,7 +241,23 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 @keyframes slideUp { from{opacity:0;transform:translateY(28px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* ── RESPONSIVE ── */
+/* Responsive */
+@media(max-width:900px) {
+  .sidebar { width:64px; }
+  .sidebar .sidebar-label { display:none; }
+  .sidebar-item span { display:none; }
+  .sidebar-item { padding:10px; justify-content:center; }
+  .sidebar-item svg { width:18px; height:18px; }
+  .sidebar-item.active::before { display:none; }
+  .sidebar-admin-name { display:none; }
+  .topbar { padding:0 16px; }
+  .search-wrap input { width:140px; }
+  .search-wrap input:focus { width:180px; }
+  .page-body { padding:18px 16px; }
+  .stats-row { grid-template-columns:repeat(2,1fr); }
+  .ticket-edit-grid { grid-template-columns:1fr; }
+}
+
 @media(max-width:768px) {
   .sidebar { display:none; }
   .topbar { padding:0 16px; }
@@ -218,40 +265,89 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
   .stats-row { grid-template-columns:1fr 1fr; }
   .event-row { flex-wrap:wrap; gap:10px; }
   .event-actions { width:100%; justify-content:flex-end; }
-  .search-wrap input { width:140px; }
-  .search-wrap input:focus { width:180px; }
+  .search-wrap input { width:120px; }
+  .search-wrap input:focus { width:160px; }
   .ticket-edit-grid { grid-template-columns:1fr; }
+  .mobile-nav-bar { display:flex; }
+}
+
+@media(max-width:480px) {
+  .stats-row { grid-template-columns:1fr; }
+  .quick-actions { grid-template-columns:repeat(2,1fr); }
+  .toast { left:16px; right:16px; transform:translateX(0) translateY(80px); }
+  .toast.show { transform:translateX(0) translateY(0); }
+}
+
+@media(hover:none) and (pointer:coarse) {
+  .btn-edit:active, .btn-approve:active, .btn-delete:active, .filter-tab:active, .mobile-nav-item:active {
+    transform:scale(0.96); opacity:0.85;
+  }
 }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<header class="topbar" style="position:fixed;top:0;left:0;right:0;z-index:100;">
+  <div class="topbar-title">Manage <span id="topbarTitle">Events</span></div>
+  <div class="topbar-right">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search..." autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
+    </div>
+    <button class="add-btn" onclick="location.href='upload.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Event
+    </button>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav-bar" id="mobileNavBar">
+  <div class="mobile-nav-item active" data-tab="events">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    <span>Events</span>
+  </div>
+  <div class="mobile-nav-item" data-tab="tickets">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M19.5 12c0 4.14-3.36 7.5-7.5 7.5S4.5 16.14 4.5 12 7.86 4.5 12 4.5c2.38 0 4.5.91 6.24 2.42"/></svg>
+    <span>Tickets</span>
+  </div>
+  <div class="mobile-nav-item" onclick="location.href='admin.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/></svg>
+    <span>Apps</span>
+  </div>
+  <div class="mobile-nav-item" id="mobileLogoutBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <span>Logout</span>
+  </div>
+</div>
+
 <aside class="sidebar">
   <div class="sidebar-logo"><a href="index.html">Vend<span>Hub</span></a></div>
 
   <div class="sidebar-label">Management</div>
-  <div class="sidebar-item" onclick="location.href='admin.html'">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/></svg>
-    Applications
+  <div class="sidebar-item active" data-tab="events">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    <span>Edit Events</span>
+  </div>
+  <div class="sidebar-item" onclick="switchToTickets()" id="sidebarTickets">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M19.5 12c0 4.14-3.36 7.5-7.5 7.5S4.5 16.14 4.5 12 7.86 4.5 12 4.5c2.38 0 4.5.91 6.24 2.42"/></svg>
+    <span>Manage Tickets</span>
   </div>
   <div class="sidebar-item" onclick="location.href='upload.html'">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    Upload Event
+    <span>Upload Event</span>
   </div>
-  <div class="sidebar-item active">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-    Edit Events
-  </div>
-  <div class="sidebar-item ticket-item" id="sidebarTickets">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M19.5 12c0 4.14-3.36 7.5-7.5 7.5S4.5 16.14 4.5 12 7.86 4.5 12 4.5c2.38 0 4.5.91 6.24 2.42"/></svg>
-    Manage Tickets
+  <div class="sidebar-item" onclick="location.href='admin.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/></svg>
+    <span>Applications</span>
   </div>
 
   <div class="sidebar-label">Settings</div>
   <div class="sidebar-item" id="sidebarLogout">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-    Sign Out
+    <span>Sign Out</span>
   </div>
 
   <div class="sidebar-footer">
@@ -268,23 +364,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
   </div>
 </aside>
 
-<!-- MAIN -->
-<div class="main">
-  <header class="topbar">
-    <div class="topbar-title">Manage <span id="topbarTitle">Events</span></div>
-    <div class="topbar-right">
-      <div class="search-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="searchInput" placeholder="Search..."
-          autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')"/>
-      </div>
-      <button class="add-btn" onclick="location.href='upload.html'">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add Event
-      </button>
-    </div>
-  </header>
-
+<div class="main" style="margin-top:60px;">
   <div class="page-body">
     <!-- TABS -->
     <div class="tab-row">
@@ -324,7 +404,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
           <span class="table-count" id="tableCount">Loading…</span>
         </div>
         <div id="eventsList">
-          <!-- skeleton -->
           <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
           <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
           <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
@@ -365,7 +444,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
           <span class="table-count" id="ticketsTableCount">Loading…</span>
         </div>
         <div id="ticketsList">
-          <!-- skeleton -->
           <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
           <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
           <div class="skeleton-row"><div class="sk sk-thumb"></div><div class="sk-text-wrap"><div class="sk sk-title"></div><div class="sk sk-sub"></div></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div><div class="sk sk-btn"></div></div>
@@ -553,10 +631,7 @@ let pendingDeleteId = null;
 let pendingDeleteType = null;
 let editingTicketId = null;
 
-// ════════════════════════════════════════════════════
-//  DATE UTILITIES
-// ════════════════════════════════════════════════════
-
+// Date Utilities
 function collectDates(ev) {
   if (Array.isArray(ev.event_dates) && ev.event_dates.length)
     return ev.event_dates.filter(Boolean);
@@ -587,54 +662,39 @@ function toJSDate(raw) {
 
 function buildDateRowHTML(dates) {
   if (!dates.length) return "";
-
   const calSVG   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`;
   const clockSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-
   const first = parseDateStr(dates[0]);
   if (!first) return "";
-
-  let html = `<div class="event-dates-row">
-    <div class="event-date-first">${calSVG} ${esc(first.dateStr)}</div>`;
-
+  let html = `<div class="event-dates-row"><div class="event-date-first">${calSVG} ${esc(first.dateStr)}</div>`;
   if (first.timeStr) {
     html += `<div class="event-date-time">${clockSVG} ${esc(first.timeStr)}</div>`;
   }
-
   if (dates.length > 1) {
     html += `<span class="event-date-more">+${dates.length - 1} more day${dates.length > 2 ? "s" : ""}</span>`;
   }
-
   html += `</div>`;
   return html;
 }
 
-// ════════════════════════════════════════════════════
-//  LOAD + RENDER EVENTS
-// ════════════════════════════════════════════════════
-
+// Load + Render Events
 async function loadEvents() {
   const today = new Date(); today.setHours(0,0,0,0);
-
   let snap;
   try {
     snap = await getDocs(query(collection(db, "events"), orderBy("created_at", "desc")));
   } catch(e) {
     snap = await getDocs(collection(db, "events"));
   }
-
   allEvents = [];
   snap.forEach(d => {
     const ev    = d.data();
     const dates = collectDates(ev);
-
     const lastRaw  = dates.length ? dates[dates.length - 1] : null;
     const lastDate = toJSDate(lastRaw);
     const isPast   = lastDate ? lastDate < today : false;
-
     allEvents.push({ id: d.id, ...ev, _isPast: isPast, _dates: dates });
   });
-
   allEvents.sort((a, b) => {
     if (a._isPast !== b._isPast) return a._isPast ? 1 : -1;
     const da = toJSDate(a._dates[0]), db2 = toJSDate(b._dates[0]);
@@ -642,11 +702,9 @@ async function loadEvents() {
     if (!da) return 1; if (!db2) return -1;
     return da - db2;
   });
-
   const upcoming   = allEvents.filter(e => !e._isPast).length;
   const past       = allEvents.filter(e =>  e._isPast).length;
   const categories = new Set(allEvents.map(e => e.category).filter(Boolean)).size;
-
   el("statTotal").textContent      = allEvents.length;
   el("statUpcoming").textContent   = upcoming;
   el("statPast").textContent       = past;
@@ -654,10 +712,7 @@ async function loadEvents() {
   renderEvents();
 }
 
-// ════════════════════════════════════════════════════
-//  LOAD + RENDER TICKETS
-// ════════════════════════════════════════════════════
-
+// Load + Render Tickets
 async function loadTickets() {
   let snap;
   try {
@@ -665,22 +720,18 @@ async function loadTickets() {
   } catch(e) {
     snap = await getDocs(collection(db, "ticket_listings"));
   }
-
   allTickets = [];
   snap.forEach(d => {
     const ticket = d.data();
     allTickets.push({ id: d.id, ...ticket });
   });
-
   const pending = allTickets.filter(t => t.approvalStatus === 'pending').length;
   const approved = allTickets.filter(t => t.approvalStatus === 'approved').length;
   const rejected = allTickets.filter(t => t.approvalStatus === 'rejected').length;
-
   el("statTotalTickets").textContent = allTickets.length;
   el("statPendingTickets").textContent = pending;
   el("statApprovedTickets").textContent = approved;
   el("statRejectedTickets").textContent = rejected;
-
   renderTickets();
 }
 
@@ -709,110 +760,71 @@ function getSportIcon(sport) {
 function renderTickets() {
   const searchVal = el("searchInput").value.toLowerCase();
   const list = el("ticketsList");
-
   const filtered = allTickets.filter(t => {
-    const matchFilter =
-      activeTicketFilter === "all" ? true :
-      activeTicketFilter === t.approvalStatus ? true :
-      activeTicketFilter === t.sport ? true : false;
-
-    const matchSearch = !searchVal ||
-      [t.title, t.venue, t.city, t.seller, t.sport].some(f => (f || "").toLowerCase().includes(searchVal));
-
+    const matchFilter = activeTicketFilter === "all" ? true : (t.approvalStatus === activeTicketFilter || t.sport === activeTicketFilter);
+    const matchSearch = !searchVal || [t.title, t.venue, t.city, t.seller, t.sport].some(f => (f || "").toLowerCase().includes(searchVal));
     return matchFilter && matchSearch;
   });
-
   el("ticketsTableCount").textContent = `${filtered.length} ticket${filtered.length !== 1 ? "s" : ""}`;
-
   if (!filtered.length) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <h3>No tickets found</h3>
-        <p>No tickets match your filters. <a href="upload.html" style="color:var(--ticket-purple);font-weight:600;">Upload new tickets</a> to get started.</p>
-      </div>`;
+    list.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><h3>No tickets found</h3><p>No tickets match your filters. <a href="upload.html" style="color:var(--ticket-purple);font-weight:600;">Upload new tickets</a> to get started.</p></div>`;
     return;
   }
-
   list.innerHTML = "";
   filtered.forEach((t, idx) => {
     const row = document.createElement("div");
     row.className = "event-row";
     row.style.animationDelay = `${idx * 0.04}s`;
-
     const sportIcon = getSportIcon(t.sport);
-
     const thumbHtml = t.image
-      ? `<img class="event-thumb" src="${esc(t.image)}" alt="${esc(t.title)}" loading="lazy"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-         <div class="event-thumb-placeholder" style="display:none;">
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-         </div>`
-      : `<div class="event-thumb-placeholder">
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-         </div>`;
-
+      ? `<img class="event-thumb" src="${esc(t.image)}" alt="${esc(t.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="event-thumb-placeholder" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`
+      : `<div class="event-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
     const statusBadge = getStatusBadge(t.approvalStatus);
-
-    row.innerHTML = `
-      ${thumbHtml}
-      <div class="event-info">
-        <div class="event-title">${sportIcon} ${esc(t.title || "Untitled Ticket")}</div>
-        <div class="event-meta">
-          <span class="event-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-            ${esc(t.date || "TBD")} ${t.time ? `• ${esc(t.time)}` : ''}
-          </span>
-          <span class="event-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
-            ${esc(t.venue || "TBD")}, ${esc(t.city || "TBD")}
-          </span>
-          <span class="cat-badge">${sportIcon} ${esc(t.sport || "Other")}</span>
-          ${statusBadge}
-        </div>
-        <div class="event-meta" style="margin-top:4px;">
-          <span class="event-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            $${t.price || '0'} × ${t.qty || '1'}
-          </span>
-          <span class="event-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            ${esc(t.seller || "Anonymous")}
-          </span>
-          ${t.seat ? `<span class="event-meta-item">${esc(t.seat)}</span>` : ''}
-        </div>
-      </div>
-      <div class="event-actions">
-        <button class="btn-edit edit-ticket-btn" title="Edit ticket">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Edit
-        </button>
-        ${t.approvalStatus === 'pending' ? `
-        <button class="btn-approve approve-ticket-btn" title="Approve ticket">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Approve
-        </button>` : ''}
-        <button class="btn-delete delete-ticket-btn" title="Delete ticket">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-          Delete
-        </button>
-      </div>`;
-
+    row.innerHTML = `${thumbHtml}<div class="event-info"><div class="event-title">${sportIcon} ${esc(t.title || "Untitled Ticket")}</div><div class="event-meta"><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(t.date || "TBD")} ${t.time ? `• ${esc(t.time)}` : ''}</span><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(t.venue || "TBD")}, ${esc(t.city || "TBD")}</span><span class="cat-badge">${sportIcon} ${esc(t.sport || "Other")}</span>${statusBadge}</div><div class="event-meta" style="margin-top:4px;"><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>$${t.price || '0'} × ${t.qty || '1'}</span><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${esc(t.seller || "Anonymous")}</span>${t.seat ? `<span class="event-meta-item">${esc(t.seat)}</span>` : ''}</div></div><div class="event-actions"><button class="btn-edit edit-ticket-btn" title="Edit ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>${t.approvalStatus === 'pending' ? `<button class="btn-approve approve-ticket-btn" title="Approve ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Approve</button>` : ''}<button class="btn-delete delete-ticket-btn" title="Delete ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Delete</button></div>`;
     row.querySelector(".edit-ticket-btn").onclick = () => openTicketEdit(t.id);
-    row.querySelector(".approve-ticket-btn").onclick = () => approveTicket(t.id);
+    if (t.approvalStatus === 'pending') {
+      const approveBtn = row.querySelector(".approve-ticket-btn");
+      if (approveBtn) approveBtn.onclick = () => approveTicket(t.id);
+    }
     row.querySelector(".delete-ticket-btn").onclick = () => openDelete(t.id, t.title || "Untitled Ticket", "ticket");
     list.appendChild(row);
   });
 }
 
-// ════════════════════════════════════════════════════
-//  TICKET EDIT MODAL
-// ════════════════════════════════════════════════════
+function renderEvents() {
+  const searchVal = el("searchInput").value.toLowerCase();
+  const list      = el("eventsList");
+  const filtered = allEvents.filter(e => {
+    const matchFilter = activeFilter === "all" ? true : (activeFilter === "upcoming" ? !e._isPast : (activeFilter === "past" ? e._isPast : e.category === activeFilter));
+    const matchSearch = !searchVal || [e.title, e.location, e.state, e.category, e.address].some(f => (f || "").toLowerCase().includes(searchVal));
+    return matchFilter && matchSearch;
+  });
+  el("tableCount").textContent = `${filtered.length} event${filtered.length !== 1 ? "s" : ""}`;
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><h3>No events found</h3><p>Try a different filter, or <a href="upload.html" style="color:var(--gold-dark);font-weight:600;">upload a new event</a>.</p></div>`;
+    return;
+  }
+  list.innerHTML = "";
+  filtered.forEach((e, idx) => {
+    const row = document.createElement("div");
+    row.className = "event-row";
+    row.style.animationDelay = `${idx * 0.04}s`;
+    const thumbHtml = e.image
+      ? `<img class="event-thumb" src="${esc(e.image)}" alt="${esc(e.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="event-thumb-placeholder" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`
+      : `<div class="event-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+    const statusBadge = e._isPast ? `<span class="badge-expired">Expired</span>` : `<span class="badge-active">Active</span>`;
+    const dateRowHTML = buildDateRowHTML(e._dates);
+    row.innerHTML = `${thumbHtml}<div class="event-info"><div class="event-title">${esc(e.title || "Untitled")}</div><div class="event-meta">${e.location ? `<span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(e.location)}${e.state ? ", " + esc(e.state) : ""}</span>` : ""}${e.category ? `<span class="cat-badge">${esc(e.category)}</span>` : ""}${statusBadge}${e.price ? `<span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>${esc(e.price)}</span>` : ""}</div>${dateRowHTML}</div><div class="event-actions"><button class="btn-edit edit-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button><button class="btn-delete delete-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Delete</button></div>`;
+    row.querySelector(".edit-btn").onclick   = () => location.href = `upload.html?edit=${e.id}`;
+    row.querySelector(".delete-btn").onclick = () => openDelete(e.id, e.title, "event");
+    list.appendChild(row);
+  });
+}
 
+// Ticket Edit Modal
 function openTicketEdit(id) {
   const ticket = allTickets.find(t => t.id === id);
   if (!ticket) return;
-
   editingTicketId = id;
   el("editTicketId").value = id;
   el("editTicketSport").value = ticket.sport || "worldcup";
@@ -828,8 +840,6 @@ function openTicketEdit(id) {
   el("editTicketSellerContact").value = ticket.sellerContact || "";
   el("editTicketNotes").value = ticket.notes || "";
   el("editTicketStatus").value = ticket.approvalStatus || "pending";
-
-  // Preview image
   const preview = el("editTicketImagePreview");
   if (ticket.image) {
     preview.src = ticket.image;
@@ -839,7 +849,6 @@ function openTicketEdit(id) {
     preview.style.display = "none";
     el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder").style.display = "flex";
   }
-
   el("ticketEditModal").classList.add("open");
 }
 
@@ -854,10 +863,8 @@ function closeTicketEdit() {
 async function saveTicketEdit(e) {
   if (e) e.preventDefault();
   if (!editingTicketId) return;
-
   const btn = el("saveTicketEditBtn");
   btn.disabled = true;
-
   const ticketData = {
     sport: el("editTicketSport").value,
     title: el("editTicketTitle").value.trim(),
@@ -874,7 +881,6 @@ async function saveTicketEdit(e) {
     approvalStatus: el("editTicketStatus").value,
     image: allTickets.find(t => t.id === editingTicketId)?.image || null
   };
-
   try {
     await updateDoc(doc(db, "ticket_listings", editingTicketId), ticketData);
     showToast("Ticket updated successfully!", "success");
@@ -888,9 +894,7 @@ async function saveTicketEdit(e) {
 
 async function approveTicket(id) {
   try {
-    await updateDoc(doc(db, "ticket_listings", id), {
-      approvalStatus: 'approved'
-    });
+    await updateDoc(doc(db, "ticket_listings", id), { approvalStatus: 'approved' });
     showToast("Ticket approved and published!", "success");
     loadTickets();
   } catch(err) {
@@ -898,98 +902,7 @@ async function approveTicket(id) {
   }
 }
 
-// ════════════════════════════════════════════════════
-//  RENDER EVENTS
-// ════════════════════════════════════════════════════
-
-function renderEvents() {
-  const searchVal = el("searchInput").value.toLowerCase();
-  const list      = el("eventsList");
-
-  const filtered = allEvents.filter(e => {
-    const matchFilter =
-      activeFilter === "all"      ? true :
-      activeFilter === "upcoming" ? !e._isPast :
-      activeFilter === "past"     ?  e._isPast :
-      e.category === activeFilter;
-
-    const matchSearch = !searchVal ||
-      [e.title, e.location, e.state, e.category, e.address].some(f => (f || "").toLowerCase().includes(searchVal));
-
-    return matchFilter && matchSearch;
-  });
-
-  el("tableCount").textContent = `${filtered.length} event${filtered.length !== 1 ? "s" : ""}`;
-
-  if (!filtered.length) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        <h3>No events found</h3>
-        <p>Try a different filter, or <a href="upload.html" style="color:var(--gold-dark);font-weight:600;">upload a new event</a>.</p>
-      </div>`;
-    return;
-  }
-
-  list.innerHTML = "";
-  filtered.forEach((e, idx) => {
-    const row = document.createElement("div");
-    row.className = "event-row";
-    row.style.animationDelay = `${idx * 0.04}s`;
-
-    const thumbHtml = e.image
-      ? `<img class="event-thumb" src="${esc(e.image)}" alt="${esc(e.title)}" loading="lazy"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-         <div class="event-thumb-placeholder" style="display:none;">
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-         </div>`
-      : `<div class="event-thumb-placeholder">
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-         </div>`;
-
-    const statusBadge = e._isPast
-      ? `<span class="badge-expired">Expired</span>`
-      : `<span class="badge-active">Active</span>`;
-
-    const dateRowHTML = buildDateRowHTML(e._dates);
-
-    row.innerHTML = `
-      ${thumbHtml}
-      <div class="event-info">
-        <div class="event-title">${esc(e.title || "Untitled")}</div>
-        <div class="event-meta">
-          ${e.location ? `<span class="event-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
-            ${esc(e.location)}${e.state ? ", " + esc(e.state) : ""}</span>` : ""}
-          ${e.category ? `<span class="cat-badge">${esc(e.category)}</span>` : ""}
-          ${statusBadge}
-          ${e.price ? `<span class="event-meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            ${esc(e.price)}</span>` : ""}
-        </div>
-        ${dateRowHTML}
-      </div>
-      <div class="event-actions">
-        <button class="btn-edit edit-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Edit
-        </button>
-        <button class="btn-delete delete-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-          Delete
-        </button>
-      </div>`;
-
-    row.querySelector(".edit-btn").onclick   = () => location.href = `upload.html?edit=${e.id}`;
-    row.querySelector(".delete-btn").onclick = () => openDelete(e.id, e.title, "event");
-    list.appendChild(row);
-  });
-}
-
-// ════════════════════════════════════════════════════
-//  DELETE MODAL
-// ════════════════════════════════════════════════════
-
+// Delete Modal
 function openDelete(id, title, type = "event") {
   pendingDeleteId = id;
   pendingDeleteType = type;
@@ -1017,7 +930,6 @@ el("confirmDeleteBtn").onclick = async () => {
   if (!pendingDeleteId || !pendingDeleteType) return;
   const btn = el("confirmDeleteBtn");
   btn.classList.add("loading");
-
   try {
     if (pendingDeleteType === "ticket") {
       await deleteDoc(doc(db, "ticket_listings", pendingDeleteId));
@@ -1038,10 +950,7 @@ el("confirmDeleteBtn").onclick = async () => {
   }
 };
 
-// ════════════════════════════════════════════════════
-//  FILTERS + SEARCH
-// ════════════════════════════════════════════════════
-
+// Filters + Search
 document.querySelectorAll(".filter-tab").forEach(tab => {
   tab.addEventListener("click", () => {
     document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
@@ -1069,20 +978,13 @@ document.querySelectorAll("[data-ticket-filter]").forEach(tab => {
   });
 });
 
-// ════════════════════════════════════════════════════
-//  TABS
-// ════════════════════════════════════════════════════
-
+// Tabs
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-
-    // Hide all tabs
     el("eventsTab").style.display = "none";
     el("ticketsTab").style.display = "none";
-
-    // Show selected tab
     if (btn.dataset.tab === "events") {
       el("eventsTab").style.display = "block";
       el("topbarTitle").textContent = "Events";
@@ -1105,58 +1007,66 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
-// ════════════════════════════════════════════════════
-//  TICKET EDIT MODAL EVENTS
-// ════════════════════════════════════════════════════
-
-el("closeTicketEditBtn").onclick = closeTicketEdit;
-el("cancelTicketEditBtn").onclick = closeTicketEdit;
-el("ticketEditModal").addEventListener("click", e => { if (e.target === el("ticketEditModal")) closeTicketEdit(); });
-el("ticketEditForm").addEventListener("submit", saveTicketEdit);
-
-// ════════════════════════════════════════════════════
-//  SIDEBAR NAVIGATION
-// ════════════════════════════════════════════════════
-
-el("sidebarTickets").onclick = () => {
-  // Switch to tickets tab
+// Switch to tickets from sidebar
+function switchToTickets() {
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
   el("tabTickets").classList.add("active");
   el("eventsTab").style.display = "none";
   el("ticketsTab").style.display = "block";
   el("topbarTitle").textContent = "Tickets";
   el("searchInput").placeholder = "Search tickets...";
-
-  // Update sidebar active state
   document.querySelectorAll(".sidebar-item").forEach(item => item.classList.remove("active"));
   el("sidebarTickets").classList.add("active");
-
   if (allTickets.length === 0) loadTickets();
   else renderTickets();
+}
+
+// Mobile navigation
+document.querySelectorAll(".mobile-nav-item[data-tab]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".mobile-nav-item").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    if (btn.dataset.tab === "events") {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      el("tabEvents").classList.add("active");
+      el("eventsTab").style.display = "block";
+      el("ticketsTab").style.display = "none";
+      el("topbarTitle").textContent = "Events";
+      el("searchInput").placeholder = "Search events...";
+      if (allEvents.length === 0) loadEvents();
+      else renderEvents();
+    } else if (btn.dataset.tab === "tickets") {
+      switchToTickets();
+    }
+  });
+});
+
+// Mobile menu toggle
+el("mobileMenuBtn").onclick = () => {
+  // For now, just show the tickets tab
+  switchToTickets();
 };
 
-// ════════════════════════════════════════════════════
-//  SIGN OUT
-// ════════════════════════════════════════════════════
+// Ticket Edit Modal Events
+el("closeTicketEditBtn").onclick = closeTicketEdit;
+el("cancelTicketEditBtn").onclick = closeTicketEdit;
+el("ticketEditModal").addEventListener("click", e => { if (e.target === el("ticketEditModal")) closeTicketEdit(); });
+el("ticketEditForm").addEventListener("submit", saveTicketEdit);
 
+// Sign Out
 el("sidebarLogout").onclick = () => signOut(auth).then(() => location.href = "index.html");
 el("logoutBtn").onclick     = () => signOut(auth).then(() => location.href = "index.html");
+el("mobileLogoutBtn").onclick = () => signOut(auth).then(() => location.href = "index.html");
 
-// ════════════════════════════════════════════════════
-//  AUTH GUARD
-// ════════════════════════════════════════════════════
-
+// Auth Guard
 onAuthStateChanged(auth, user => {
   if (!user || user.email !== "admin@grandbazaar.com") {
     location.href = "index.html";
     return;
   }
-
   const name = user.displayName || user.email || "A";
   el("sidebarAvatarEl").textContent  = name.charAt(0).toUpperCase();
   el("sidebarAdminName").textContent = user.displayName || user.email;
-
-  // Load initial data
   loadEvents();
 });
 </script>
