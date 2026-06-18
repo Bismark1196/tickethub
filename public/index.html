@@ -303,6 +303,11 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tkt-seller-chat{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);background:var(--white);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--ink);cursor:pointer;transition:all var(--dur) var(--ease);flex-shrink:0;}
 .tkt-seller-chat:hover{background:var(--ink);color:var(--white);border-color:var(--ink);}
 .tkt-seller-chat svg{width:12px;height:12px;}
+.tkt-share-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--r-pill);border:1.5px solid var(--violet);background:var(--violet-pale);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--violet);cursor:pointer;transition:all var(--dur) var(--ease);flex-shrink:0;}
+.tkt-share-btn:hover{background:var(--violet);color:var(--white);border-color:var(--violet);}
+.tkt-share-btn svg{width:12px;height:12px;}
+.share-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:var(--white);padding:12px 20px;border-radius:var(--r-md);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;opacity:0;transition:all var(--dur) var(--ease);z-index:2000;pointer-events:none;}
+.share-toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 .tkt-qty-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--paper);border-radius:var(--r-md);border:1px solid var(--ink-10);}
 .tkt-qty-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--ink);}
 .tkt-qty-ctrl{display:flex;align-items:center;gap:12px;}
@@ -728,17 +733,17 @@ body.modal-open{overflow:hidden;}
   <div class="mode-tabs-inner">
     <button class="mode-tab active" data-mode="vendors">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Vendors
+      Vendor Booths
       <span class="mode-tab-badge" id="vendorTabBadge">12</span>
     </button>
     <button class="mode-tab" data-mode="tickets">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
-      Buy Ticket
+      Buy Tickets
       <span class="mode-tab-badge" id="ticketTabBadge">12</span>
     </button>
     <button class="mode-tab" data-mode="sell">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      Sell Ticket
+      Sell a Ticket
       <span class="mode-tab-badge">List Now</span>
     </button>
   </div>
@@ -901,6 +906,10 @@ body.modal-open{overflow:hidden;}
         <button class="tkt-seller-chat" id="tktSellerChatBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
           Message
+        </button>
+        <button class="tkt-share-btn" id="tktShareBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Share
         </button>
       </div>
       <div class="tkt-section-label">Quantity</div>
@@ -1232,11 +1241,17 @@ function subscribeMyListings(user) {
 function subscribePurchases(user) {
   if (chatUnsubs.purchases) chatUnsubs.purchases();
   chatUnsubs.purchases = onSnapshot(query(collection(db,'purchases'), where('buyer_id','==',user.uid)), snap => {
-    purchasedTickets = [];
+    const newTickets = [];
+    const seenIds = new Set();
     snap.forEach(ds => {
-      const d=ds.data();
-      purchasedTickets.push({id:d.orderId||ds.id,listingId:d.listingId,event:d.eventName||d.ticketName||'Unknown Event',seller:{name:d.sellerName||'Seller',initial:d.sellerInitial||'?'},qty:d.qty||1,total:d.totalPrice||0,date:d.date||'',sport:d.sport||'other',seat:d.seat||'',venue:d.venue||'',city:d.city||''});
+      const d = ds.data();
+      const ticketId = d.orderId || ds.id;
+      if (!seenIds.has(ticketId)) {
+        seenIds.add(ticketId);
+        newTickets.push({id:ticketId,listingId:d.listingId,event:d.eventName||d.ticketName||'Unknown Event',seller:{name:d.sellerName||'Seller',initial:d.sellerInitial||'?'},qty:d.qty||1,total:d.totalPrice||0,date:d.date||'',sport:d.sport||'other',seat:d.seat||'',venue:d.venue||'',city:d.city||''});
+      }
     });
+    purchasedTickets = newTickets;
     renderTicketsTab(); updateCartBadge(); buildChatContextBar(); startUnreadListeners();
   }, err => console.error('Purchases listener error:', err));
 }
@@ -1462,7 +1477,67 @@ $('tktSellerMeta').textContent = `${sellerRating} · ${sellerSales} sales`;
     if(!auth.currentUser){pendingLoginAction=()=>openTicketChat(listing);showLoginModal();}
     else openTicketChat(listing);
   };
+  $('tktShareBtn').onclick = () => shareTicket(listing);
   $('tktModal').classList.add('open'); document.body.classList.add('modal-open');
+}
+
+// ===== SHARE LINK SYSTEM =====
+function getTicketShareUrl(listing) {
+  return window.location.origin + window.location.pathname + '#ticket/' + encodeURIComponent(listing.id);
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = $('shareToast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }).catch(err => {
+    console.error('Copy failed:', err);
+    alert('Failed to copy link. Please try again.');
+  });
+}
+
+function shareTicket(listing) {
+  const url = getTicketShareUrl(listing);
+  if (navigator.share) {
+    navigator.share({
+      title: listing.title,
+      text: `Check out this ticket: ${listing.title} - $${listing.price} at ${listing.venue}`,
+      url: url
+    }).catch(err => {
+      if (err.name !== 'AbortError') {
+        copyToClipboard(url);
+      }
+    });
+  } else {
+    copyToClipboard(url);
+  }
+}
+
+async function openTicketFromId(ticketId) {
+  try {
+    const docRef = doc(db, 'ticket_listings', ticketId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const listing = { id: docSnap.id, ...docSnap.data() };
+      openTicketModal(listing);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('Error fetching ticket:', err);
+    return false;
+  }
+}
+
+function handleIncomingTicketLink() {
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#ticket/')) {
+    const ticketId = decodeURIComponent(hash.substring(8));
+    if (ticketId) {
+      setTimeout(() => openTicketFromId(ticketId), 1000);
+    }
+  }
 }
 
 function updateTktTotal() {
@@ -1933,10 +2008,16 @@ window.addEventListener('online',()=>$('offline-bar').classList.remove('show'));
 window.addEventListener('offline',()=>$('offline-bar').classList.add('show'));
 if(!navigator.onLine)$('offline-bar').classList.add('show');
 
+// Handle incoming share links
+window.addEventListener('load', handleIncomingTicketLink);
+window.addEventListener('hashchange', handleIncomingTicketLink);
+
 onAuthStateChanged(auth,user=>{
   if(!user){Object.values(chatUnsubs).forEach(u=>{if(u)u();});chatUnsubs={};if(unsubChat){unsubChat();unsubChat=null;}}
 });
 </script>
+
+<div class="share-toast" id="shareToast">Link copied to clipboard!</div>
 
 </body>
 </html>
