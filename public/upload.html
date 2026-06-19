@@ -57,7 +57,6 @@ body::after {
   display: flex; flex-direction: column; align-items: center;
 }
 
-/* NAV */
 .top-nav { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
 .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; color: var(--white); text-decoration: none; }
 .nav-logo span { color: var(--gold); }
@@ -69,7 +68,6 @@ body::after {
 .nav-link-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(201,168,76,0.3); }
 .nav-link svg { width: 14px; height: 14px; flex-shrink: 0; }
 
-/* LOGIN CARD */
 .login-card { width: 100%; max-width: 420px; background: var(--white); border-radius: 24px; padding: 44px 36px; box-shadow: var(--shadow-lg); text-align: center; animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; }
 .login-card-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; position: relative; }
 .login-card-icon::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgba(201,168,76,0.3); }
@@ -80,7 +78,6 @@ body::after {
 .google-btn:hover { background: var(--cream); border-color: #ccc; transform: translateY(-1px); }
 .google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 
-/* MODE SWITCHER */
 .mode-switcher {
   width: 100%; display: flex; gap: 0;
   background: rgba(255,255,255,0.07);
@@ -114,7 +111,6 @@ body::after {
 .mode-btn.active.eb-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
 .mode-btn.active.ticket-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
 
-/* TICKET UPLOAD CARD */
 .ticket-card {
   width: 100%; background: var(--white); border-radius: 24px; overflow: hidden;
   box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
@@ -140,7 +136,7 @@ body::after {
 .ticket-logo-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
 .ticket-body { padding: 28px 36px 36px; }
 
-.ticket-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.ticket-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .ticket-image-preview-wrap { margin-top: 10px; border-radius: var(--radius-sm); overflow: hidden; border: 1.5px solid var(--border); background: var(--cream); height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
 .ticket-image-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
 .ticket-image-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); }
@@ -154,11 +150,9 @@ body::after {
 .btn-submit-ticket { background: linear-gradient(135deg, #4f46e5, #6366f1); }
 .btn-submit-ticket:hover { box-shadow: 0 10px 28px rgba(79, 70, 229, 0.35); }
 
-/* EVENTBRITE IMPORT CARD */
 .eb-card {
   width: 100%; background: var(--white); border-radius: 24px; overflow: hidden;
-  box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
-  display: none;
+  box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; display: none;
 }
 .eb-header {
   background: linear-gradient(135deg, #f05537 0%, #d63b1f 100%);
@@ -180,7 +174,6 @@ body::after {
 .eb-logo-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
 .eb-body { padding: 28px 36px 36px; }
 
-/* API Key setup area */
 .eb-setup-section {
   background: var(--cream); border-radius: var(--radius-sm);
   border: 1.5px solid var(--border); padding: 18px 20px; margin-bottom: 20px;
@@ -200,7 +193,6 @@ body::after {
 .eb-key-dot.ok { background: #22c55e; }
 .eb-key-dot.err { background: #ef4444; }
 
-/* Import search area */
 .eb-search-row { display: flex; gap: 8px; margin-bottom: 16px; }
 .eb-search-row input { flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); }
 .eb-search-row input:focus { border-color: var(--eb-orange); background: var(--white); box-shadow: 0 0 0 3px rgba(240,85,55,0.10); }
@@ -209,7 +201,6 @@ body::after {
 .eb-search-btn svg { width: 15px; height: 15px; }
 .eb-search-btn:disabled { opacity: 0.6; pointer-events: none; }
 
-/* OR paste URL directly */
 .eb-divider { text-align: center; font-size: 12px; color: var(--muted); margin: 16px 0; position: relative; }
 .eb-divider::before, .eb-divider::after { content: ""; position: absolute; top: 50%; width: calc(50% - 20px); height: 1px; background: var(--border); }
 .eb-divider::before { left: 0; } .eb-divider::after { right: 0; }
@@ -222,7 +213,6 @@ body::after {
 .eb-fetch-btn:disabled { opacity: 0.6; pointer-events: none; }
 .eb-fetch-btn svg { width: 14px; height: 14px; }
 
-/* Results grid */
 .eb-results { display: none; }
 .eb-results.show { display: block; }
 .eb-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -261,7 +251,6 @@ body::after {
 }
 .eb-event-card.selected .eb-event-check { color: var(--eb-orange); border-left-color: var(--eb-orange); }
 
-/* Import progress / status */
 .eb-import-status {
   display: none; background: var(--cream); border: 1.5px solid var(--border);
   border-radius: var(--radius-sm); padding: 16px 20px; margin-top: 16px;
@@ -271,7 +260,6 @@ body::after {
 .eb-import-log-line { display: flex; align-items: center; gap: 8px; }
 .eb-import-log-icon { font-size: 14px; }
 
-/* Import action bar */
 .eb-action-bar {
   display: none; padding: 16px 0 0; border-top: 1.5px solid var(--border);
   margin-top: 16px; align-items: center; justify-content: space-between; gap: 12px;
@@ -289,7 +277,6 @@ body::after {
 .eb-import-btn:disabled { opacity: 0.6; pointer-events: none; }
 .eb-import-btn svg { width: 15px; height: 15px; }
 
-/* Loading states */
 .eb-loading {
   text-align: center; padding: 32px 16px; display: none;
 }
@@ -301,13 +288,11 @@ body::after {
 }
 .eb-loading-text { font-size: 13px; color: var(--muted); }
 
-/* empty state */
 .eb-empty { text-align: center; padding: 28px 16px; display: none; }
 .eb-empty.show { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .eb-empty-icon { font-size: 36px; }
 .eb-empty-msg { font-size: 14px; color: var(--muted); }
 
-/* FORM CARD (Manual) */
 .form-card { width: 100%; background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; display: none; }
 .form-header { background: var(--black); padding: 26px 36px 22px; position: relative; overflow: hidden; }
 .form-header::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.14) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, rgba(201,168,76,0.07) 0%, transparent 50%); pointer-events: none; }
@@ -325,7 +310,6 @@ body::after {
 .header-user-name strong { color: rgba(255,255,255,0.8); font-weight: 600; }
 .form-body { padding: 28px 36px 36px; }
 
-/* Pre-fill notice banner */
 .prefill-notice {
   display: none; background: linear-gradient(135deg, #fff7e6, #ffefd0);
   border: 1.5px solid rgba(201,168,76,0.4); border-radius: var(--radius-sm);
@@ -363,7 +347,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 .cat-chip-icon { font-size: 18px; display: block; margin-bottom: 4px; }
 #category { display: none; }
 
-/* Image upload */
 .img-tabs { display: flex; gap: 0; margin-bottom: 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--cream); }
 .img-tab { flex: 1; padding: 9px 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; border: none; background: none; font-family: 'DM Sans', sans-serif; transition: var(--transition); }
 .img-tab svg { width: 13px; height: 13px; flex-shrink: 0; }
@@ -395,7 +378,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 .img-clear-btn { display: none; position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(10,10,10,0.65); border: none; cursor: pointer; color: var(--white); font-size: 14px; line-height: 1; align-items: center; justify-content: center; transition: background 0.15s; }
 .img-clear-btn:hover { background: #ef4444; }
 
-/* Calendar */
 .cal-wrapper { border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--white); box-shadow: var(--shadow-sm); }
 .cal-header { background: var(--black); padding: 16px 20px 14px; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
 .cal-header::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.13) 0%, transparent 55%); pointer-events: none; }
@@ -441,7 +423,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 .cal-chip-remove:hover { background: #ef4444; color: var(--white); }
 .cal-empty-hint { font-size: 13px; color: var(--muted); text-align: center; padding: 6px 0; font-style: italic; }
 
-/* Submit */
 .submit-area { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
 .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--black); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 9px; position: relative; overflow: hidden; }
 .btn-submit::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.1)); }
@@ -455,18 +436,15 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 .btn-secondary-action:hover { background: var(--cream); color: var(--slate); }
 .btn-secondary-action svg { width: 15px; height: 15px; }
 
-/* Toast */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--charcoal); color: var(--white); padding: 11px 22px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 9999; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.success { background: #14532d; }
 .toast.error   { background: #7f1d1d; }
 
-/* Animations */
 @keyframes slideUp { from { opacity:0; transform:translateY(36px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes chipIn { from { opacity:0; transform: scale(0.85); } to { opacity:1; transform: scale(1); } }
 
-/* Responsive */
 @media (max-width: 640px) {
   .page { padding: 20px 12px 48px; }
   .form-header { padding: 22px 20px 18px; }
@@ -475,7 +453,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
   .category-grid { grid-template-columns: repeat(3, 1fr); }
   .nav-link-gold span { display: none; }
   .mode-btn span.mode-label { display: none; }
-  .ticket-form-grid { grid-template-columns: 1fr; }
+  .ticket-form-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 </style>
 </head>
@@ -483,7 +461,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 
 <div class="page">
 
-  <!-- TOP NAV -->
   <nav class="top-nav">
     <a href="index.html" class="nav-logo">Vend<span>Hub</span></a>
     <div class="nav-actions">
@@ -498,7 +475,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     </div>
   </nav>
 
-  <!-- LOGIN CARD -->
   <div class="login-card" id="loginCard">
     <div class="login-card-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -516,7 +492,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     </button>
   </div>
 
-  <!-- MODE SWITCHER -->
   <div class="mode-switcher" id="modeSwitcher" style="display:none;">
     <button class="mode-btn active" id="modeManual">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -534,7 +509,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     </button>
   </div>
 
-  <!-- EVENTBRITE IMPORT CARD -->
   <div class="eb-card" id="ebCard">
     <div class="eb-header">
       <div class="eb-header-top">
@@ -608,7 +582,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     </div>
   </div>
 
-  <!-- TICKET UPLOAD CARD -->
   <div class="ticket-card" id="ticketCard">
     <div class="ticket-header">
       <div class="ticket-header-top">
@@ -729,6 +702,35 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
             </div>
           </div>
 
+          <!-- Seller Rating Field - FIX: Added -->
+          <div class="field-group">
+            <label class="field-label">Seller Rating <span class="opt">(optional)</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <select id="ticketSellerRating">
+                <option value="">Select rating</option>
+                <option value="5">⭐ 5.0 - Excellent</option>
+                <option value="4.9">⭐ 4.9 - Very Good</option>
+                <option value="4.8">⭐ 4.8 - Very Good</option>
+                <option value="4.7">⭐ 4.7 - Very Good</option>
+                <option value="4.5">⭐ 4.5 - Good</option>
+                <option value="4">⭐ 4.0 - Good</option>
+                <option value="3">⭐ 3.0 - Average</option>
+                <option value="2">⭐ 2.0 - Below Average</option>
+                <option value="1">⭐ 1.0 - Poor</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Seller Sales Field - FIX: Added -->
+          <div class="field-group">
+            <label class="field-label">Seller Sales Count <span class="opt">(optional)</span></label>
+            <div class="field-wrap has-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <input id="ticketSellerSales" type="number" min="0" placeholder="e.g., 42" autocomplete="off">
+            </div>
+          </div>
+
           <div class="field-group" style="grid-column: 1 / -1;">
             <label class="field-label">Additional Notes <span class="opt">(optional)</span></label>
             <div class="field-wrap has-icon">
@@ -800,7 +802,6 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     </div>
   </div>
 
-  <!-- FORM CARD (Manual) -->
   <div class="form-card" id="formCard">
     <div class="form-header">
       <div class="form-header-top">
@@ -1057,7 +1058,6 @@ function showToast(msg, type = "") {
 }
 function el(id) { return document.getElementById(id); }
 
-// Edit mode
 const params = new URLSearchParams(window.location.search);
 const editId = params.get("edit") || null;
 let editingEventId = editId;
@@ -1069,7 +1069,6 @@ if (editId) {
   el("submitBtn").querySelector(".btn-label").textContent = "Update Event";
 }
 
-// Auth
 async function doLogin() {
   try { await setPersistence(auth, browserLocalPersistence); await signInWithPopup(auth, provider); }
   catch (err) { showToast("Login failed: " + err.message, "error"); }
@@ -1099,7 +1098,6 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
-// Mode switcher
 let currentMode = "manual";
 el("modeManual").addEventListener("click", () => setMode("manual"));
 el("modeEventbrite").addEventListener("click", () => setMode("eventbrite"));
@@ -1119,7 +1117,6 @@ function setMode(mode) {
   el("ticketCard").style.display = mode === "tickets" ? "block" : "none";
 }
 
-// EVENTBRITE INTEGRATION
 const EB_KEY_STORAGE = "vhub_eb_private_token";
 let ebToken = "";
 let ebSelectedEvents = new Set();
@@ -1218,7 +1215,7 @@ async function fetchWithProxy(url) {
   try {
     const direct = await fetch(url, { headers: { Authorization: `Bearer ${ebToken}` } });
     if (direct.ok || direct.status !== 0) return direct;
-  } catch (_) { /* fall through to proxy */ }
+  } catch (_) { }
   const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
   return fetch(proxyUrl);
 }
@@ -1255,7 +1252,7 @@ function renderEbResults(events) {
     card.innerHTML = `
       <div class="eb-event-thumb">
         ${thumb
-          ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\"eb-event-thumb-placeholder\\">🎟️</div>'">`
+          ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\"eb-event-thumb-placeholder\">🎟️</div>'">`
           : `<div class="eb-event-thumb-placeholder">🎟️</div>`}
       </div>
       <div class="eb-event-info">
@@ -1374,8 +1371,7 @@ async function doEbImport() {
     log("✅", `Date: ${start.toDateString()} at ${timeStr}`);
   }
   const priceStr = isFree ? "Free" : (ticketMin ? `From $${ticketMin}` : "Paid");
-  el("price").value = priceStr;
-  log("✅", `Price: ${priceStr}`);
+  el("price").value = priceStr; log("✅", `Price: ${priceStr}`);
   if (desc) { el("description").value = desc.slice(0, 5000); updateCharCount(); log("✅", "Description imported"); }
   if (website) { el("website").value = website; log("✅", "Website linked"); }
   if (orgEmail) { el("contactEmail").value = orgEmail; log("✅", `Organiser email: ${orgEmail}`); }
@@ -1424,7 +1420,6 @@ function escHtml(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");
 }
 
-// IMAGE UPLOAD ENGINE
 const tabUpload     = el("tabUpload");
 const tabUrl        = el("tabUrl");
 const uploadPanel   = el("uploadPanel");
@@ -1552,7 +1547,6 @@ function previewImage(url) {
   imgPreview.src = url;
 }
 
-// MULTI-DATE CALENDAR ENGINE
 const MONTHS   = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DAYS_S   = ["Su","Mo","Tu","We","Th","Fr","Sa"];
@@ -1658,7 +1652,6 @@ renderCalendar();
 
 function getSelectedDateLabels() { return sortedKeys().map(k => formatLabel(selectedDates.get(k))); }
 
-// Load event for editing
 async function loadEvent(id) {
   try {
     const snap = await getDoc(doc(db, "events", id));
@@ -1695,7 +1688,6 @@ async function loadEvent(id) {
   } catch (err) { showToast("Error loading event: " + err.message, "error"); }
 }
 
-// Category
 let selectedCategory = "";
 function setCategory(val) {
   selectedCategory = val;
@@ -1703,7 +1695,6 @@ function setCategory(val) {
 }
 document.querySelectorAll(".cat-chip").forEach(chip => chip.addEventListener("click", () => setCategory(chip.dataset.value)));
 
-// Char count
 function updateCharCount() {
   const len = el("description").value.length;
   el("charCount").textContent = `${len} / 5000 characters`;
@@ -1711,7 +1702,6 @@ function updateCharCount() {
 }
 el("description").addEventListener("input", updateCharCount);
 
-// Form submit
 el("eventForm").addEventListener("submit", async e => {
   e.preventDefault();
   if (!auth.currentUser) { showToast("Please sign in first.", "error"); return; }
@@ -1796,11 +1786,6 @@ el("resetBtn").onclick = () => {
   resetForm(); showToast("Form cleared.");
 };
 
-// =============================================
-// TICKET UPLOAD FUNCTIONALITY
-// =============================================
-
-// Ticket form elements
 const ticketTabUpload = el("ticketTabUpload");
 const ticketTabUrl = el("ticketTabUrl");
 const ticketUploadPanel = el("ticketUploadPanel");
@@ -1887,7 +1872,7 @@ async function handleTicketImageFile(file) {
     return; 
   }
   if (file.size > 5 * 1024 * 1024) { 
-    showToast("Image must be under 5 MB.", "error");  
+    showToast("Image must be under 5 MB.", "error");   
     return; 
   }
   if (!auth.currentUser) { 
@@ -1954,7 +1939,6 @@ async function handleTicketImageFile(file) {
   }
 }
 
-// Ticket form submission
 el("ticketForm").addEventListener("submit", async e => {
   e.preventDefault();
   if (!auth.currentUser) { 
@@ -1993,6 +1977,7 @@ el("ticketForm").addEventListener("submit", async e => {
   btn.disabled = true;
   btn.classList.add("loading");
 
+  // FIX: Include seller rating and sales in ticket data
   const ticketData = {
     sport: el("ticketSport").value,
     title: el("ticketTitle").value.trim(),
@@ -2005,8 +1990,12 @@ el("ticketForm").addEventListener("submit", async e => {
     seat: el("ticketSeat").value.trim(),
     notes: el("ticketNotes").value.trim() || "",
     image: ticketImageHidden.value,
-    seller: el("ticketSeller").value.trim(),
-    sellerContact: el("ticketSellerContact").value.trim() || null,
+    seller: {
+      name: el("ticketSeller").value.trim(),
+      contact: el("ticketSellerContact").value.trim() || null,
+      rating: el("ticketSellerRating").value || null,
+      sales: el("ticketSellerSales").value ? parseInt(el("ticketSellerSales").value) : null
+    },
     approvalStatus: 'pending',
     user_id: auth.currentUser.uid,
     user_email: auth.currentUser.email,

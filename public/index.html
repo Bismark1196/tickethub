@@ -163,9 +163,9 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .events-empty-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--ink);}
 .events-empty-sub{font-size:14px;color:var(--ink-50);max-width:240px;line-height:1.65;}
 
-/* ===== TICKET CARDS ===== */
-.ticket-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(304px,1fr));gap:22px;}
-.ticket-card{background:var(--white);border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(12,12,12,.07);cursor:pointer;transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);box-shadow:var(--sh-sm);display:flex;flex-direction:column;}
+/* ===== TICKET CARDS - VERTICAL SCROLL ===== */
+.ticket-grid{display:flex;flex-wrap:wrap;gap:22px;justify-content:flex-start;padding-bottom:8px;}
+.ticket-card{flex:1 1 calc(33.333% - 22px);min-width:280px;max-width:340px;background:var(--white);border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(12,12,12,.07);cursor:pointer;transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);box-shadow:var(--sh-sm);display:flex;flex-direction:column;}
 .ticket-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);border-color:transparent;}
 .tc-img{position:relative;overflow:hidden;}
 .tc-img img{width:100%;height:192px;object-fit:cover;display:block;transition:transform .6s var(--ease);}
@@ -197,16 +197,14 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .tc-avail-pill.available{background:var(--green-lt);color:var(--green);}
 .tc-card-actions{display:flex;gap:8px;margin-top:8px;}
 .tc-buy-btn{display:flex;align-items:center;justify-content:center;gap:7px;flex:1;padding:12px;border-radius:var(--r-md);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;transition:all var(--dur) var(--ease);}
-.tc-share-btn{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--r-sm);border:1px solid var(--ink-10);background:var(--white);cursor:pointer;transition:all var(--dur) var(--ease);flex-shrink:0;}
-.tc-share-btn:hover{background:var(--ink);border-color:var(--ink);}
-.tc-share-btn:hover svg{stroke:var(--white);}
-.tc-share-btn svg{width:16px;height:16px;stroke:var(--ink);transition:stroke var(--dur) var(--ease);}
 .tc-buy-btn:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
 .tc-buy-btn.football{background:linear-gradient(135deg,#14532d,var(--green-md));color:#fff;}
 .tc-buy-btn.music{background:linear-gradient(135deg,var(--violet),var(--violet-md));color:#fff;}
 .tc-buy-btn.basketball{background:linear-gradient(135deg,#075985,#0ea5e9);color:#fff;}
 .tc-buy-btn.tennis{background:linear-gradient(135deg,#78350f,#d97706);color:#fff;}
 .tc-buy-btn.worldcup{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;}
+.tc-buy-btn.already-purchased{background:linear-gradient(135deg,var(--violet),var(--violet-md))!important;color:#fff!important;}
+.tc-buy-btn.my-listing{background:var(--paper-deep)!important;color:var(--ink-50)!important;cursor:not-allowed!important;}
 
 /* ===== TICKET FILTER BAR ===== */
 .tkt-filter-bar{background:var(--white);border:1px solid var(--ink-10);border-radius:var(--r-xl);padding:18px 22px;margin-bottom:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--sh-xs);}
@@ -279,7 +277,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .mlc-status-msg.pending{color:var(--amber);}
 .mlc-status-msg.approved{color:var(--green-md);}
 
-/* ===== RESPONSIVE - FIXED: Seller name now displays on mobile ===== */
+/* ===== RESPONSIVE ===== */
 @media(max-width:1024px){:root{--pad-h:28px;}}
 @media(max-width:768px){
   :root{--pad-h:14px;}
@@ -296,9 +294,10 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
   .tc-img img{height:126px;}
   .event-content{padding:10px 12px 13px;}
   .event-content h3{font-size:12.5px;margin-bottom:5px;}
+  .ticket-grid{justify-content:center;}
+  .ticket-card{flex:1 1 calc(50% - 22px);min-width:250px;}
   .tc-body{padding:10px 12px 13px;}
   .tc-title{font-size:14px;}
-  /* FIXED: Show seller info on mobile with compact styling */
   .tc-seller{padding:6px 8px;gap:6px;}
   .tc-seller-av{width:22px;height:22px;font-size:9px;}
   .tc-seller-name{font-size:11px;font-weight:600;}
@@ -306,7 +305,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
   .tc-seller-rating{display:none;}
   .tc-verified{display:none;}
   .tc-avail-row{display:none;}
-  .tc-buy-btn{display:none;}
   .event-date-badge{font-size:9.5px;padding:3px 7px;}
   .event-location{font-size:11px;}
   .event-address{display:none;}
@@ -337,10 +335,11 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 }
 
 @media(max-width:480px){
-  .ticket-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .ticket-card{flex:1 1 calc(50% - 11px);}
   .tc-seller-name{font-size:10.5px;}
   .tc-seller-av{width:20px;height:20px;font-size:8.5px;}
   .tc-seller{padding:5px 7px;gap:5px;}
+  .tc-card-actions{justify-content:center;}
 }
 
 /* ===== REMAINING STYLES (UNCHANGED) ===== */
@@ -919,11 +918,9 @@ body.modal-open{overflow:hidden;}
         </div>
         <button class="tkt-seller-chat" id="tktSellerChatBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          
         </button>
         <button class="tkt-share-btn" id="tktShareBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          
         </button>
         <a class="tkt-direct-link" id="tktDirectLink" href="#" target="_blank" style="display:none;"></a>
       </div>
@@ -1244,7 +1241,7 @@ onAuthStateChanged(auth, user => {
     listingToPurchaseMap = {};
     unreadCounts = {}; lastSeenTimestamps = {};
     Object.values(chatUnsubs).forEach(u => u && u());
-    chatUnsubs = {};
+    chatUnsubs = {}; 
     refreshAllDrawerTabs();
     updateUnreadBadge();
     renderSellForm();
@@ -1475,19 +1472,35 @@ async function renderTicketListings() {
       const sellerRating = getField(listing,'seller.rating','rating','sellerRating')||'';
       const sellerSales = getField(listing,'seller.sales','sales','sellerSales')||0;
 
-      const shareUrl = getTicketShareUrl(listing);
-      card.innerHTML=`<div class="tc-img"><img src="${listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(listing.title)}" loading="lazy"><span class="tc-sport-pill ${listing.sport}">${SPORT_LABEL[listing.sport]||listing.sport}</span><span class="tc-resale-flag">Resale</span><div class="tc-img-price"><span class="tc-img-price-label">From</span>$${Number(listing.price).toLocaleString()}</div></div><div class="tc-body"><div class="tc-title">${esc(listing.title)}</div><div class="tc-meta"><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(listing.venue)} · ${esc(listing.city)}</div><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(listing.date)} · ${esc(listing.time||'TBC')}</div>${listing.seat?`<div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>${esc(listing.seat)}</div>`:''}</div><div class="tc-seller"><div class="tc-seller-av">${esc(sellerInitial)}</div><div style="flex:1;min-width:0;"><div class="tc-seller-name">${esc(sellerName)}</div><div class="tc-seller-rating">${esc(sellerRating)} · ${sellerSales} sales</div></div><span class="tc-verified">Verified</span></div><div class="tc-avail-row"><span class="tc-avail-count">${listing.qty} ticket${listing.qty!==1?'s':''} available</span><span class="tc-avail-pill ${avail}">${listing.qty<=2?'Few left':'Available'}</span></div><div class="tc-card-actions"><button class="tc-buy-btn ${listing.sport}">View & buy</button><button class="tc-share-btn" title="Copy link for sharing">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </button></div></div>`;
-      card.querySelector('.tc-buy-btn').addEventListener('click', e => {
-        e.stopPropagation();
-        openTicketModal(listing);
-      });
-      card.querySelector('.tc-share-btn').addEventListener('click', e => {
-        e.stopPropagation();
-        openTicketModal(listing);
-      });
-      card.addEventListener('click', () => openTicketModal(listing));
+      // FIX: Check if user already purchased this ticket or if it's their own listing
+      const alreadyPurchased = auth.currentUser && purchasedTickets.some(t => t.listingId === listing.id);
+      const isMyOwnListing = auth.currentUser && (listing.user_id === auth.currentUser.uid || listing.seller?.user_id === auth.currentUser.uid);
+
+      let buttonText = 'View & buy';
+      let buttonClass = listing.sport;
+      let buttonDisabled = false;
+      let buttonClickHandler = `openTicketModal(listing)`;
+
+      if (alreadyPurchased) {
+        buttonText = 'Contact seller';
+        buttonClass = `${listing.sport} already-purchased`;
+        buttonClickHandler = `openPurchaseChat(listingToPurchaseMap[listing.id] || listing.id, listing)`;
+      } else if (isMyOwnListing) {
+        buttonText = 'My listing';
+        buttonClass = `${listing.sport} my-listing`;
+        buttonDisabled = true;
+        buttonClickHandler = '';
+      }
+
+      card.innerHTML=`<div class="tc-img"><img src="${listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80'}" alt="${esc(listing.title)}" loading="lazy"><span class="tc-sport-pill ${listing.sport}">${SPORT_LABEL[listing.sport]||listing.sport}</span><span class="tc-resale-flag">Resale</span><div class="tc-img-price"><span class="tc-img-price-label">From</span>$${Number(listing.price).toLocaleString()}</div></div><div class="tc-body"><div class="tc-title">${esc(listing.title)}</div><div class="tc-meta"><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(listing.venue)} · ${esc(listing.city)}</div><div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(listing.date)} · ${esc(listing.time||'TBC')}</div>${listing.seat?`<div class="tc-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>${esc(listing.seat)}</div>`:''}</div><div class="tc-seller"><div class="tc-seller-av">${esc(sellerInitial)}</div><div style="flex:1;min-width:0;"><div class="tc-seller-name">${esc(sellerName)}</div><div class="tc-seller-rating">${esc(sellerRating)} · ${sellerSales} sales</div></div><span class="tc-verified">Verified</span></div><div class="tc-avail-row"><span class="tc-avail-count">${listing.qty} ticket${listing.qty!==1?'s':''} available</span><span class="tc-avail-pill ${avail}">${listing.qty<=2?'Few left':'Available'}</span></div><div class="tc-card-actions"><button class="tc-buy-btn ${buttonClass}" ${buttonDisabled ? 'disabled' : ''} onclick="${buttonClickHandler}">${buttonText}</button></div></div>`;
+
+      // FIX: Card click handler - only open modal if not already purchased or own listing
+      if (!alreadyPurchased && !isMyOwnListing) {
+        card.addEventListener('click', () => openTicketModal(listing));
+      } else if (alreadyPurchased) {
+        card.addEventListener('click', () => openPurchaseChat(listingToPurchaseMap[listing.id] || listing.id, listing));
+      }
+
       grid.appendChild(card);
     });
   }
@@ -1570,6 +1583,27 @@ function handleIncomingTicketLink() {
 }
 
 function openTicketModal(listing) {
+  // FIX: Prevent rebuying - check if user already purchased this ticket
+  if (auth.currentUser) {
+    const alreadyPurchased = purchasedTickets.some(t => t.listingId === listing.id);
+    const isMyOwnListing = listing.user_id === auth.currentUser.uid || listing.seller?.user_id === auth.currentUser.uid;
+
+    if (alreadyPurchased) {
+      const purchaseId = listingToPurchaseMap[listing.id];
+      if (purchaseId) {
+        openPurchaseChat(purchaseId, listing);
+      } else {
+        alert('You already purchased this ticket. Please contact the seller directly for any updates.');
+      }
+      return;
+    }
+
+    if (isMyOwnListing) {
+      alert("You cannot purchase your own listing.");
+      return;
+    }
+  }
+
   tktState={listing,qty:1};
   $('tktModalImg').src=listing.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80';
   $('tktModalTitle').textContent=listing.title;
