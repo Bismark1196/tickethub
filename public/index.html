@@ -44,8 +44,8 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 /* ===== NAV ===== */
 .hero-nav{position:relative;z-index:10;}
 .hero-nav-inner{max-width:var(--page-max);margin:0 auto;padding:20px var(--pad-h);display:flex;align-items:center;justify-content:space-between;gap:16px;}
-.hero-logo{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--white);letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none;}
-.hero-logo-mark{width:30px;height:30px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--ink);flex-shrink:0;box-shadow:0 2px 8px rgba(184,150,46,.4);}
+.hero-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:1000;color:var(--white);letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none;}
+.hero-logo-mark{width:33px;height:33px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900;color:var(--ink);flex-shrink:0;box-shadow:0 2px 8px rgba(184,150,46,.4);}
 .hero-logo span{color:var(--gold-lt);}
 .hero-nav-right{display:flex;align-items:center;gap:8px;}
 .hero-user{display:none;align-items:center;gap:8px;}
@@ -68,7 +68,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .nav-divider{width:1px;height:16px;background:rgba(255,255,255,.12);flex-shrink:0;}
 
 /* ===== HERO BODY ===== */
-.hero-body{position:relative;z-index:5;max-width:var(--page-max);margin:0 auto;width:100%;padding:40px var(--pad-h) 80px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;}
+.hero-body{position:relative;z-index:5;max-width:var(--page-max);margin:0 auto;width:100%;padding:30px var(--pad-h) 80px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;width:fit-content;background:rgba(184,150,46,.12);border:1px solid rgba(184,150,46,.28);color:var(--gold-lt);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;padding:5px 14px;border-radius:var(--r-pill);margin-bottom:22px;backdrop-filter:blur(8px);}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,5.5vw,72px);font-weight:500;line-height:1.02;letter-spacing:-.015em;color:var(--white);max-width:680px;margin-bottom:18px;}
 .hero h1 em{font-style:italic;color:var(--gold-lt);font-weight:400;}
@@ -87,7 +87,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .usa-ticker-inner{max-width:var(--page-max);margin:0 auto;padding:14px var(--pad-h);display:flex;align-items:center;gap:40px;overflow-x:auto;scrollbar-width:none;}
 .usa-ticker-inner::-webkit-scrollbar{display:none;}
 .usa-ticker-stat{display:flex;align-items:center;gap:14px;white-space:nowrap;flex-shrink:0;}
-.usa-ticker-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold-lt);line-height:1;}
+.usa-ticker-num{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--gold-lt);line-height:1;}
 .usa-ticker-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,.32);letter-spacing:.12em;text-transform:uppercase;}
 .usa-ticker-divider{width:1px;height:24px;background:rgba(255,255,255,.09);flex-shrink:0;}
 
@@ -129,7 +129,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 /* ===== SECTION ===== */
 .section{max-width:var(--page-max);margin:0 auto;padding:48px var(--pad-h) 32px;}
 .section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:30px;flex-wrap:wrap;gap:8px;}
-.section-header h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:var(--ink);letter-spacing:-.01em;}
+.section-header h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--ink);letter-spacing:-.01em;}
 .results-count{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--ink-50);letter-spacing:.06em;text-transform:uppercase;}
 .results-count strong{color:var(--ink);font-weight:700;}
 
@@ -788,7 +788,7 @@ body.modal-open{overflow:hidden;}
 <!-- VENDOR PANEL -->
 <section class="section" id="vendorPanel">
   <div class="section-header">
-    <h2>US Vendor Events</h2>
+    <h2>Vendor Events</h2>
     <span class="results-count" id="resultsCount"></span>
   </div>
   <div class="events-grid" id="eventsGrid"></div>
