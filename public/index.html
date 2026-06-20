@@ -1814,9 +1814,7 @@ async function completePurchase() {
     await addDoc(collection(db, 'purchases', purchaseRef.id, 'conversation'), {
       sender: 'buyer',
       senderName: user.displayName || user.email || 'Buyer',
-      message: `New purchase: ${tktState.qty} x ${l.title} for $${total.toFixed(2)}`,
-      messageType: 'text',
-      timestamp: serverTimestamp(),
+message: `━━━━━━━━━━━━━━━━━━━━━━━━\n🔒  VENDHUB — VERIFIED TICKETS GUARANTEE\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n📋\nEvent:     ${l.title}\nQuantity:  ${tktState.qty} ticket${tktState.qty > 1 ? 's' : ''}\nTotal:     $${total.toFixed(2)}\nDate:      ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\nThank you for your purchase. Every ticket listed on our platform undergoes a rigorous verification process before it is approved for sale. We review ticket details, ownership information, and supporting documentation to ensure all listings are legitimate and accurately represented.\n\n✅  Verified ticket listings only\n✅  Seller identity & ownership checks\n✅  Proof of purchase reviewed where applicable\n✅  Secure transactions within our platform\n✅  Buyer & seller protection in place\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️  IMPORTANT NOTICE\n━━━━━━━━━━━━━━━━━━━━━━━━\n\nFor your safety, all communication, payments, and ticket transfers must be completed through the VendHub platform. Transactions conducted outside the platform are not covered by our verification and protection policies.\n\nBuy with confidence — every approved listing has been reviewed to provide a safer and more reliable marketplace experience.\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n© ${new Date().getFullYear()} VendHub. All Rights Reserved.\n━━━━━━━━━━━━━━━━━━━━━━━━`,      timestamp: serverTimestamp(),
       user_id: user.uid,
       user_email: user.email,
       read: false
@@ -1824,8 +1822,7 @@ async function completePurchase() {
   }catch(e){console.error('Purchase error:',e);alert('Error saving purchase. Please try again.');return;}
   $('tktModal').classList.remove('open'); document.body.classList.remove('modal-open');
   $('stubEventName').textContent=l.title;
-  $('stubSeller').textContent=l.seller?.name||'Seller';
-  $('stubQty').textContent=`${tktState.qty} ticket${tktState.qty>1?'s':''}`;
+$('stubSeller').textContent=getField(l,'seller.name','sellerName','seller','user_name','ownerName','vendorName')||'Seller';  $('stubQty').textContent=`${tktState.qty} ticket${tktState.qty>1?'s':''}`;
   $('stubTotal').textContent='$'+total.toLocaleString('en-US',{minimumFractionDigits:2});
   $('stubDate').textContent=l.date;
   const bars=$('barcodeEl'); bars.innerHTML='';
@@ -2229,7 +2226,7 @@ async function loadChatForConv(type,id,label){
       appendMsg(msgs,d.message||'',d.timestamp?.toDate?d.timestamp.toDate():new Date(),isMe,isAdmin,(d.senderName||'').replace('Admin','Seller'));
     });
     msgs.scrollTop=msgs.scrollHeight;
-  },err=>{console.error('Chat listener error:',err);msgs.innerHTML='<div class="chat-empty"><div class="chat-empty-icon">⚠️</div><span>Unable to load messages. Check your connection.</span></div>';});
+  },err=>{console.error('Chat listener error:',err);msgs.innerHTML='<div class="chat-empty"><div class="chat-empty-icon">⚠️</div><spa>Click Confirm purchase to start conversation with the seller.</span></div>';});
 }
 
 function showNoChatSelected(){
