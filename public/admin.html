@@ -985,7 +985,7 @@ const CAT_LABEL = {
   accessories:'👜 Accessories', art:'🎨 Art'
 };
 const getCat = s => CAT_LABEL[s?.toLowerCase()] || s || '—';
-const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const getField = (o,...k) => { for(const f of k){ if(o&&o[f]!==undefined&&o[f]!==''&&o[f]!==null)return o[f]; } return ''; };
 const fmtDate = ts => {
   if(!ts) return '—';
@@ -1064,8 +1064,9 @@ function buildChatConvoList(){
   chatConvoList = [];
   allVendors.forEach(v=>{
     const name = getField(v,'businessName','full_name','name','bizName') || 'Vendor';
+    const contactName = getField(v,'contact','ownerName','contactName','full_name') || 'Vendor';
     chatConvoList.push({
-      id:v.id, type:'vendor', name, subtitle: getField(v,'email','auth_email','invoice_email') || '',
+      id:v.id, type:'vendor', name, senderName: contactName, subtitle: getField(v,'email','auth_email','invoice_email') || '',
       avatarClass:'', data:v, unread: unreadCounts.vendors[v.id]||0,
       time: v.responded_at||v.submitted_at||v.created_at||v.createdAt
     });
@@ -1074,7 +1075,7 @@ function buildChatConvoList(){
     const name = getField(t,'title','event_name','eventName','name') || 'Ticket';
     const sellerName = getField(t,'seller','sellerName','user_name','ownerName') || 'Seller';
     chatConvoList.push({
-      id:t.id, type:'ticket', name, subtitle: `${sellerName} · ${getField(t,'user_email','sellerEmail','email')||''}`,
+      id:t.id, type:'ticket', name, senderName: sellerName, subtitle: `${sellerName} · ${getField(t,'user_email','sellerEmail','email')||''}`,
       avatarClass:'ticket', data:t, unread: unreadCounts.tickets[t.id]||0,
       time: t.createdAt||t.created_at
     });
@@ -1083,7 +1084,7 @@ function buildChatConvoList(){
     const buyerName = getField(p,'buyerName','name','fullName','customerName') || 'Buyer';
     const ticketName = getField(p,'ticketName','eventName','title','listingTitle') || '';
     chatConvoList.push({
-      id:p.id, type:'purchase', name: buyerName,
+      id:p.id, type:'purchase', name: buyerName, senderName: buyerName,
       subtitle: `${ticketName || ''} · ${getField(p,'buyerEmail','email')||''}`,
       avatarClass:'buyer', data:p, unread: unreadCounts.purchases[p.id]||0,
       time: p.purchaseDate
@@ -1153,7 +1154,7 @@ function renderChatList(){
   let list = chatConvoList;
   if(chatConvoFilter!=='all') list=list.filter(c=>c.type===chatConvoFilter);
   if(chatConvoSearch) list=list.filter(c=>c.name.toLowerCase().includes(chatConvoSearch) || (c.subtitle||'').toLowerCase().includes(chatConvoSearch));
-  list.sort((a,b)=>{
+  list.sort((a,b)=>{ 
     if((b.unread||0)!==(a.unread||0)) return (b.unread||0)-(a.unread||0);
     const ta=a.time?.seconds||0, tb=b.time?.seconds||0;
     return tb-ta;
@@ -1547,13 +1548,13 @@ window.selectConvo = function(type, id){
   const msgsEl=document.getElementById('chatMsgs');
   msgsEl.innerHTML='<div style="text-align:center;color:var(--ink-50);padding:20px;font-size:13px;">Loading…</div>';
   chatUnsubscribe=onSnapshot(query(collection(db,collPath),orderBy('timestamp','asc')), snap=>{
-    renderChatMsgs(snap, item.name);
+    renderChatMsgs(snap, item.senderName);
     renderChatList();
   });
 };
 
 // Enhanced renderChatMsgs with unread indicators
-function renderChatMsgs(snap, senderName){
+function renderChatMsgs(snap, senderDisplayName){
   const el=document.getElementById('chatMsgs');
   if(snap.empty){
     el.innerHTML='<div style="text-align:center;color:var(--ink-50);padding:40px 20px;font-size:13px;">👋 No messages yet — start the conversation</div>';
@@ -1567,7 +1568,8 @@ function renderChatMsgs(snap, senderName){
     const dateStr=d.timestamp?(d.timestamp.seconds?new Date(d.timestamp.seconds*1000).toDateString():new Date(d.timestamp).toDateString()):'';
     let dateDivider='';
     if(dateStr&&dateStr!==lastDate){ lastDate=dateStr; dateDivider=`<div class="chat-date-divider">${dateStr}</div>`; }
-    const senderLabel=isAdmin?'Admin':(senderName||d.senderName||d.sender||'User');
+    // Use senderDisplayName as fallback for non-admin messages
+    const senderLabel=isAdmin?'Admin':(d.senderName||d.sender||senderDisplayName||'User');
     const rowCls=isAdmin?'admin-row':'vendor-row';
     const bubbleCls=isAdmin?'msg-bubble-admin':'msg-bubble-other';
     // Add msg-bubble-unread class for unread messages from non-admin senders
