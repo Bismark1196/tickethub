@@ -1023,9 +1023,21 @@ onAuthStateChanged(auth, user => {
   setupEventListeners();
 });
 
+// Returns a comparable timestamp (ms) for a vendor doc, trying every
+// field that could hold "when this application came in", newest-first.
+function getVendorTimeMs(v){
+  const ts = v.submitted_at || v.submittedAt || v.created_at || v.createdAt || v.responded_at || v.respondedAt;
+  if(!ts) return 0;
+  if(ts.toMillis) return ts.toMillis();       // Firestore Timestamp
+  if(ts.seconds) return ts.seconds*1000;      // {seconds,nanoseconds} shape
+  const d = new Date(ts);
+  return isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
 function loadVendors(){
   onSnapshot(collection(db,'vendors'), snap=>{
     allVendors=snap.docs.map(d=>({id:d.id,...d.data()}));
+    allVendors.sort((a,b)=>getVendorTimeMs(b)-getVendorTimeMs(a)); // recent → old
     renderVendors(activeFilterVendors);
     renderPending();
     updateStats();
