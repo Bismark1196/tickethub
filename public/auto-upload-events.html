@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VendHub · FIFA World Cup 2026 Auto Uploader</title>
+<title>VendHub · Multi-Category Ticket Auto Uploader</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -20,6 +20,7 @@
   --green:      #22c55e;
   --red:        #ef4444;
   --blue:       #3b82f6;
+  --violet:     #7c3aed;
   --shadow-lg:  0 24px 60px rgba(0,0,0,0.20);
   --radius:     16px;
   --radius-sm:  10px;
@@ -36,7 +37,7 @@ body {
 body::before {
   content:""; position:fixed; inset:0; z-index:0;
   background: radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 55%),
-              radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 55%);
+              radial-gradient(ellipse at 80% 80%, rgba(124, 58, 237, 0.06) 0%, transparent 55%);
 }
 body::after {
   content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
@@ -46,7 +47,7 @@ body::after {
 .page { position:relative; z-index:1; width:100%; max-width:900px; padding:32px 16px 80px; }
 
 /* NAV */
-.top-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; }
+.top-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; gap:12px; flex-wrap:wrap; }
 .nav-logo { font-family:'Playfair Display',serif; font-size:22px; font-weight:900; color:var(--white); text-decoration:none; }
 .nav-logo span { color:var(--gold); }
 .nav-badge { background:rgba(59, 130, 246, 0.15); border:1px solid rgba(59, 130, 246, 0.3); color:var(--gold-light); font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
@@ -56,7 +57,7 @@ body::after {
 .hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:rgba(59, 130, 246, 0.12); border:1px solid rgba(59, 130, 246, 0.3); color:var(--gold-light); font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; padding:6px 18px; border-radius:20px; margin-bottom:18px; }
 .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,5vw,44px); font-weight:900; color:var(--white); line-height:1.15; margin-bottom:12px; }
 .hero h1 em { font-style:italic; color:var(--gold); }
-.hero p { font-size:15px; color:rgba(255,255,255,0.45); max-width:520px; margin:0 auto; line-height:1.7; }
+.hero p { font-size:15px; color:rgba(255,255,255,0.45); max-width:560px; margin:0 auto; line-height:1.7; }
 
 /* AUTH CARD */
 .auth-card { background:var(--white); border-radius:24px; padding:40px 36px; text-align:center; box-shadow:var(--shadow-lg); margin-bottom:32px; animation:slideUp 0.4s ease both; }
@@ -73,11 +74,19 @@ body::after {
 .stat-num { font-family:'Playfair Display',serif; font-size:32px; font-weight:900; color:var(--gold); line-height:1; margin-bottom:6px; }
 .stat-label { font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; color:rgba(255,255,255,0.4); }
 
+/* CATEGORY TABS */
+.category-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+.cat-tab { flex:1; min-width:120px; display:flex; align-items:center; justify-content:center; gap:7px; padding:14px 12px; background:rgba(255,255,255,0.05); border:1.5px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,0.55); }
+.cat-tab:hover { background:rgba(255,255,255,0.09); color:rgba(255,255,255,0.85); }
+.cat-tab.active { background:var(--white); color:var(--black); border-color:var(--white); }
+.cat-tab .cat-emoji { font-size:16px; }
+
 /* CONTROL PANEL */
 .control-panel { background:var(--white); border-radius:24px; overflow:hidden; box-shadow:var(--shadow-lg); margin-bottom:24px; }
 .control-header { background:var(--black); padding:24px 32px; border-bottom:1px solid rgba(255,255,255,0.06); }
-.control-header-top { display:flex; align-items:center; justify-content:space-between; }
-.control-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--white); font-weight:700; }
+.control-header-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.control-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--white); font-weight:700; display:flex; align-items:center; gap:9px; }
+.control-title .cat-icon-badge { font-size:18px; }
 .user-pill { display:flex; align-items:center; gap:8px; background:rgba(59, 130, 246, 0.15); border:1px solid rgba(59, 130, 246, 0.25); padding:6px 14px; border-radius:20px; }
 .user-dot { width:8px; height:8px; border-radius:50%; background:var(--green); }
 .user-name { font-size:12px; color:var(--gold-light); font-weight:600; }
@@ -87,6 +96,7 @@ body::after {
 .option-group label { display:block; font-size:11px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--slate); margin-bottom:8px; }
 .option-group select, .option-group input[type=number] { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--black); background:var(--cream); outline:none; transition:var(--transition); appearance:none; }
 .option-group select:focus, .option-group input[type=number]:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); background:var(--white); }
+.option-group.is-disabled { opacity:0.45; pointer-events:none; }
 .btn-row { display:flex; gap:12px; }
 .btn-upload { flex:1; padding:16px; background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:var(--black); border:none; border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:9px; }
 .btn-upload:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(201,168,76,0.35); }
@@ -130,7 +140,7 @@ body::after {
 
 /* UPLOADED TICKETS TABLE */
 .tickets-card { background:var(--white); border-radius:24px; overflow:hidden; box-shadow:var(--shadow-lg); }
-.tickets-header { display:flex; align-items:center; justify-content:space-between; padding:22px 28px; border-bottom:1px solid var(--border); }
+.tickets-header { display:flex; align-items:center; justify-content:space-between; padding:22px 28px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:8px; }
 .tickets-title { font-family:'Playfair Display',serif; font-size:18px; color:var(--black); font-weight:700; }
 .tickets-count-badge { background:var(--cream); border:1px solid var(--border); color:var(--slate); font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; }
 .tickets-table { width:100%; border-collapse:collapse; }
@@ -140,7 +150,12 @@ body::after {
 .tickets-table tr:hover td { background:#fafaf8; }
 .ticket-row-title { font-weight:600; color:var(--black); }
 .ticket-row-sub { font-size:11.5px; color:var(--muted); margin-top:2px; }
-.sport-pill { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; background:#5b21b6; color:white; }
+.sport-pill { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; color:white; white-space:nowrap; }
+.sport-pill.worldcup   { background:#991b1b; }
+.sport-pill.football   { background:#166534; }
+.sport-pill.music      { background:#5b21b6; }
+.sport-pill.basketball { background:#0369a1; }
+.sport-pill.tennis     { background:#92400e; }
 .status-dot-ok { width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px; }
 .empty-table { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
 
@@ -151,7 +166,7 @@ body::after {
 .toast.error   { background:#7f1d1d; }
 
 @keyframes slideUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
-@media(max-width:640px){ .stats-row{grid-template-columns:1fr 1fr;} .options-grid{grid-template-columns:1fr;} .tickets-table th,.tickets-table td{padding:12px 16px;} }
+@media(max-width:640px){ .stats-row{grid-template-columns:1fr 1fr;} .options-grid{grid-template-columns:1fr;} .tickets-table th,.tickets-table td{padding:12px 16px;} .cat-tab{min-width:100px;font-size:12px;padding:12px 8px;} }
 </style>
 </head>
 <body>
@@ -159,43 +174,52 @@ body::after {
 
   <nav class="top-nav">
     <a href="index.html" class="nav-logo">Vend<span>Hub</span></a>
-    <div class="nav-badge">⚽ FIFA World Cup 2026 Auto Uploader</div>
+    <div class="nav-badge">🎟️ Multi-Category Auto Uploader</div>
   </nav>
 
   <div class="hero">
-    <div class="hero-eyebrow">⚽ FIFA World Cup 2026</div>
-    <h1>Auto-Upload <em>Resale Tickets</em><br>Every Week</h1>
-    <p>Automatically populate your VendHub listing with FIFA World Cup 2026 resale tickets — real matches, live dates, and competitive prices uploaded in minutes.</p>
+    <div class="hero-eyebrow">🏆⚽🎵🏀🎾 All Categories</div>
+    <h1>Auto-Upload <em>Resale Tickets</em><br>Across Every Category</h1>
+    <p>Automatically populate your VendHub marketplace with resale tickets across FIFA World Cup 2026, Football, Music, Basketball, and Tennis — real events, live dates, and competitive prices uploaded in minutes.</p>
   </div>
 
   <!-- AUTH CARD -->
   <div class="auth-card" id="authCard">
     <h2>Sign In to Continue</h2>
-    <p>Use your VendHub admin Google account to start auto-uploading World Cup tickets.</p>
+    <p>Use your VendHub admin Google account to start auto-uploading tickets.</p>
     <button class="google-btn" id="loginBtn">
       <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Continue with Google
     </button>
   </div>
 
-  <!-- STATS (hidden until auth) -->
+  <!-- MAIN UI (hidden until auth) -->
   <div id="mainUI" style="display:none;width:100%;">
 
     <div class="stats-row" id="statsRow">
       <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total Uploaded</div></div>
       <div class="stat-card"><div class="stat-num" id="statThisRun">0</div><div class="stat-label">This Session</div></div>
-      <div class="stat-card"><div class="stat-num" id="statMatches">0</div><div class="stat-label">World Cup Matches</div></div>
-      <div class="stat-card"><div class="stat-num">16</div><div class="stat-label">Host Cities</div></div>
+      <div class="stat-card"><div class="stat-num" id="statEvents">0</div><div class="stat-label" id="statEventsLabel">Unique Events</div></div>
+      <div class="stat-card"><div class="stat-num" id="statCategories">5</div><div class="stat-label">Categories Available</div></div>
+    </div>
+
+    <!-- CATEGORY TABS -->
+    <div class="category-tabs" id="categoryTabs">
+      <div class="cat-tab active" data-cat="worldcup"><span class="cat-emoji">🏆</span> World Cup</div>
+      <div class="cat-tab" data-cat="football"><span class="cat-emoji">⚽</span> Football</div>
+      <div class="cat-tab" data-cat="music"><span class="cat-emoji">🎵</span> Music</div>
+      <div class="cat-tab" data-cat="basketball"><span class="cat-emoji">🏀</span> Basketball</div>
+      <div class="cat-tab" data-cat="tennis"><span class="cat-emoji">🎾</span> Tennis</div>
     </div>
 
     <!-- CONTROL PANEL -->
     <div class="control-panel">
       <div class="control-header">
         <div class="control-header-top">
-          <div class="control-title">World Cup Ticket Upload Controller</div>
+          <div class="control-title"><span class="cat-icon-badge" id="catIconBadge">🏆</span><span id="controlTitleText">World Cup Ticket Upload Controller</span></div>
           <div class="user-pill"><div class="user-dot"></div><span class="user-name" id="userNameDisplay">—</span></div>
         </div>
-        <div class="control-sub">Configure and launch the batch upload. Tickets are spread across World Cup 2026 matches.</div>
+        <div class="control-sub" id="controlSub">Configure and launch the batch upload. Tickets are spread across World Cup 2026 matches.</div>
       </div>
       <div class="control-body">
         <div class="options-grid">
@@ -209,8 +233,8 @@ body::after {
               <option value="100">100 listings</option>
             </select>
           </div>
-          <div class="option-group">
-            <label>Match Stage</label>
+          <div class="option-group" id="stageGroup">
+            <label id="stageLabel">Match Stage</label>
             <select id="matchStage">
               <option value="all" selected>All Stages</option>
               <option value="group">Group Stage</option>
@@ -240,7 +264,7 @@ body::after {
         <div class="btn-row">
           <button class="btn-upload" id="startBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            Start Auto-Upload
+            <span id="startBtnText">Start Auto-Upload</span>
           </button>
           <button class="btn-stop" id="stopBtn">■ Stop</button>
         </div>
@@ -261,7 +285,7 @@ body::after {
         <button class="log-clear" id="logClear">Clear</button>
       </div>
       <div class="log-body" id="logBody">
-        <div class="log-empty">Sign in and press Start Auto-Upload to begin…</div>
+        <div class="log-empty">Sign in, pick a category, and press Start Auto-Upload to begin…</div>
       </div>
     </div>
 
@@ -274,15 +298,16 @@ body::after {
       <table class="tickets-table">
         <thead>
           <tr>
-            <th>Match</th>
+            <th>Event</th>
             <th>Date & Time</th>
-            <th>Stadium</th>
+            <th>Venue</th>
             <th>Price</th>
+            <th>Category</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody id="ticketsTableBody">
-          <tr><td colspan="5" class="empty-table">No tickets uploaded yet this session.</td></tr>
+          <tr><td colspan="6" class="empty-table">No tickets uploaded yet this session.</td></tr>
         </tbody>
       </table>
     </div>
@@ -332,9 +357,145 @@ function log(msg, type="", icon="→") {
 }
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ─── RANDOM SELLER IDENTITY ────────────────────────────────
+// Used instead of the signed-in admin's real name/email so listings
+// look like they come from a variety of independent sellers.
+const SELLER_FIRST_NAMES = [
+  'James','Michael','David','John','Robert','William','Daniel','Matthew','Andrew','Joseph',
+  'Christopher','Ryan','Brandon','Justin','Kevin','Jason','Eric','Nathan','Tyler','Adam',
+  'Emily','Sarah','Jessica','Ashley','Amanda','Megan','Rachel','Laura','Hannah','Olivia',
+  'Emma','Sophia','Isabella','Mia','Grace','Chloe','Victoria','Natalie','Samantha','Lauren',
+  'Carlos','Miguel','Luis','Diego','Sofia','Valentina','Camila','Gabriel','Marco','Elena'
+];
+const SELLER_LAST_NAMES = [
+  'Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Rodriguez','Martinez',
+  'Hernandez','Lopez','Wilson','Anderson','Thomas','Taylor','Moore','Jackson','Martin','Lee',
+  'Perez','Thompson','White','Harris','Sanchez','Clark','Ramirez','Lewis','Robinson','Walker',
+  'Young','Allen','King','Wright','Scott','Torres','Nguyen','Hill','Flores','Green'
+];
+function generateSellerName() {
+  const first = SELLER_FIRST_NAMES[Math.floor(Math.random() * SELLER_FIRST_NAMES.length)];
+  const last  = SELLER_LAST_NAMES[Math.floor(Math.random() * SELLER_LAST_NAMES.length)];
+  return `${first} ${last}`;
+}
+
 let uploadCount = 0;
 let stopFlag    = false;
 let uploadedThisSession = [];
+let activeCategory = 'worldcup';
+
+// ─── CATEGORY CONFIG ──────────────────────────────────────
+// Each category defines: label, emoji, sport key (matches VendHub's tc-sport-pill / SPORT_LABEL),
+// whether it uses a "stage" concept, the stage select options, default fallback image,
+// and the function used to build its pool/pricing/seat logic.
+const CATEGORY_CONFIG = {
+  worldcup: {
+    label: 'World Cup',
+    emoji: '🏆',
+    sportKey: 'worldcup',
+    hasStage: true,
+    stageLabel: 'Match Stage',
+    stageOptions: [
+      { value:'all', label:'All Stages', selected:true },
+      { value:'group', label:'Group Stage' },
+      { value:'round16', label:'Round of 16' },
+      { value:'quarter', label:'Quarterfinals' },
+      { value:'semi', label:'Semifinals' },
+      { value:'final', label:'Final' },
+    ],
+    controlTitle: 'World Cup Ticket Upload Controller',
+    controlSub: 'Configure and launch the batch upload. Tickets are spread across World Cup 2026 matches.',
+    eventsLabel: 'World Cup Matches',
+    getPool: getWorldCupMatchesPool,
+    pickPrice: pickWorldCupPrice,
+    pickSeat: pickWorldCupSeat,
+    matchEventName: 'matches',
+  },
+  football: {
+    label: 'Football',
+    emoji: '⚽',
+    sportKey: 'football',
+    hasStage: true,
+    stageLabel: 'Competition',
+    stageOptions: [
+      { value:'all', label:'All Competitions', selected:true },
+      { value:'league', label:'League Matches' },
+      { value:'cup', label:'Cup Matches' },
+      { value:'derby', label:'Rivalry / Derby' },
+      { value:'continental', label:'Continental Cup' },
+    ],
+    controlTitle: 'Football Ticket Upload Controller',
+    controlSub: 'Configure and launch the batch upload. Tickets are spread across top club football fixtures.',
+    eventsLabel: 'Football Fixtures',
+    getPool: getFootballMatchesPool,
+    pickPrice: pickFootballPrice,
+    pickSeat: pickFootballSeat,
+    matchEventName: 'fixtures',
+  },
+  music: {
+    label: 'Music',
+    emoji: '🎵',
+    sportKey: 'music',
+    hasStage: true,
+    stageLabel: 'Tour Type',
+    stageOptions: [
+      { value:'all', label:'All Tour Types', selected:true },
+      { value:'arena', label:'Arena Tour' },
+      { value:'stadium', label:'Stadium Tour' },
+      { value:'festival', label:'Festival' },
+      { value:'residency', label:'Residency Show' },
+    ],
+    controlTitle: 'Music Ticket Upload Controller',
+    controlSub: 'Configure and launch the batch upload. Tickets are spread across top concerts and tours.',
+    eventsLabel: 'Concerts & Tours',
+    getPool: getMusicEventsPool,
+    pickPrice: pickMusicPrice,
+    pickSeat: pickMusicSeat,
+    matchEventName: 'shows',
+  },
+  basketball: {
+    label: 'Basketball',
+    emoji: '🏀',
+    sportKey: 'basketball',
+    hasStage: true,
+    stageLabel: 'Game Type',
+    stageOptions: [
+      { value:'all', label:'All Game Types', selected:true },
+      { value:'regular', label:'Regular Season' },
+      { value:'playoff', label:'Playoffs' },
+      { value:'conf_final', label:'Conference Finals' },
+      { value:'finals', label:'NBA Finals' },
+    ],
+    controlTitle: 'Basketball Ticket Upload Controller',
+    controlSub: 'Configure and launch the batch upload. Tickets are spread across NBA games.',
+    eventsLabel: 'NBA Games',
+    getPool: getBasketballGamesPool,
+    pickPrice: pickBasketballPrice,
+    pickSeat: pickBasketballSeat,
+    matchEventName: 'games',
+  },
+  tennis: {
+    label: 'Tennis',
+    emoji: '🎾',
+    sportKey: 'tennis',
+    hasStage: true,
+    stageLabel: 'Round',
+    stageOptions: [
+      { value:'all', label:'All Rounds', selected:true },
+      { value:'early', label:'Early Rounds' },
+      { value:'quarter', label:'Quarterfinals' },
+      { value:'semi', label:'Semifinals' },
+      { value:'final', label:'Final' },
+    ],
+    controlTitle: 'Tennis Ticket Upload Controller',
+    controlSub: 'Configure and launch the batch upload. Tickets are spread across Grand Slam & ATP/WTA matches.',
+    eventsLabel: 'Tennis Matches',
+    getPool: getTennisMatchesPool,
+    pickPrice: pickTennisPrice,
+    pickSeat: pickTennisSeat,
+    matchEventName: 'matches',
+  },
+};
 
 // ─── AUTH ─────────────────────────────────────────────────
 $id("loginBtn").addEventListener("click", async () => {
@@ -357,15 +518,43 @@ onAuthStateChanged(auth, async user => {
 
 async function refreshTotalCount() {
   try {
-    const snap = await getDocs(query(collection(db,"ticket_listings"), where("sport", "==", "worldcup")));
+    const cfg = CATEGORY_CONFIG[activeCategory];
+    const snap = await getDocs(query(collection(db,"ticket_listings"), where("sport", "==", cfg.sportKey)));
     $id("statTotal").textContent = snap.size;
-    const matches = new Set();
-    snap.forEach(d => { 
-      const title = d.data().title || '';
-      if(title.includes('World Cup') || title.includes('FIFA')) matches.add(title); 
-    });
-    $id("statMatches").textContent = matches.size;
+    const events = new Set();
+    snap.forEach(d => { const title = d.data().title || ''; if (title) events.add(title); });
+    $id("statEvents").textContent = events.size;
+    $id("statEventsLabel").textContent = cfg.eventsLabel;
   } catch(_) {}
+}
+
+// ─── CATEGORY TAB SWITCHING ───────────────────────────────
+document.querySelectorAll('.cat-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    if ($id("startBtn").disabled) return; // don't allow switching mid-upload
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeCategory = tab.dataset.cat;
+    applyCategoryToUI();
+    refreshTotalCount();
+  });
+});
+
+function applyCategoryToUI() {
+  const cfg = CATEGORY_CONFIG[activeCategory];
+  $id("catIconBadge").textContent = cfg.emoji;
+  $id("controlTitleText").textContent = cfg.controlTitle;
+  $id("controlSub").textContent = cfg.controlSub;
+  $id("startBtnText").textContent = `Start Auto-Upload (${cfg.label})`;
+  $id("statEventsLabel").textContent = cfg.eventsLabel;
+
+  // Rebuild stage select options for this category
+  $id("stageLabel").textContent = cfg.stageLabel;
+  const stageSelect = $id("matchStage");
+  stageSelect.innerHTML = cfg.stageOptions.map(o =>
+    `<option value="${o.value}"${o.selected ? ' selected' : ''}>${o.label}</option>`
+  ).join('');
+  $id("stageGroup").classList.toggle('is-disabled', !cfg.hasStage);
 }
 
 // ─── MAIN UPLOAD ─────────────────────────────────────────
@@ -373,6 +562,7 @@ $id("logClear").addEventListener("click", () => { $id("logBody").innerHTML = '<d
 $id("stopBtn").addEventListener("click", () => { stopFlag = true; log("Stop requested — finishing current upload…","warn","⚠"); });
 
 $id("startBtn").addEventListener("click", async () => {
+  const cfg       = CATEGORY_CONFIG[activeCategory];
   const count     = parseInt($id("countSelect").value);
   const stage     = $id("matchStage").value;
   const speed     = parseInt($id("speedSelect").value);
@@ -392,27 +582,28 @@ $id("startBtn").addEventListener("click", async () => {
   $id("progressFill").style.width = "0%";
   $id("progressText").textContent = `0 / ${count}`;
 
-  log(`Starting upload of ${count} FIFA World Cup 2026 ticket listings…`, "info", "🚀");
-  log(`Stage: ${stage} | Speed: ${speed}ms | Offset: +${offset} days`, "info", "⚙");
+  log(`Starting upload of ${count} ${cfg.emoji} ${cfg.label} ticket listings…`, "info", "🚀");
+  log(`${cfg.stageLabel}: ${stage} | Speed: ${speed}ms | Offset: +${offset} days`, "info", "⚙");
 
-  const tickets = generateWorldCupTickets(count, stage, offset, user);
+  const tickets = generateTickets(cfg, count, stage, offset);
 
   for (let i=0; i<tickets.length; i++) {
     if (stopFlag) { log("Upload stopped by user.","warn","■"); break; }
     const tk = tickets[i];
     try {
+      const sellerName = generateSellerName();
       await addDoc(collection(db,"ticket_listings"), {
         ...tk,
         approvalStatus: 'approved',
         user_id: user.uid,
         user_email: user.email,
         submittedAt: serverTimestamp(),
-        sport: 'worldcup',
+        sport: cfg.sportKey,
         seller: {
-          name: user.displayName || user.email || 'Admin User',
+          name: sellerName,
           rating: '4.9 ⭐',
           sales: Math.floor(Math.random() * 200) + 50,
-          initial: (user.displayName || user.email || 'A').charAt(0).toUpperCase()
+          initial: sellerName.charAt(0).toUpperCase()
         }
       });
       uploadCount++;
@@ -422,7 +613,7 @@ $id("startBtn").addEventListener("click", async () => {
       $id("progressFill").style.width = pct+"%";
       $id("progressText").textContent = `${i+1} / ${count}`;
       log(`✅ Uploaded: <strong>${tk.title}</strong> — $${tk.price} x${tk.qty}`, "success", "");
-      addTicketRow(tk);
+      addTicketRow(tk, cfg);
     } catch(err) {
       log(`❌ Failed: ${tk.title} — ${err.message}`, "error", "");
     }
@@ -432,13 +623,13 @@ $id("startBtn").addEventListener("click", async () => {
   $id("startBtn").disabled = false;
   $id("stopBtn").classList.remove("show");
   log(`─────────────────────────────────────────────────`, "", "");
-  log(`Done! ${uploadCount} World Cup ticket listings uploaded successfully.`, "success", "🎉");
-  showToast(`${uploadCount} World Cup tickets uploaded!`, "success");
+  log(`Done! ${uploadCount} ${cfg.label} ticket listings uploaded successfully.`, "success", "🎉");
+  showToast(`${uploadCount} ${cfg.label} tickets uploaded!`, "success");
   await refreshTotalCount();
   $id("sessionBadge").textContent = `${uploadedThisSession.length} tickets`;
 });
 
-function addTicketRow(tk) {
+function addTicketRow(tk, cfg) {
   const tb = $id("ticketsTableBody");
   const empty = tb.querySelector(".empty-table");
   if (empty) tb.innerHTML = "";
@@ -446,76 +637,80 @@ function addTicketRow(tk) {
   tr.innerHTML = `
     <td>
       <div class="ticket-row-title">${tk.title}</div>
-      <div class="ticket-row-sub">${tk.stage || 'Group Stage'}</div>
+      <div class="ticket-row-sub">${tk.stage || ''}</div>
     </td>
     <td><div class="ticket-row-title">${tk.date}</div><div class="ticket-row-sub">${tk.time || 'TBD'}</div></td>
     <td><div class="ticket-row-title">${tk.venue}</div><div class="ticket-row-sub">${tk.city}</div></td>
     <td><strong>$${Number(tk.price).toLocaleString()}</strong></td>
+    <td><span class="sport-pill ${cfg.sportKey}">${cfg.emoji} ${cfg.label}</span></td>
     <td><span class="status-dot-ok"></span><span style="font-size:12px;color:#166534;font-weight:600;">Live</span></td>`;
   tb.prepend(tr);
 }
 
-// ─── WORLD CUP TICKET DATA ENGINE ────────────────────────────
-function generateWorldCupTickets(count, stageFilter, dayOffset, user) {
+// ─── GENERIC TICKET ENGINE (category-agnostic) ────────────
+function generateTickets(cfg, count, stageFilter, dayOffset) {
   const listings = [];
-  const pool = getWorldCupMatchesPool();
-  
-  // Filter by stage if specified
+  const pool = cfg.getPool();
+
   let filteredPool = pool;
   if (stageFilter !== 'all') {
     filteredPool = pool.filter(m => m.stage === stageFilter);
   }
-  
+  if (!filteredPool.length) filteredPool = pool; // safety fallback if a stage has no templates
+
   const shuffled = [...filteredPool].sort(() => Math.random()-0.5);
   const baseDate = new Date();
   baseDate.setDate(baseDate.getDate() + parseInt(dayOffset));
 
   for (let i=0; i<count; i++) {
     const template = shuffled[i % shuffled.length];
-    const matchDate = generateMatchDate(baseDate, i, count);
-    
-    const price = pickWorldCupPrice(template.stage);
+    const eventDate = generateEventDate(baseDate, i);
+    const price = cfg.pickPrice(template.stage);
     const qty = pickQuantity();
-    const seat = pickWorldCupSeat();
-    
-    const listing = {
+    const seat = cfg.pickSeat();
+
+    listings.push({
       title: template.title,
-      sport: 'worldcup',
+      sport: cfg.sportKey,
       venue: template.venue,
       city: template.city,
-      country: template.country,
-      date: matchDate.formattedDate,
-      time: matchDate.time,
+      country: template.country || '',
+      date: eventDate.formattedDate,
+      time: eventDate.time,
       price: price,
       qty: qty,
       seat: seat,
-      image: template.image || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
-      stage: template.stage,
+      image: template.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
+      stage: template.stage || '',
       group: template.group || '',
-      notes: `${template.title} at ${template.venue}, ${template.city}. FIFA World Cup 2026 official resale tickets.`,
+      notes: `${template.title} at ${template.venue}, ${template.city}. VendHub official resale tickets.`,
       approvalStatus: 'approved'
-    };
-    listings.push(listing);
+    });
   }
   return listings;
 }
 
-function generateMatchDate(baseDate, eventIndex, total) {
+function generateEventDate(baseDate, eventIndex) {
   const weekNum = Math.floor(eventIndex / 4);
   const dayInWeek = eventIndex % 7;
   const d = new Date(baseDate);
   d.setDate(d.getDate() + weekNum*5 + dayInWeek);
-  
-  // World Cup matches typically at 2 PM, 5 PM, 8 PM local time
-  const times = ['2:00 PM', '5:00 PM', '8:00 PM'];
+
+  const times = ['2:00 PM', '5:00 PM', '7:30 PM', '8:00 PM'];
   const time = times[Math.floor(Math.random() * times.length)];
-  
+
   const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const formattedDate = `${MONTHS_S[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-  
+
   return { formattedDate, time };
 }
 
+function pickQuantity() {
+  const qtyOptions = [1, 1, 1, 2, 2, 2, 3, 4, 5, 6];
+  return qtyOptions[Math.floor(Math.random()*qtyOptions.length)];
+}
+
+// ─── WORLD CUP ─────────────────────────────────────────────
 function pickWorldCupPrice(stage) {
   const prices = {
     group: [85, 95, 110, 125, 140, 160, 180, 200, 225, 250],
@@ -528,32 +723,12 @@ function pickWorldCupPrice(stage) {
   const arr = prices[stage] || prices.all;
   return arr[Math.floor(Math.random()*arr.length)];
 }
-
-function pickQuantity() {
-  const qtyOptions = [1, 1, 1, 2, 2, 2, 3, 4, 5, 6];
-  return qtyOptions[Math.floor(Math.random()*qtyOptions.length)];
-}
-
 function pickWorldCupSeat() {
-  const seats = [
-    'Category 1 - Lower Tier',
-    'Category 2 - Middle Tier',
-    'Category 3 - Upper Tier',
-    'Category 4 - Behind Goal',
-    'VIP Hospitality',
-    'Premium Seating',
-    'Family Section',
-    'Accessible Seating',
-    'General Admission',
-    'Corporate Box'
-  ];
+  const seats = ['Category 1 - Lower Tier','Category 2 - Middle Tier','Category 3 - Upper Tier','Category 4 - Behind Goal','VIP Hospitality','Premium Seating','Family Section','Accessible Seating','General Admission','Corporate Box'];
   return seats[Math.floor(Math.random()*seats.length)];
 }
-
-// ─── FIFA WORLD CUP 2026 MATCHES POOL ─────────────────────
 function getWorldCupMatchesPool() {
   return [
-    // Group Stage Matches
     { title: "FIFA World Cup 2026 - Opening Match", stage: "group", venue: "Estadio Azteca", city: "Mexico City", country: "Mexico", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80", group: "A" },
     { title: "FIFA World Cup 2026 - Group A", stage: "group", venue: "Estadio Azteca", city: "Mexico City", country: "Mexico", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80", group: "A" },
     { title: "FIFA World Cup 2026 - Group B", stage: "group", venue: "SoFi Stadium", city: "Inglewood, CA", country: "USA", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80", group: "B" },
@@ -563,28 +738,156 @@ function getWorldCupMatchesPool() {
     { title: "FIFA World Cup 2026 - Group F", stage: "group", venue: "Lumen Field", city: "Seattle, WA", country: "USA", image: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&q=80", group: "F" },
     { title: "FIFA World Cup 2026 - Group G", stage: "group", venue: "Mercedes-Benz Stadium", city: "Atlanta, GA", country: "USA", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80", group: "G" },
     { title: "FIFA World Cup 2026 - Group H", stage: "group", venue: "Gillette Stadium", city: "Foxborough, MA", country: "USA", image: "https://images.unsplash.com/photo-1519458246780-7e8a8a5a1e63?w=800&q=80", group: "H" },
-    
-    // Round of 16
     { title: "FIFA World Cup 2026 - Round of 16 Match 1", stage: "round16", venue: "SoFi Stadium", city: "Inglewood, CA", country: "USA", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80" },
     { title: "FIFA World Cup 2026 - Round of 16 Match 2", stage: "round16", venue: "Estadio Azteca", city: "Mexico City", country: "Mexico", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80" },
     { title: "FIFA World Cup 2026 - Round of 16 Match 3", stage: "round16", venue: "AT&T Stadium", city: "Arlington, TX", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
     { title: "FIFA World Cup 2026 - Round of 16 Match 4", stage: "round16", venue: "MetLife Stadium", city: "East Rutherford, NJ", country: "USA", image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80" },
-    
-    // Quarterfinals
     { title: "FIFA World Cup 2026 - Quarterfinal Match 1", stage: "quarter", venue: "Lumen Field", city: "Seattle, WA", country: "USA", image: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&q=80" },
     { title: "FIFA World Cup 2026 - Quarterfinal Match 2", stage: "quarter", venue: "SoFi Stadium", city: "Inglewood, CA", country: "USA", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80" },
     { title: "FIFA World Cup 2026 - Quarterfinal Match 3", stage: "quarter", venue: "AT&T Stadium", city: "Arlington, TX", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
     { title: "FIFA World Cup 2026 - Quarterfinal Match 4", stage: "quarter", venue: "MetLife Stadium", city: "East Rutherford, NJ", country: "USA", image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80" },
-    
-    // Semifinals
     { title: "FIFA World Cup 2026 - Semifinal Match 1", stage: "semi", venue: "AT&T Stadium", city: "Arlington, TX", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
     { title: "FIFA World Cup 2026 - Semifinal Match 2", stage: "semi", venue: "MetLife Stadium", city: "East Rutherford, NJ", country: "USA", image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80" },
-    
-    // Final
     { title: "FIFA World Cup 2026 - Third Place Playoff", stage: "final", venue: "SoFi Stadium", city: "Inglewood, CA", country: "USA", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80" },
     { title: "FIFA World Cup 2026 - FINAL", stage: "final", venue: "MetLife Stadium", city: "East Rutherford, NJ", country: "USA", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80" }
   ];
 }
+
+// ─── FOOTBALL (club football, non-World Cup) ──────────────
+function pickFootballPrice(stage) {
+  const prices = {
+    league: [40, 55, 65, 75, 90, 110, 130, 150],
+    cup: [55, 70, 85, 100, 120, 140, 165, 190],
+    derby: [90, 110, 130, 160, 190, 220, 260, 300],
+    continental: [110, 140, 170, 200, 240, 280, 330, 400],
+    all: [40, 55, 65, 75, 90, 110, 130, 150, 165, 190, 220, 260, 300, 330, 400]
+  };
+  const arr = prices[stage] || prices.all;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function pickFootballSeat() {
+  const seats = ['Lower Tier - Sideline','Upper Tier - Behind Goal','Club Level','Season Ticket Section','Family Stand','Away Supporters Section','Premium Box','General Admission','Pitchside Hospitality','Corner Stand'];
+  return seats[Math.floor(Math.random()*seats.length)];
+}
+function getFootballMatchesPool() {
+  return [
+    { title: "Manchester United vs Liverpool", stage: "derby", venue: "Old Trafford", city: "Manchester", country: "England", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80" },
+    { title: "Arsenal vs Tottenham Hotspur", stage: "derby", venue: "Emirates Stadium", city: "London", country: "England", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80" },
+    { title: "Real Madrid vs Barcelona", stage: "derby", venue: "Santiago Bernabéu", city: "Madrid", country: "Spain", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80" },
+    { title: "Manchester City vs Chelsea", stage: "league", venue: "Etihad Stadium", city: "Manchester", country: "England", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80" },
+    { title: "Bayern Munich vs Borussia Dortmund", stage: "derby", venue: "Allianz Arena", city: "Munich", country: "Germany", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80" },
+    { title: "Paris Saint-Germain vs Marseille", stage: "derby", venue: "Parc des Princes", city: "Paris", country: "France", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80" },
+    { title: "Inter Milan vs AC Milan", stage: "derby", venue: "San Siro", city: "Milan", country: "Italy", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80" },
+    { title: "Juventus vs Napoli", stage: "league", venue: "Allianz Stadium", city: "Turin", country: "Italy", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80" },
+    { title: "FA Cup Final", stage: "cup", venue: "Wembley Stadium", city: "London", country: "England", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80" },
+    { title: "Copa del Rey Final", stage: "cup", venue: "La Cartuja", city: "Seville", country: "Spain", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80" },
+    { title: "UEFA Champions League - Quarterfinal", stage: "continental", venue: "Allianz Arena", city: "Munich", country: "Germany", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80" },
+    { title: "UEFA Champions League Final", stage: "continental", venue: "Wembley Stadium", city: "London", country: "England", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80" },
+    { title: "UEFA Europa League Final", stage: "continental", venue: "San Siro", city: "Milan", country: "Italy", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80" },
+    { title: "MLS Cup Final", stage: "cup", venue: "Lumen Field", city: "Seattle, WA", country: "USA", image: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&q=80" },
+    { title: "LA Galaxy vs LAFC", stage: "derby", venue: "Dignity Health Sports Park", city: "Carson, CA", country: "USA", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80" },
+  ];
+}
+
+// ─── MUSIC (concerts, tours, festivals) ───────────────────
+function pickMusicPrice(stage) {
+  const prices = {
+    arena: [80, 100, 125, 150, 180, 220, 260, 310],
+    stadium: [120, 150, 190, 230, 280, 340, 410, 500],
+    festival: [150, 200, 260, 330, 400, 480, 560, 650],
+    residency: [200, 260, 330, 410, 500, 600, 720, 850],
+    all: [80, 100, 125, 150, 180, 200, 220, 260, 280, 310, 330, 340, 400, 410, 480, 500, 560, 600, 650, 720, 850]
+  };
+  const arr = prices[stage] || prices.all;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function pickMusicSeat() {
+  const seats = ['Floor - General Admission','Floor - VIP Standing','Lower Bowl','Upper Bowl','Reserved Seating','Pit - Front Row Access','Balcony','Box Seating','Lawn Seating','Meet & Greet Package'];
+  return seats[Math.floor(Math.random()*seats.length)];
+}
+function getMusicEventsPool() {
+  return [
+    { title: "Taylor Swift — The Eras Tour", stage: "stadium", venue: "MetLife Stadium", city: "East Rutherford, NJ", country: "USA", image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80" },
+    { title: "Beyoncé — Renaissance World Tour", stage: "stadium", venue: "SoFi Stadium", city: "Inglewood, CA", country: "USA", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80" },
+    { title: "Drake — It's All A Blur Tour", stage: "arena", venue: "Crypto.com Arena", city: "Los Angeles, CA", country: "USA", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80" },
+    { title: "Coldplay — Music of the Spheres Tour", stage: "stadium", venue: "Wembley Stadium", city: "London", country: "England", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80" },
+    { title: "Bad Bunny — Most Wanted Tour", stage: "arena", venue: "United Center", city: "Chicago, IL", country: "USA", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80" },
+    { title: "Adele — Las Vegas Residency", stage: "residency", venue: "The Colosseum at Caesars Palace", city: "Las Vegas, NV", country: "USA", image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80" },
+    { title: "Coachella Valley Music Festival", stage: "festival", venue: "Empire Polo Club", city: "Indio, CA", country: "USA", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80" },
+    { title: "Lollapalooza", stage: "festival", venue: "Grant Park", city: "Chicago, IL", country: "USA", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80" },
+    { title: "Glastonbury Festival", stage: "festival", venue: "Worthy Farm", city: "Pilton", country: "England", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80" },
+    { title: "Ed Sheeran — Mathematics Tour", stage: "stadium", venue: "Gillette Stadium", city: "Foxborough, MA", country: "USA", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80" },
+    { title: "The Weeknd — After Hours Til Dawn Tour", stage: "stadium", venue: "AT&T Stadium", city: "Arlington, TX", country: "USA", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80" },
+    { title: "Billie Eilish — Hit Me Hard Tour", stage: "arena", venue: "Madison Square Garden", city: "New York, NY", country: "USA", image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80" },
+  ];
+}
+
+// ─── BASKETBALL (NBA) ──────────────────────────────────────
+function pickBasketballPrice(stage) {
+  const prices = {
+    regular: [60, 80, 100, 130, 160, 200, 250, 300],
+    playoff: [150, 200, 260, 330, 410, 500, 600, 720],
+    conf_final: [300, 380, 460, 550, 650, 780, 920, 1100],
+    finals: [600, 750, 900, 1100, 1350, 1650, 2000, 2500],
+    all: [60, 80, 100, 130, 160, 200, 250, 300, 330, 410, 500, 600, 650, 720, 780, 920, 1100, 1350, 1650, 2000]
+  };
+  const arr = prices[stage] || prices.all;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function pickBasketballSeat() {
+  const seats = ['Courtside','Lower Bowl - Sideline','Lower Bowl - Baseline','Club Level','Upper Bowl','Suite','Floor Seats','Season Ticket Holder Section','Behind the Basket','Corner Section'];
+  return seats[Math.floor(Math.random()*seats.length)];
+}
+function getBasketballGamesPool() {
+  return [
+    { title: "Los Angeles Lakers vs Boston Celtics", stage: "regular", venue: "Crypto.com Arena", city: "Los Angeles, CA", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
+    { title: "Golden State Warriors vs Phoenix Suns", stage: "regular", venue: "Chase Center", city: "San Francisco, CA", country: "USA", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80" },
+    { title: "Milwaukee Bucks vs Miami Heat", stage: "regular", venue: "Fiserv Forum", city: "Milwaukee, WI", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
+    { title: "Denver Nuggets vs Dallas Mavericks", stage: "regular", venue: "Ball Arena", city: "Denver, CO", country: "USA", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80" },
+    { title: "NBA Playoffs - First Round Game 3", stage: "playoff", venue: "Madison Square Garden", city: "New York, NY", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
+    { title: "NBA Playoffs - Second Round Game 5", stage: "playoff", venue: "United Center", city: "Chicago, IL", country: "USA", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80" },
+    { title: "NBA Eastern Conference Finals", stage: "conf_final", venue: "TD Garden", city: "Boston, MA", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
+    { title: "NBA Western Conference Finals", stage: "conf_final", venue: "Crypto.com Arena", city: "Los Angeles, CA", country: "USA", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80" },
+    { title: "NBA Finals - Game 5", stage: "finals", venue: "Crypto.com Arena", city: "Los Angeles, CA", country: "USA", image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80" },
+    { title: "NBA Finals - Game 7", stage: "finals", venue: "TD Garden", city: "Boston, MA", country: "USA", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80" },
+  ];
+}
+
+// ─── TENNIS (Grand Slams & ATP/WTA) ───────────────────────
+function pickTennisPrice(stage) {
+  const prices = {
+    early: [50, 65, 80, 100, 120, 145, 170, 200],
+    quarter: [110, 140, 175, 210, 250, 300, 350, 410],
+    semi: [220, 280, 340, 410, 490, 580, 680, 800],
+    final: [400, 500, 620, 750, 900, 1080, 1300, 1600],
+    all: [50, 65, 80, 100, 120, 140, 175, 210, 250, 300, 340, 410, 490, 580, 680, 800, 900, 1080, 1300, 1600]
+  };
+  const arr = prices[stage] || prices.all;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function pickTennisSeat() {
+  const seats = ['Centre Court - Lower Tier','Centre Court - Upper Tier','Show Court 1','Show Court 2','Grounds Pass','Premium Hospitality','Member Reserved','Courtside','Practice Court Access','Players Lounge Pass'];
+  return seats[Math.floor(Math.random()*seats.length)];
+}
+function getTennisMatchesPool() {
+  return [
+    { title: "Wimbledon — Centre Court Day Session", stage: "early", venue: "All England Club", city: "London", country: "England", image: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80" },
+    { title: "Wimbledon — Quarterfinals", stage: "quarter", venue: "All England Club", city: "London", country: "England", image: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80" },
+    { title: "Wimbledon — Men's Final", stage: "final", venue: "All England Club", city: "London", country: "England", image: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80" },
+    { title: "US Open — Arthur Ashe Stadium", stage: "early", venue: "USTA Billie Jean King Center", city: "New York, NY", country: "USA", image: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&q=80" },
+    { title: "US Open — Semifinals", stage: "semi", venue: "USTA Billie Jean King Center", city: "New York, NY", country: "USA", image: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&q=80" },
+    { title: "US Open — Women's Final", stage: "final", venue: "USTA Billie Jean King Center", city: "New York, NY", country: "USA", image: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&q=80" },
+    { title: "Australian Open — Rod Laver Arena", stage: "early", venue: "Melbourne Park", city: "Melbourne", country: "Australia", image: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80" },
+    { title: "Australian Open — Quarterfinals", stage: "quarter", venue: "Melbourne Park", city: "Melbourne", country: "Australia", image: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80" },
+    { title: "Roland Garros — Court Philippe-Chatrier", stage: "early", venue: "Stade Roland Garros", city: "Paris", country: "France", image: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&q=80" },
+    { title: "Roland Garros — Men's Final", stage: "final", venue: "Stade Roland Garros", city: "Paris", country: "France", image: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&q=80" },
+    { title: "ATP Finals", stage: "semi", venue: "Pala Alpitour", city: "Turin", country: "Italy", image: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80" },
+    { title: "Indian Wells Masters — Quarterfinals", stage: "quarter", venue: "Indian Wells Tennis Garden", city: "Indian Wells, CA", country: "USA", image: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&q=80" },
+  ];
+}
+
+// Initialize UI for the default active category on load
+applyCategoryToUI();
 </script>
 </body>
 </html>

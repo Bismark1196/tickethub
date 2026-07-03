@@ -370,6 +370,9 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(
 .modal-img-spots{position:absolute;top:16px;left:20px;z-index:2;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.22);color:var(--white);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;padding:4px 11px;border-radius:var(--r-pill);}
 .close{position:absolute;top:14px;right:16px;font-size:18px;cursor:pointer;color:var(--white);background:rgba(0,0,0,.45);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background var(--dur) var(--ease);z-index:5;}
 .close:hover{background:rgba(0,0,0,.72);}
+.modal-share-btn{position:absolute;top:14px;right:58px;font-size:18px;cursor:pointer;color:var(--white);background:rgba(0,0,0,.45);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background var(--dur) var(--ease);z-index:5;border:none;}
+.modal-share-btn:hover{background:var(--gold-dk);}
+.modal-share-btn svg{width:14px;height:14px;}
 .modal-body{overflow-y:auto;flex:1;display:flex;flex-direction:column;}
 .modal-body::-webkit-scrollbar{width:4px;}
 .modal-body::-webkit-scrollbar-thumb{background:var(--paper-deep);border-radius:4px;}
@@ -1109,6 +1112,9 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 <div id="eventModal" class="modal">
   <div class="modal-content">
     <span class="close" id="vendorModalClose" aria-label="Close">&times;</span>
+    <button class="modal-share-btn" id="vendorModalShare" aria-label="Share event" title="Share event">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </button>
     <div class="modal-img-wrap">
       <img id="modalImage" src="" alt="">
       <div class="modal-img-spots" id="modalSpots" style="display:none;">
@@ -1641,6 +1647,10 @@ function getTicketShareUrl(listing) {
   return window.location.origin + window.location.pathname + '#ticket/' + encodeURIComponent(listing.id);
 }
 
+function getEventShareUrl(event) {
+  return window.location.origin + window.location.pathname + '#event/' + encodeURIComponent(event.id);
+}
+
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     const toast = $('shareToast');
@@ -1666,6 +1676,53 @@ function shareTicket(listing) {
     });
   } else {
     copyToClipboard(url);
+  }
+}
+
+function shareEvent(event) {
+  const url = getEventShareUrl(event);
+  if (navigator.share) {
+    navigator.share({
+      title: event.title,
+      text: `Check out this vendor event: ${event.title}${event.location ? ' at ' + event.location : ''}`,
+      url: url
+    }).catch(err => {
+      if (err.name !== 'AbortError') {
+        copyToClipboard(url);
+      }
+    });
+  } else {
+    copyToClipboard(url);
+  }
+}
+
+async function openEventFromId(eventId) {
+  const cached = allEvents.find(e => e.id === eventId);
+  if (cached) {
+    openVendorModal(cached, cached.endDate ? cached.endDate < new Date() : false);
+    return true;
+  }
+  try {
+    const docRef = doc(db, 'events', eventId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = { id: docSnap.id, ...docSnap.data() };
+      const normalized = normDemo(data);
+      const isPast = normalized.endDate < new Date();
+      openVendorModal(normalized, isPast);
+      return true;
+    }
+    const demoEvent = DEMO_EVENTS.find(e => e.id === eventId);
+    if (demoEvent) {
+      const normalized = normDemo(demoEvent);
+      openVendorModal(normalized, normalized.endDate < new Date());
+      return true;
+    }
+    console.warn('Event not found:', eventId);
+    return false;
+  } catch (err) {
+    console.error('Error fetching event:', err);
+    return false;
   }
 }
 
@@ -1697,6 +1754,11 @@ function handleIncomingTicketLink() {
     const ticketId = decodeURIComponent(hash.substring(8));
     if (ticketId) {
       setTimeout(() => openTicketFromId(ticketId), 1000);
+    }
+  } else if (hash && hash.startsWith('#event/')) {
+    const eventId = decodeURIComponent(hash.substring(7));
+    if (eventId) {
+      setTimeout(() => openEventFromId(eventId), 1000);
     }
   }
 }
@@ -1937,11 +1999,12 @@ function renderMyListings() {
   });
 }
 
-let selectedEvent='',selectedLocation='',selectedEventDates=[],selectedEventIsPast=false;
+let selectedEvent='',selectedLocation='',selectedEventDates=[],selectedEventIsPast=false,selectedEventId='';
 
 function openVendorModal(data,isPast) {
   selectedEvent=data.title; selectedLocation=data.location;
   selectedEventDates=data.dateStrings||collectDates(data); selectedEventIsPast=isPast;
+  selectedEventId=data.id||'';
   const dates=selectedEventDates;
   $('modalImage').src=data.image||'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80';
   $('modalCategory').textContent=data.category||'Event';
@@ -1972,6 +2035,9 @@ function openVendorModal(data,isPast) {
   const ab=$('applyBtn');
   if(isPast){ab.disabled=true;ab.textContent='Event ended';}else{ab.disabled=false;ab.textContent='Apply as vendor'}
   $('modalApplyNote').textContent=isPast?'Applications closed.':'Free to apply · Organiser approval';
+  const shareBtn=$('vendorModalShare');
+  if(selectedEventId){shareBtn.style.display='flex';shareBtn.onclick=()=>shareEvent(data);}
+  else{shareBtn.style.display='none';}
   $('eventModal').style.display='flex'; document.body.classList.add('modal-open');
 }
 
