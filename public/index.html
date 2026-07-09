@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%238a6e1e'/%3E%3Cstop offset='100%25' stop-color='%23d4b466'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%230c0c0c'/%3E%3Crect x='2' y='2' width='28' height='28' rx='5' fill='url(%23g)'/%3E%3Ctext x='16' y='23' font-family='Arial,Helvetica,sans-serif' font-size='19' font-weight='900' fill='%230c0c0c' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
 <title>VendHub — USA Vendor Booths & Resale Tickets</title>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2065,6 +2064,8 @@ function openVendorModal(data,isPast) {
   $('modalTitle').textContent=data.title||'Event';
   const chips=$('modalMetaChips'); chips.innerHTML='';
   if(isPast)chips.innerHTML+=`<span class="modal-meta-chip past">Past event</span>`;
+  const alreadyAppliedChip = !!(auth.currentUser && userApplicationsMap[data.title.toLowerCase().trim()]);
+  if(!isPast && alreadyAppliedChip)chips.innerHTML+=`<span class="modal-meta-chip gold">✓ Already applied</span>`;
   if(data.state)chips.innerHTML+=`<span class="modal-meta-chip">🇺🇸 ${data.state}</span>`;
   if(data.price)chips.innerHTML+=`<span class="modal-meta-chip gold">${data.price}</span>`;
   $('modalDatesGrid').innerHTML=dates.map((raw,i)=>{const p=raw.split('•');const d=p[0].trim();const t=(p[1]||'').trim();return `<div class="modal-date-row"><div class="modal-date-num">${i+1}</div><div><div class="modal-date-main">${d}</div>${t?`<div class="modal-date-time">${t}</div>`:''}</div></div>`;}).join('');
@@ -2083,8 +2084,17 @@ function openVendorModal(data,isPast) {
     contacts.forEach(c=>{const a=document.createElement('a');a.className='modal-contact-item';a.href=c.href;if(c.external){a.target='_blank';a.rel='noopener';}a.innerHTML=`<div class="modal-contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--gold)"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="modal-contact-info"><div class="modal-contact-label">${c.label}</div><div class="modal-contact-value">${c.value}</div></div>`;cr.appendChild(a);});
   }else{$('modalContactBlock').style.display='none';}
   const ab=$('applyBtn');
-  if(isPast){ab.disabled=true;ab.textContent='Event ended';}else{ab.disabled=false;ab.textContent='Apply as vendor'}
-  $('modalApplyNote').textContent=isPast?'Applications closed.':'Free to apply · Organiser approval';
+  const alreadyApplied = !!(auth.currentUser && userApplicationsMap[selectedEvent.toLowerCase().trim()]);
+  if(isPast){
+    ab.disabled=true;ab.textContent='Event ended';
+  } else if(alreadyApplied){
+    ab.disabled=false;
+    ab.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Contact coordinator';
+  } else {
+    ab.disabled=false;
+    ab.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg> Apply as vendor';
+  }
+  $('modalApplyNote').textContent=isPast?'Applications closed.':(alreadyApplied?"You've already applied to this event — message your coordinator for any changes.":'Free to apply · Organiser approval');
   const shareBtn=$('vendorModalShare');
   if(selectedEventId){shareBtn.style.display='flex';shareBtn.onclick=()=>shareEvent(data);}
   else{shareBtn.style.display='none';}
@@ -2094,7 +2104,13 @@ function openVendorModal(data,isPast) {
 $('applyBtn').addEventListener('click',()=>{
   if($('applyBtn').disabled)return;
   if(!auth.currentUser){pendingLoginAction=()=>redirectToApply();showLoginModal();return;}
-  if(userApplicationsMap[selectedEvent.toLowerCase().trim()]){alert('You already applied to this event!');return;}
+  const existingVendorId = userApplicationsMap[selectedEvent.toLowerCase().trim()];
+  if(existingVendorId){
+    $('eventModal').style.display='none'; document.body.classList.remove('modal-open');
+    activeConvId=existingVendorId; activeConvLabel=selectedEvent; activeConvType='vendor';
+    openChatModal();
+    return;
+  }
   redirectToApply();
 });
 function redirectToApply(){
