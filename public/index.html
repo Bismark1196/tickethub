@@ -1269,7 +1269,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getMessaging, getToken, onMessage
+  getMessaging, getToken, onMessage, isSupported
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup,
@@ -1279,7 +1279,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
   getFirestore, collection, query, where, getDocs,
-  onSnapshot, addDoc, orderBy, serverTimestamp, doc, getDoc,setDoc, arrayUnion
+  onSnapshot, addDoc, orderBy, serverTimestamp, doc, getDoc, setDoc,
+  arrayUnion, arrayRemove, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
   getStorage, ref as storageRef, uploadBytes, getDownloadURL
@@ -1300,34 +1301,85 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
-const VAPID_KEY = 'BLptISn7AZzXqUGzqLKdNQYo78FiYHVuX9YqJqdeLRqQg1WllVj4S6Pq_QDWpCvu0bmFmToSuI0FrmVbqROW5Ww'; // Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
-let messaging = null, swRegistration = null;
+const VAPID_KEY = 'BLptISn7AZzXqUGzqLKdNQYo78FiYHVuX9YqJqdeLRqQg1WllVj4S6Pq_QDWpCvu0bmFmToSuI0FrmVbqROW5Ww';
+let messagingInstance = null;
+let currentDeviceToken = null;
 
-async function initPushMessaging() {
-  if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+// Sequential, awaited end-to-end — no global set by one async function that
+// another async function races to read before it's ready.
+async function initPushNotifications() {
   try {
-    swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
-    messaging = getMessaging(app);
-    onMessage(messaging, handleForegroundMessage);
-  } catch (e) { console.warn('SW registration failed:', e); }
+    if (!('serviceWorker' in navigator) || !('Notification' in window)) {
+      console.log('Push notifications not supported in this browser.');
+      return;
+    }
+    const supported = await isSupported().catch(() => false);
+    if (!supported) {
+      console.log('FCM not supported in this browser/context.');
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+    messagingInstance = getMessaging(app);
+    onMessage(messagingInstance, handleForegroundMessage);
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data?.type === 'VENDHUB_NOTIFICATION_CLICK') {
+        handleNotificationNavigation(event.data.convType, event.data.convId);
+      }
+    });
+
+    await requestPermissionAndRegisterToken(registration);
+  } catch (err) {
+    console.error('initPushNotifications error:', err);
+  }
 }
 
-async function registerPushToken(user) {
-  if (!messaging || !user) return;
+async function requestPermissionAndRegisterToken(registration) {
+  if (Notification.permission === 'denied') return;
+  let permission = Notification.permission;
+  if (permission === 'default') permission = await Notification.requestPermission();
+  if (permission !== 'granted') return;
+
   try {
-    if (await Notification.requestPermission() !== 'granted') return;
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swRegistration });
+    const token = await getToken(messagingInstance, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
     if (!token) return;
-    await setDoc(doc(db, 'fcm_tokens', user.uid), { tokens: arrayUnion(token), updatedAt: serverTimestamp() }, { merge: true });
-  } catch (e) { console.warn('Token registration failed:', e); }
+    currentDeviceToken = token;
+    await saveTokenToFirestore(token);
+  } catch (err) {
+    console.error('getToken error:', err);
+  }
 }
 
-// Foreground push handler.
-// Shows the in-page toast AND (when permission has been granted) a real OS-level
-// notification via the registered service worker, since FCM only auto-displays
-// system notifications for BACKGROUND messages — foreground messages are handed
-// to this callback instead and must be surfaced manually if you want a popup
-// while the tab is open/focused.
+async function saveTokenToFirestore(token) {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    await setDoc(
+      doc(db, 'fcm_tokens', user.uid),
+      { uid: user.uid, email: user.email, tokens: arrayUnion(token), updatedAt: serverTimestamp() },
+      { merge: true }
+    );
+  } catch (err) {
+    console.error('Failed to save FCM token:', err);
+  }
+}
+
+async function teardownPushNotifications() {
+  const user = auth.currentUser;
+  if (user && currentDeviceToken) {
+    try {
+      await updateDoc(doc(db, 'fcm_tokens', user.uid), { tokens: arrayRemove(currentDeviceToken) });
+    } catch (err) {
+      console.warn('Token cleanup skipped:', err.message);
+    }
+  }
+  currentDeviceToken = null;
+}
+
 function handleForegroundMessage(payload) {
   const data = payload.data || {};
   const chatOpenOnThisThread = activeConvType === data.convType && activeConvId === data.convId && $('chatModal').classList.contains('open');
@@ -1335,19 +1387,13 @@ function handleForegroundMessage(payload) {
 
   showToastMessage(data.title ? `${data.title}: ${data.body || ''}` : 'New message received.');
 
-  if (Notification.permission === 'granted' && swRegistration) {
-    swRegistration.showNotification(data.title || 'VendHub', {
+  if (Notification.permission === 'granted' && document.visibilityState === 'visible') {
+    const n = new Notification(data.title || 'VendHub', {
       body: data.body || 'You have a new message.',
       icon: '/icon-192.png',
-      badge: '/icon-badge.png',
-      tag: data.tag || 'vendhub-chat',
-      renotify: true,
-      data: {
-        convType: data.convType || '',
-        convId: data.convId || '',
-        url: data.url || '/'
-      }
-    }).catch(e => console.warn('Foreground notification display failed:', e));
+      tag: data.tag || 'vendhub-chat'
+    });
+    n.onclick = () => { window.focus(); handleNotificationNavigation(data.convType, data.convId); n.close(); };
   }
 
   if (data.convType && data.convId) {
@@ -1357,15 +1403,15 @@ function handleForegroundMessage(payload) {
   }
 }
 
-navigator.serviceWorker?.addEventListener('message', (event) => {
-  if (event.data?.type !== 'VENDHUB_NOTIFICATION_CLICK') return;
-  if (!auth.currentUser) { showLoginModal(); return; }
-  const incomingType = event.data.convType;
-  activeConvType = ['vendor', 'purchase', 'ticket'].includes(incomingType) ? incomingType : 'purchase';
-  activeConvId = event.data.convId;
-  activeConvLabel = '';
-  openChatModal();
-});
+function handleNotificationNavigation(convType, convId) {
+  if (!convType || !convId) {
+    if (typeof openChatModal === 'function') openChatModal();
+    return;
+  }
+  activeConvType = convType;
+  activeConvId = convId;
+  if (typeof openChatModal === 'function') openChatModal();
+}
 
 const DEMO_EVENTS = [
   {id:'demo-1',_isDemo:true,title:'Chicago Renegade Craft Fair',category:'Markets',location:'Union Park',state:'Illinois',address:'1501 W Randolph St, Chicago, IL 60607',image:'https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=600&q=80',description:"Chicago's favourite indie craft market with 300+ booths.",price:'From $50/booth',max_spots:'300',event_dates:['Jul 12, 2026 • 10:00 AM','Jul 13, 2026 • 10:00 AM'],contact_email:'chicago@renegadecraft.com'},
@@ -1431,14 +1477,15 @@ onAuthStateChanged(auth, user => {
     subscribeApplications(user);
     subscribeMyListings(user);
     subscribePurchases(user);
-    registerPushToken(user);
+    initPushNotifications();
     renderSellForm();
   } else {
     $('profileDisplay').classList.remove('visible');
     $('signInNavBtn').classList.add('visible');
     $('openChatBtn').classList.remove('visible');
     $('appCartBtn').classList.remove('visible');
-    userApplicationsMap = {}; myListings = []; purchasedTickets = []; 
+    teardownPushNotifications();
+    userApplicationsMap = {}; myListings = []; purchasedTickets = [];
     listingToPurchaseMap = {};
     unreadCounts = {}; lastSeenTimestamps = {};
     Object.values(chatUnsubs).forEach(u => u && u());
@@ -2667,7 +2714,6 @@ onAuthStateChanged(auth,user=>{
 });
 
 loadEvents();
-initPushMessaging();
 </script>
 </body>
 </html>
