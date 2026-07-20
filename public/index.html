@@ -1269,6 +1269,9 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
+  getMessaging, getToken, onMessage
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+import {
   getAuth, GoogleAuthProvider, signInWithPopup,
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   sendPasswordResetEmail, onAuthStateChanged,
@@ -1276,7 +1279,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
   getFirestore, collection, query, where, getDocs,
-  onSnapshot, addDoc, orderBy, serverTimestamp, doc, getDoc
+  onSnapshot, addDoc, orderBy, serverTimestamp, doc, getDoc,setDoc, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
   getStorage, ref as storageRef, uploadBytes, getDownloadURL
@@ -1296,6 +1299,73 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
+
+const VAPID_KEY = 'BLptISn7AZzXqUGzqLKdNQYo78FiYHVuX9YqJqdeLRqQg1WllVj4S6Pq_QDWpCvu0bmFmToSuI0FrmVbqROW5Ww'; // Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
+let messaging = null, swRegistration = null;
+
+async function initPushMessaging() {
+  if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+  try {
+    swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+    messaging = getMessaging(app);
+    onMessage(messaging, handleForegroundMessage);
+  } catch (e) { console.warn('SW registration failed:', e); }
+}
+
+async function registerPushToken(user) {
+  if (!messaging || !user) return;
+  try {
+    if (await Notification.requestPermission() !== 'granted') return;
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swRegistration });
+    if (!token) return;
+    await setDoc(doc(db, 'fcm_tokens', user.uid), { tokens: arrayUnion(token), updatedAt: serverTimestamp() }, { merge: true });
+  } catch (e) { console.warn('Token registration failed:', e); }
+}
+
+// Foreground push handler.
+// Shows the in-page toast AND (when permission has been granted) a real OS-level
+// notification via the registered service worker, since FCM only auto-displays
+// system notifications for BACKGROUND messages — foreground messages are handed
+// to this callback instead and must be surfaced manually if you want a popup
+// while the tab is open/focused.
+function handleForegroundMessage(payload) {
+  const data = payload.data || {};
+  const chatOpenOnThisThread = activeConvType === data.convType && activeConvId === data.convId && $('chatModal').classList.contains('open');
+  if (chatOpenOnThisThread) return;
+
+  showToastMessage(data.title ? `${data.title}: ${data.body || ''}` : 'New message received.');
+
+  if (Notification.permission === 'granted' && swRegistration) {
+    swRegistration.showNotification(data.title || 'VendHub', {
+      body: data.body || 'You have a new message.',
+      icon: '/icon-192.png',
+      badge: '/icon-badge.png',
+      tag: data.tag || 'vendhub-chat',
+      renotify: true,
+      data: {
+        convType: data.convType || '',
+        convId: data.convId || '',
+        url: data.url || '/'
+      }
+    }).catch(e => console.warn('Foreground notification display failed:', e));
+  }
+
+  if (data.convType && data.convId) {
+    const key = data.convType + '_' + data.convId;
+    unreadCounts[key] = (unreadCounts[key] || 0) + 1;
+    updateUnreadBadge(); buildChatContextBar();
+  }
+}
+
+navigator.serviceWorker?.addEventListener('message', (event) => {
+  if (event.data?.type !== 'VENDHUB_NOTIFICATION_CLICK') return;
+  if (!auth.currentUser) { showLoginModal(); return; }
+  const incomingType = event.data.convType;
+  activeConvType = ['vendor', 'purchase', 'ticket'].includes(incomingType) ? incomingType : 'purchase';
+  activeConvId = event.data.convId;
+  activeConvLabel = '';
+  openChatModal();
+});
 
 const DEMO_EVENTS = [
   {id:'demo-1',_isDemo:true,title:'Chicago Renegade Craft Fair',category:'Markets',location:'Union Park',state:'Illinois',address:'1501 W Randolph St, Chicago, IL 60607',image:'https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=600&q=80',description:"Chicago's favourite indie craft market with 300+ booths.",price:'From $50/booth',max_spots:'300',event_dates:['Jul 12, 2026 • 10:00 AM','Jul 13, 2026 • 10:00 AM'],contact_email:'chicago@renegadecraft.com'},
@@ -1361,6 +1431,7 @@ onAuthStateChanged(auth, user => {
     subscribeApplications(user);
     subscribeMyListings(user);
     subscribePurchases(user);
+    registerPushToken(user);
     renderSellForm();
   } else {
     $('profileDisplay').classList.remove('visible');
@@ -2586,6 +2657,7 @@ onAuthStateChanged(auth,user=>{
 });
 
 loadEvents();
+initPushMessaging();
 </script>
 </body>
 </html>

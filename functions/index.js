@@ -3,57 +3,55 @@
  * ══════════════════════════════════════════════════════════
  *
  * Functions:
- *   1. onAdminMessage         — Firestore trigger: when admin sends a chat
- *                               message → sends BOTH push notification AND
- *                               email to the vendor (single trigger, no dupe)
- *   2. sendApprovalEmail      — HTTPS callable: admin sends approval/rejection
- *   3. weeklyAdminSummary     — Scheduled: every Monday 8am ET to admin
- *   4. getVendorStats         — HTTPS callable: returns stats (admin only)
+ *   1. onVendorMessageCreate   — Firestore trigger: vendors/{vendorId}/conversation/{msgId}
+ *                                Sends FCM push to whichever side (applicant/admin) did
+ *                                NOT send the message, AND (when admin → vendor) a
+ *                                backup branded email to the vendor.
+ *   2. onPurchaseMessageCreate — Firestore trigger: purchases/{purchaseId}/conversation/{msgId}
+ *                                FCM push between buyer <-> seller.
+ *   3. onListingMessageCreate  — Firestore trigger: ticket_listings/{listingId}/conversation/{msgId}
+ *                                FCM push, seller-reliable direction only (see note below).
+ *   4. sendApprovalEmail       — HTTPS callable: admin sends approval/rejection email.
+ *   5. weeklyAdminSummary      — Scheduled: every Monday 8am ET to admin.
+ *   6. getVendorStats          — HTTPS callable: returns stats (admin only).
  *
  * ONE-TIME SETUP (run these commands before deploying):
  * ─────────────────────────────────────────────────────
- *   # 1. Generate VAPID keys
- *   npx web-push generate-vapid-keys
- *
- *   # 2. Save secrets (Firebase will prompt you to paste the value)
- *   firebase functions:secrets:set VAPID_PRIVATE_KEY
- *   firebase functions:secrets:set VAPID_SUBJECT      # e.g. mailto:you@example.com
- *
- *   # 3. Set email config (Gmail App Password — NOT your normal password)
+ *   # 1. Set email config (Gmail App Password — NOT your normal password)
  *   firebase functions:config:set email.user="your-gmail@gmail.com"
  *   firebase functions:config:set email.pass="your-16-char-app-password"
  *   firebase functions:config:set email.admin="admin@grandbazaar.com"
  *
- *   # 4. Copy the PUBLIC key into index.html (VAPID_PUBLIC_KEY constant)
+ *   # 2. Make sure clients register FCM tokens into fcm_tokens/{uid}.tokens (array)
+ *      — this replaces the old web-push/VAPID subscription flow entirely.
  *
- *   # 5. Deploy
+ *   # 3. Deploy
  *   cd functions && npm install && cd ..
  *   firebase deploy --only functions
+ *
+ * NOTE: This version replaces the previous web-push/VAPID push implementation
+ * with Firebase Cloud Messaging (admin.messaging()). The VAPID key generation
+ * step, VAPID_PRIVATE_KEY/VAPID_SUBJECT secrets, and the `web-push` npm
+ * dependency are no longer needed and can be removed from functions/package.json.
  */
 
 'use strict';
 
 // ── SDK imports ───────────────────────────────────────────────────────────────
 const { onDocumentCreated } = require('firebase-functions/v2/firestore');
-const { defineSecret }      = require('firebase-functions/params');
+const { setGlobalOptions }  = require('firebase-functions/v2');
 const functions             = require('firebase-functions');   // v1 for callable/scheduled
 const admin                 = require('firebase-admin');
 const nodemailer            = require('nodemailer');
-const webpush               = require('web-push');
 
 admin.initializeApp();
-const db = admin.firestore();
+setGlobalOptions({ region: 'us-central1', maxInstances: 10 });
 
-// ── Secrets (stored via: firebase functions:secrets:set NAME) ─────────────────
-const VAPID_PRIVATE_KEY = defineSecret('VAPID_PRIVATE_KEY');
-const VAPID_SUBJECT     = defineSecret('VAPID_SUBJECT');    // e.g. "mailto:you@example.com"
+const db        = admin.firestore();
+const messaging = admin.messaging();
 
-// ── YOUR VAPID PUBLIC KEY ──────────────────────────────────────────────────────
-// Copy the Public Key output from:  npx web-push generate-vapid-keys
-// Then paste it here AND in index.html (the VAPID_PUBLIC_KEY constant)
-const VAPID_PUBLIC_KEY =
-  'BC2gm2NXUjPQMwz0j333xnUypD0-TqELZwQiJ87r1_2YLLZLp4SsTEza6UQ39n89mfPEfv79HcZzz3d6xHGjTK4';
-//  ↑↑↑  REPLACE with your own key — this is a placeholder  ↑↑↑
+const ADMIN_EMAIL = 'admin@grandbazaar.com';
+let cachedAdminUid = null;
 
 // ── Email transporter factory ─────────────────────────────────────────────────
 function makeTransporter() {
@@ -133,161 +131,315 @@ function buildEmail({ heading, subheading, bodyHtml, ctaText, ctaUrl, accentColo
 </body></html>`;
 }
 
+// ── FCM helpers ────────────────────────────────────────────────────────────────
+async function getAdminUid() {
+  if (cachedAdminUid) return cachedAdminUid;
+  try {
+    const userRecord = await admin.auth().getUserByEmail(ADMIN_EMAIL);
+    cachedAdminUid = userRecord.uid;
+    return cachedAdminUid;
+  } catch (err) {
+    console.error('Could not resolve admin UID for', ADMIN_EMAIL, err.message);
+    return null;
+  }
+}
+
+/** Fetches all FCM tokens stored for a given uid. Returns [] if none. */
+async function getTokensForUid(uid) {
+  if (!uid) return [];
+  const snap = await db.collection('fcm_tokens').doc(uid).get();
+  if (!snap.exists) return [];
+  const tokens = snap.data().tokens;
+  return Array.isArray(tokens) ? tokens : [];
+}
+
+/** Sends a push notification to a list of tokens, cleaning up dead ones. */
+async function sendToTokens(tokens, { title, body, convType, convId, tag }) {
+  if (!tokens.length) return;
+
+  const message = {
+    tokens,
+    notification: { title, body },
+    data: {
+      title,
+      body,
+      convType: convType || '',
+      convId: convId || '',
+      tag: tag || 'vendhub-chat',
+      url: '/'
+    },
+    webpush: {
+      fcmOptions: { link: '/' },
+      notification: { icon: '/icon-192.png' }
+    }
+  };
+
+  const response = await messaging.sendEachForMulticast(message);
+
+  // Prune tokens that are no longer valid (uninstalled, expired, etc.) so the
+  // array doesn't grow forever and we stop wasting sends on dead tokens.
+  const deadTokens = [];
+  response.responses.forEach((res, i) => {
+    if (!res.success) {
+      const code = res.error?.code || '';
+      if (
+        code === 'messaging/invalid-registration-token' ||
+        code === 'messaging/registration-token-not-registered'
+      ) {
+        deadTokens.push(tokens[i]);
+      }
+    }
+  });
+  if (deadTokens.length) {
+    await pruneDeadTokens(deadTokens);
+  }
+}
+
+/** Removes dead tokens from whichever fcm_tokens/{uid} docs contain them. */
+async function pruneDeadTokens(deadTokens) {
+  const snap = await db.collection('fcm_tokens').get();
+  const batch = db.batch();
+  let touched = false;
+  snap.forEach((docSnap) => {
+    const tokens = docSnap.data().tokens || [];
+    const remaining = tokens.filter((t) => !deadTokens.includes(t));
+    if (remaining.length !== tokens.length) {
+      batch.update(docSnap.ref, { tokens: remaining });
+      touched = true;
+    }
+  });
+  if (touched) await batch.commit();
+}
+
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length > n ? str.slice(0, n - 1) + '…' : str;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
-//  1.  onAdminMessage  —  single Firestore trigger that sends BOTH:
-//        • Web Push notification (appears on phone even when app is closed)
-//        • Email notification (backup for devices without push)
+//  1.  onVendorMessageCreate — vendors/{vendorId}/conversation/{messageId}
+//      Sends FCM push to whichever side did NOT send the message (applicant
+//      or admin), AND, when the sender is the admin, a backup branded email
+//      to the vendor (so vendors without the app open still see it land in
+//      their inbox).
 // ─────────────────────────────────────────────────────────────────────────────
-exports.onAdminMessage = onDocumentCreated(
-  {
-    document: 'vendors/{vendorId}/conversation/{msgId}',
-    secrets:  [VAPID_PRIVATE_KEY, VAPID_SUBJECT],
-    region:   'us-central1',
-  },
+exports.onVendorMessageCreate = onDocumentCreated(
+  'vendors/{vendorId}/conversation/{messageId}',
   async (event) => {
-    const msg      = event.data.data();
+    const msg = event.data.data();
     const vendorId = event.params.vendorId;
+    if (!msg) return;
 
-    // Only react to messages sent by admin
-    if ((msg.sender || '').toLowerCase() !== 'admin') return null;
+    const vendorDoc = await db.collection('vendors').doc(vendorId).get();
+    if (!vendorDoc.exists) return;
+    const vendor = vendorDoc.data();
 
-    // ── Fetch vendor record ──────────────────────────────────────────────────
-    const vendorSnap = await db.collection('vendors').doc(vendorId).get();
-    if (!vendorSnap.exists) return null;
+    const applicantUid = vendor.user_id;
+    const adminUid      = await getAdminUid();
+    const senderUid      = msg.user_id;
+    const senderIsAdmin  = (msg.sender || '').toLowerCase() === 'admin' || senderUid === adminUid;
 
-    const v         = vendorSnap.data();
-    const userId    = v.user_id;
-    const eventName = v.event_name || 'VendHub';
-    const toEmail   = v.invoice_email || v.auth_email;
-    const vendorName = v.business || v.full_name || 'Vendor';
-
-    // ── Build message preview ────────────────────────────────────────────────
-    const preview = msg.messageType === 'image'
-      ? '📷 Sent you an image'
-      : msg.messageType === 'document'
-        ? `📎 Sent a file: ${msg.fileName || 'document'}`
-        : (msg.message || '').slice(0, 120);
-
-    // ── Count unread messages for badge number ───────────────────────────────
-    const unreadSnap = await db
-      .collection('vendors').doc(vendorId).collection('conversation')
-      .where('sender',         '==', 'admin')
-      .where('read_by_vendor', '==', false)
-      .get();
-    const unreadCount = unreadSnap.size;
-
-    const chatUrl = `https://vendors-de792.web.app/index.html?event_chat=${vendorId}`;
+    // Determine recipient: whichever of {applicant, admin} did NOT send this message.
+    const recipientUid = senderUid === applicantUid ? adminUid : applicantUid;
 
     // ════════════════════════════════════════════════════════════
-    //  A) WEB PUSH  (shows on phone home screen / lock screen)
+    //  A) FCM PUSH (bidirectional — applicant <-> admin)
     // ════════════════════════════════════════════════════════════
-    if (userId) {
-      const subsSnap = await db
-        .collection('push_subscriptions')
-        .where('user_id', '==', userId)
-        .get();
+    if (recipientUid && recipientUid !== senderUid) {
+      const tokens = await getTokensForUid(recipientUid);
+      if (tokens.length) {
+        const senderLabel = senderUid === applicantUid ? (msg.senderName || 'Applicant') : 'Event Coordinator';
+        const preview = msg.messageType === 'image'
+          ? '📷 Sent you an image'
+          : msg.messageType === 'document'
+            ? `📎 Sent a file: ${msg.fileName || 'document'}`
+            : (msg.message || 'Sent a message');
 
-      if (!subsSnap.empty) {
-        webpush.setVapidDetails(
-          VAPID_SUBJECT.value(),
-          VAPID_PUBLIC_KEY,
-          VAPID_PRIVATE_KEY.value()
-        );
-
-        const pushPayload = JSON.stringify({
-          title: `💬 ${eventName}`,
-          body:  preview,
-          url:   chatUrl,
-          icon:  '/images/icon-192.png',
-          badge: '/images/icon-192.png',
-          tag:   `vendhub-chat-${vendorId}`,
-          count: unreadCount,
+        await sendToTokens(tokens, {
+          title: `${senderLabel} · ${truncate(vendor.event_name || 'Vendor application', 40)}`,
+          body: truncate(preview, 120),
+          convType: 'vendor',
+          convId: vendorId,
+          tag: `vendor-${vendorId}`
         });
-
-        const pushSends = subsSnap.docs.map(async (subDoc) => {
-          try {
-            await webpush.sendNotification(subDoc.data().subscription, pushPayload, {
-              urgency: 'high',
-              TTL:     86400,  // 24 hours
-            });
-            console.log(`[Push] Sent to user ${userId} (sub ${subDoc.id})`);
-          } catch (err) {
-            console.error(`[Push] Failed sub ${subDoc.id}:`, err.statusCode, err.body);
-            // Remove expired / invalid subscriptions automatically
-            if (err.statusCode === 410 || err.statusCode === 404) {
-              await subDoc.ref.delete();
-              console.log(`[Push] Deleted stale subscription ${subDoc.id}`);
-            }
-          }
-        });
-
-        await Promise.allSettled(pushSends);
-      } else {
-        console.log(`[Push] No subscriptions for user ${userId}`);
       }
     }
 
     // ════════════════════════════════════════════════════════════
-    //  B) EMAIL  (backup delivery — shows even without push)
+    //  B) EMAIL (admin → vendor only — backup delivery for devices
+    //     without a registered FCM token)
     // ════════════════════════════════════════════════════════════
-    if (toEmail) {
-      const html = buildEmail({
-        heading:    'New message from your coordinator',
-        subheading: `Re: ${eventName}`,
-        bodyHtml: `
-          <p style="font-size:15px;color:#1c1c1e;margin:0 0 20px;">
-            Hi <strong>${vendorName}</strong>,<br>
-            Your event coordinator sent you a message about
-            <strong>${eventName}</strong>:
-          </p>
-          <div style="background:#0a0a0a;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
-            <p style="margin:0;font-size:14px;color:#fff;line-height:1.6;">${preview}</p>
-          </div>
-          ${unreadCount > 1 ? `
-          <p style="font-size:13px;color:#f59e0b;font-weight:600;margin:0 0 16px;">
-            ⚠️ You have ${unreadCount} unread messages in this chat.
-          </p>` : ''}
-          <p style="font-size:13px;color:#8a8a8e;margin:0;">
-            Reply through the VendHub chat to keep your conversation in one place.
-          </p>
-        `,
-        ctaText:     'Open Chat',
-        ctaUrl:      chatUrl,
-        accentColor: '#0a0a0a',
-      });
+    if (senderIsAdmin) {
+      const toEmail    = vendor.invoice_email || vendor.auth_email;
+      const eventName  = vendor.event_name || 'VendHub';
+      const vendorName = vendor.business || vendor.full_name || 'Vendor';
+      const chatUrl    = `https://vendors-de792.web.app/index.html?event_chat=${vendorId}`;
 
+      const preview = msg.messageType === 'image'
+        ? '📷 Sent you an image'
+        : msg.messageType === 'document'
+          ? `📎 Sent a file: ${msg.fileName || 'document'}`
+          : (msg.message || '').slice(0, 120);
+
+      let unreadCount = 0;
       try {
-        await makeTransporter().sendMail({
-          from:    `"VendHub" <${functions.config().email?.user || 'vendhub.businessjoin@gmail.com'}>`,
-          to:      toEmail,
-          subject: `💬 New message — ${eventName} | VendHub`,
-          html,
-        });
-        console.log(`[Email] Chat notification sent to ${toEmail}`);
-      } catch (err) {
-        // Don't fail the whole function if email fails
-        console.error('[Email] Chat notification failed:', err.message);
-      }
-    }
+        const unreadSnap = await db
+          .collection('vendors').doc(vendorId).collection('conversation')
+          .where('sender', '==', 'admin')
+          .where('read_by_vendor', '==', false)
+          .get();
+        unreadCount = unreadSnap.size;
+      } catch (_) { /* non-critical */ }
 
-    // ── Update unread_count on vendor doc (for badge display) ────────────────
-    try {
-      await db.collection('vendors').doc(vendorId).update({
-        unread_count:             unreadCount,
-        last_admin_message_at:    admin.firestore.FieldValue.serverTimestamp(),
-      });
-    } catch (_) { /* non-critical */ }
+      if (toEmail) {
+        const html = buildEmail({
+          heading:    'New message from your coordinator',
+          subheading: `Re: ${eventName}`,
+          bodyHtml: `
+            <p style="font-size:15px;color:#1c1c1e;margin:0 0 20px;">
+              Hi <strong>${vendorName}</strong>,<br>
+              Your event coordinator sent you a message about
+              <strong>${eventName}</strong>:
+            </p>
+            <div style="background:#0a0a0a;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+              <p style="margin:0;font-size:14px;color:#fff;line-height:1.6;">${preview}</p>
+            </div>
+            ${unreadCount > 1 ? `
+            <p style="font-size:13px;color:#f59e0b;font-weight:600;margin:0 0 16px;">
+              ⚠️ You have ${unreadCount} unread messages in this chat.
+            </p>` : ''}
+            <p style="font-size:13px;color:#8a8a8e;margin:0;">
+              Reply through the VendHub chat to keep your conversation in one place.
+            </p>
+          `,
+          ctaText:     'Open Chat',
+          ctaUrl:      chatUrl,
+          accentColor: '#0a0a0a',
+        });
+
+        try {
+          await makeTransporter().sendMail({
+            from:    `"VendHub" <${functions.config().email?.user || 'vendhub.businessjoin@gmail.com'}>`,
+            to:      toEmail,
+            subject: `💬 New message — ${eventName} | VendHub`,
+            html,
+          });
+          console.log(`[Email] Chat notification sent to ${toEmail}`);
+        } catch (err) {
+          // Don't fail the whole function if email fails
+          console.error('[Email] Chat notification failed:', err.message);
+        }
+      }
+
+      // ── Update unread_count on vendor doc (for badge display) ────────────
+      try {
+        await db.collection('vendors').doc(vendorId).update({
+          unread_count:          unreadCount,
+          last_admin_message_at: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      } catch (_) { /* non-critical */ }
+    }
 
     return null;
   }
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  2.  sendApprovalEmail  —  HTTPS callable by admin UI
+//  2.  onPurchaseMessageCreate — purchases/{purchaseId}/conversation/{messageId}
+//      Participants: buyer_id and sellerId (buyer_id set at purchase time;
+//      seller field is written inconsistently in the client as sellerId — we
+//      check both spellings defensively).
+// ─────────────────────────────────────────────────────────────────────────────
+exports.onPurchaseMessageCreate = onDocumentCreated(
+  'purchases/{purchaseId}/conversation/{messageId}',
+  async (event) => {
+    const msg = event.data.data();
+    const purchaseId = event.params.purchaseId;
+    if (!msg) return;
+
+    const purchaseDoc = await db.collection('purchases').doc(purchaseId).get();
+    if (!purchaseDoc.exists) return;
+    const purchase = purchaseDoc.data();
+
+    const buyerUid  = purchase.buyer_id;
+    const sellerUid = purchase.sellerId || purchase.seller_id || null;
+    const senderUid = msg.user_id;
+
+    let recipientUid = null;
+    if (senderUid === buyerUid) recipientUid = sellerUid;
+    else if (senderUid === sellerUid) recipientUid = buyerUid;
+    else return; // Unknown sender relative to this purchase — skip rather than guess.
+
+    if (!recipientUid || recipientUid === senderUid) return;
+
+    const tokens = await getTokensForUid(recipientUid);
+    if (!tokens.length) return;
+
+    const senderLabel = senderUid === buyerUid ? (purchase.buyerName || 'Buyer') : (purchase.sellerName || 'Seller');
+    await sendToTokens(tokens, {
+      title: `${senderLabel} · ${truncate(purchase.eventName || 'Ticket order', 40)}`,
+      body: truncate(msg.message || 'Sent a message', 120),
+      convType: 'purchase',
+      convId: purchaseId,
+      tag: `purchase-${purchaseId}`
+    });
+  }
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  3.  onListingMessageCreate — ticket_listings/{listingId}/conversation/{messageId}
+//      Used only when a buyer messages a seller BEFORE completing a purchase
+//      (openTicketChat() in the client). Once a purchase document exists,
+//      the client switches to the purchases/{id}/conversation path instead,
+//      so this trigger only fires for that pre-purchase window.
+//
+//      KNOWN LIMITATION: multiple prospective buyers can message the same
+//      listing before any of them buys, and this subcollection has no
+//      per-buyer separation — messages from different buyers are visually
+//      filtered client-side but are not actually isolated threads. We can
+//      reliably notify the SELLER (there's exactly one). We can NOT reliably
+//      notify "the buyer" here, because there may be several, and the schema
+//      doesn't record which buyer a given seller reply is meant for. If you
+//      need real multi-buyer pre-purchase chat, it should become its own
+//      top-level collection keyed by (listingId, buyerUid) — flagging that
+//      as a follow-up rather than solving it here.
+// ─────────────────────────────────────────────────────────────────────────────
+exports.onListingMessageCreate = onDocumentCreated(
+  'ticket_listings/{listingId}/conversation/{messageId}',
+  async (event) => {
+    const msg = event.data.data();
+    const listingId = event.params.listingId;
+    if (!msg) return;
+
+    const listingDoc = await db.collection('ticket_listings').doc(listingId).get();
+    if (!listingDoc.exists) return;
+    const listing = listingDoc.data();
+
+    const sellerUid = listing.user_id || listing.seller?.user_id || null;
+    const senderUid = msg.user_id;
+
+    // Only handle the buyer → seller direction reliably (see limitation note above).
+    if (!sellerUid || senderUid === sellerUid) return;
+
+    const tokens = await getTokensForUid(sellerUid);
+    if (!tokens.length) return;
+
+    await sendToTokens(tokens, {
+      title: `${msg.senderName || 'A buyer'} · ${truncate(listing.title || 'Your ticket listing', 40)}`,
+      body: truncate(msg.message || 'Sent a message', 120),
+      convType: 'ticket',
+      convId: listingId,
+      tag: `listing-${listingId}`
+    });
+  }
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  4.  sendApprovalEmail  —  HTTPS callable by admin UI
 //      Sends a branded approval or rejection email to the vendor
 // ─────────────────────────────────────────────────────────────────────────────
 exports.sendApprovalEmail = functions.https.onCall(async (data, context) => {
-  if (!context.auth || context.auth.token.email !== 'admin@grandbazaar.com') {
+  if (!context.auth || context.auth.token.email !== ADMIN_EMAIL) {
     throw new functions.https.HttpsError('permission-denied', 'Admins only.');
   }
 
@@ -377,14 +529,14 @@ exports.sendApprovalEmail = functions.https.onCall(async (data, context) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  3.  weeklyAdminSummary  —  every Monday 8am Eastern
+//  5.  weeklyAdminSummary  —  every Monday 8am Eastern
 // ─────────────────────────────────────────────────────────────────────────────
 exports.weeklyAdminSummary = functions.pubsub
   .schedule('every monday 08:00')
   .timeZone('America/New_York')
   .onRun(async () => {
     const cfg        = functions.config();
-    const adminEmail = cfg.email?.admin || 'admin@grandbazaar.com';
+    const adminEmail = cfg.email?.admin || ADMIN_EMAIL;
 
     const snap = await db.collection('vendors').get();
     let total = 0, pending = 0, approved = 0, rejected = 0, revenue = 0;
@@ -461,10 +613,10 @@ exports.weeklyAdminSummary = functions.pubsub
   });
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  4.  getVendorStats  —  HTTPS callable (admin only)
+//  6.  getVendorStats  —  HTTPS callable (admin only)
 // ─────────────────────────────────────────────────────────────────────────────
 exports.getVendorStats = functions.https.onCall(async (data, context) => {
-  if (!context.auth || context.auth.token.email !== 'admin@grandbazaar.com') {
+  if (!context.auth || context.auth.token.email !== ADMIN_EMAIL) {
     throw new functions.https.HttpsError('permission-denied', 'Admins only.');
   }
 
