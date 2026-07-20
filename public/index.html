@@ -546,9 +546,9 @@ body.modal-open #openChatBtn{display:none;}
 .user-row{align-self:flex-end;align-items:flex-end;}
 .other-row{align-self:flex-start;align-items:flex-start;}
 .msg-sender-label{font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;color:var(--ink-50);margin-bottom:3px;letter-spacing:.04em;}
-.user-bubble{background:var(--ink);color:var(--white);padding:10px 14px;border-radius:17px 17px 4px 17px;font-size:13.5px;line-height:1.55;}
-.other-bubble{background:var(--white);color:var(--ink);padding:10px 14px;border-radius:17px 17px 17px 4px;font-size:13.5px;line-height:1.55;box-shadow:var(--sh-xs);}
-.admin-bubble{background:linear-gradient(135deg,var(--gold-pale),rgba(245,237,216,.5));color:var(--ink);padding:10px 14px;border-radius:17px 17px 17px 4px;font-size:13.5px;line-height:1.55;border:1px solid rgba(184,150,46,.22);}
+.user-bubble{background:var(--ink);color:var(--white);padding:10px 14px;border-radius:17px 17px 4px 17px;font-size:13.5px;line-height:1.55;white-space:pre-wrap;}
+.other-bubble{background:var(--white);color:var(--ink);padding:10px 14px;border-radius:17px 17px 17px 4px;font-size:13.5px;line-height:1.55;box-shadow:var(--sh-xs);white-space:pre-wrap;}
+.admin-bubble{background:linear-gradient(135deg,var(--gold-pale),rgba(245,237,216,.5));color:var(--ink);padding:10px 14px;border-radius:17px 17px 17px 4px;font-size:13.5px;line-height:1.55;border:1px solid rgba(184,150,46,.22);white-space:pre-wrap;}
 .message-time{font-family:'Syne',sans-serif;font-size:10px;color:var(--ink-50);margin-top:3px;font-weight:500;}
 .chat-input-area{padding:11px 13px;background:var(--white);border-top:1px solid var(--ink-05);display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .chat-input-area input{flex:1;padding:9px 14px;border-radius:var(--r-pill);border:1.5px solid var(--ink-10);font-family:'Instrument Sans',sans-serif;font-size:13.5px;outline:none;transition:all var(--dur) var(--ease);background:var(--paper);color:var(--ink);min-width:0;}
@@ -1996,7 +1996,17 @@ async function completePurchase() {
     await addDoc(collection(db, 'purchases', purchaseRef.id, 'conversation'), {
       sender: 'buyer',
       senderName: user.displayName || user.email || 'Buyer',
-message: `━━━━━━━━━━━━━━━━━━━━━━━━\n🔒  VENDHUB — VERIFIED TICKETS GUARANTEE\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n📋\nEvent:     ${l.title}\nQuantity:  ${tktState.qty} ticket${tktState.qty > 1 ? 's' : ''}\nTotal:     $${total.toFixed(2)}\nDate:      ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\nThank you for your purchase. Every ticket listed on our platform undergoes a rigorous verification process before it is approved for sale. We review ticket details, ownership information, and supporting documentation to ensure all listings are legitimate and accurately represented.\n\n✅  Verified ticket listings only\n✅  Seller identity & ownership checks\n✅  Proof of purchase reviewed where applicable\n✅  Secure transactions within our platform\n✅  Buyer & seller protection in place\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️  IMPORTANT NOTICE\n━━━━━━━━━━━━━━━━━━━━━━━━\n\nFor your safety, all communication, payments, and ticket transfers must be completed through the VendHub platform. Transactions conducted outside the platform are not covered by our verification and protection policies.\n\nBuy with confidence — every approved listing has been reviewed to provide a safer and more reliable marketplace experience.\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n© ${new Date().getFullYear()} VendHub. All Rights Reserved.\n━━━━━━━━━━━━━━━━━━━━━━━━`,      timestamp: serverTimestamp(),
+      message: `Purchase confirmed ✓
+
+Event: ${l.title}
+Quantity: ${tktState.qty} ticket${tktState.qty > 1 ? 's' : ''}
+Total: $${total.toFixed(2)}
+Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+
+All listings on VendHub are reviewed before approval, and payments and transfers are handled through the platform for your protection. Please coordinate your ticket transfer with the seller here in this chat.
+
+Questions? The seller can help directly, or reach out to VendHub support.`,
+      timestamp: serverTimestamp(),
       user_id: user.uid,
       user_email: user.email,
       read: false
