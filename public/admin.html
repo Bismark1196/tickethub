@@ -1215,6 +1215,7 @@ window.viewVendor = function(id){
   const eventLocation=getField(v,'event_location','eventLocation','location','address');
   const eventDates=v.event_date||v.eventDates||v.dates||[];
   const facebook=getField(v,'facebook','fb','facebookUrl');
+  const paymentMethod=getField(v,'payment_method','paymentMethod','preferredPayment');
   const vendorId=getField(v,'vendor_id','vendorId','id');
   const userId=getField(v,'user_id','userId','uid');
   const submittedAt=fmtDate(v.submitted_at||v.submittedAt);
@@ -1243,6 +1244,7 @@ window.viewVendor = function(id){
         <div class="info-card"><div class="info-card-label">Auth Email</div><div class="info-card-value"><a href="mailto:${esc(email)}">${esc(email||'—')}</a></div></div>
         ${invoiceEmail&&invoiceEmail!==email?`<div class="info-card"><div class="info-card-label">Invoice Email</div><div class="info-card-value"><a href="mailto:${esc(invoiceEmail)}">${esc(invoiceEmail)}</a></div></div>`:''}
         <div class="info-card"><div class="info-card-label">Phone</div><div class="info-card-value"><a href="tel:${esc(phone)}">${esc(phone||'—')}</a></div></div>
+        <div class="info-card"><div class="info-card-label">Preferred Payment</div><div class="info-card-value">${esc(paymentMethod||'—')}</div></div>
         ${facebook?`<div class="info-card"><div class="info-card-label">Facebook</div><div class="info-card-value"><a href="${esc(facebook)}" target="_blank" rel="noopener">View Profile</a></div></div>`:''}
       </div>
     </div>
@@ -1393,6 +1395,26 @@ window.showAddVendorModal = function(){
       </div>
     </div>
     <div class="modal-section">
+      <div class="modal-section-label">Payment</div>
+      <div class="field-grid-2">
+        <div class="field-group">
+          <label class="field-label">Preferred Payment Method</label>
+          <select class="field-select" id="nPaymentMethod">
+            <option value="">Select…</option>
+            <option>Credit / Debit Card</option>
+            <option>Bank Transfer</option>
+            <option>PayPal</option>
+            <option>Zelle</option>
+            <option>Venmo</option>
+            <option>Cash App</option>
+            <option>Cash</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field-group"></div>
+      </div>
+    </div>
+    <div class="modal-section">
       <div class="modal-section-label">Event & Booth Details</div>
       <div class="field-grid-2">
         <div class="field-group"><label class="field-label">Event Name</label><input class="field-input" id="nEventName" placeholder="e.g. Atlanta Jazz Festival"></div>
@@ -1424,6 +1446,7 @@ window.submitAddVendor = async function(){
       auth_email:email, email,
       invoice_email:document.getElementById('nInvoiceEmail').value.trim(),
       phone:document.getElementById('nPhone').value.trim(),
+      payment_method:document.getElementById('nPaymentMethod').value,
       event_name:document.getElementById('nEventName').value.trim(),
       event_location:document.getElementById('nEventLoc').value.trim(),
       booth_size:document.getElementById('nBooth').value.trim(),

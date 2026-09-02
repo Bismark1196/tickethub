@@ -737,6 +737,27 @@ textarea { resize:vertical; min-height:110px; line-height:1.65; }
             </div>
           </div>
 
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Preferred Payment Method <span class="req">*</span></label>
+              <div class="field-wrap select-wrap has-icon">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <select id="paymentMethod">
+                  <option value="">Select payment method…</option>
+                  <option>Credit / Debit Card</option>
+                  <option>Bank Transfer</option>
+                  <option>PayPal</option>
+                  <option>Zelle</option>
+                  <option>Venmo</option>
+                  <option>Cash App</option>
+                  <option>Cash</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group"></div>
+          </div>
+
           <!-- Products -->
           <div class="fields-section-label">Products &amp; Dates</div>
           <div class="field-group">
@@ -835,6 +856,7 @@ textarea { resize:vertical; min-height:110px; line-height:1.65; }
               <div class="order-row"><span class="order-row-label">Dates Selected</span><span class="order-row-value" id="sumDates">—</span></div>
               <div class="order-row"><span class="order-row-label">Business</span><span class="order-row-value" id="sumBusiness">—</span></div>
               <div class="order-row"><span class="order-row-label">Category</span><span class="order-row-value" id="sumCategory">—</span></div>
+              <div class="order-row"><span class="order-row-label">Payment Method</span><span class="order-row-value" id="sumPayment">—</span></div>
               <div class="order-row"><span class="order-row-label">Booth Size</span><span class="order-row-value" id="sumBooth">—</span></div>
               <div class="order-row total">
                 <span class="order-row-label">Total Due on Acceptance</span>
@@ -1095,6 +1117,7 @@ function validateStep0() {
     {id:"invoiceEmail",label:"Invoice Email"},{id:"contact",label:"Contact Person"},
     {id:"phone",label:"Phone Number"},{id:"description",label:"Product Description"},
     {id:"locationBase",label:"Business Location"},{id:"category",label:"Primary Category"},
+    {id:"paymentMethod",label:"Preferred Payment Method"},
   ];
   for (const c of checks) {
     const el=document.getElementById(c.id);
@@ -1147,6 +1170,7 @@ function populateSummary() {
   document.getElementById("sumDates").textContent   = sel.length ? sel.join(" · ") : "—";
   document.getElementById("sumBusiness").textContent= document.getElementById("business").value||"—";
   document.getElementById("sumCategory").textContent= document.getElementById("category").value||"—";
+  document.getElementById("sumPayment").textContent = document.getElementById("paymentMethod").value||"—";
   document.getElementById("sumBooth").textContent   = booth?`${booth.dataset.label} (${booth.dataset.size})`:"—";
   document.getElementById("sumTotal").textContent   = booth?"$"+booth.dataset.price:"$0";
 }
@@ -1175,6 +1199,7 @@ document.getElementById("vendorForm").addEventListener("submit", async e=>{
       event_date:    selDates,
       location:      document.getElementById("locationBase").value,
       category:      document.getElementById("category").value,
+      payment_method:document.getElementById("paymentMethod").value,
       contact:       document.getElementById("contact").value.trim(),
       phone:         document.getElementById("phone").value.trim(),
       description:   document.getElementById("description").value.trim(),
