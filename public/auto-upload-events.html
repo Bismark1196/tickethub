@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%238a6e1e'/%3E%3Cstop offset='100%25' stop-color='%23d4b466'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%230c0c0c'/%3E%3Crect x='2' y='2' width='28' height='28' rx='5' fill='url(%23g)'/%3E%3Ctext x='16' y='23' font-family='Arial,Helvetica,sans-serif' font-size='19' font-weight='900' fill='%230c0c0c' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
-<title>VendHub · Multi-Category Ticket Auto Uploader</title>
+<title>VendHub · Tickets & Vendor Events Auto Uploader</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -74,6 +74,13 @@ body::after {
 .stat-card:hover { background:rgba(255,255,255,0.08); border-color:rgba(59, 130, 246, 0.3); }
 .stat-num { font-family:'Playfair Display',serif; font-size:32px; font-weight:900; color:var(--gold); line-height:1; margin-bottom:6px; }
 .stat-label { font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; color:rgba(255,255,255,0.4); }
+
+/* MODE TABS */
+.mode-tabs { display:flex; gap:10px; margin-bottom:16px; }
+.mode-tab { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:16px 14px; background:rgba(255,255,255,0.05); border:1.5px solid rgba(255,255,255,0.12); border-radius:14px; cursor:pointer; transition:var(--transition); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; color:rgba(255,255,255,0.55); }
+.mode-tab:hover { background:rgba(255,255,255,0.09); color:rgba(255,255,255,0.85); }
+.mode-tab.active { background:var(--white); color:var(--black); border-color:var(--white); }
+.mode-tab .cat-emoji { font-size:18px; }
 
 /* CATEGORY TABS */
 .category-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
@@ -157,6 +164,11 @@ body::after {
 .sport-pill.music      { background:#5b21b6; }
 .sport-pill.basketball { background:#0369a1; }
 .sport-pill.tennis     { background:#92400e; }
+.sport-pill.markets    { background:#0f766e; }
+.sport-pill.festivals  { background:#c2410c; }
+.sport-pill.arts       { background:#7c3aed; }
+.sport-pill.business   { background:#1e3a8a; }
+.sport-pill.food       { background:#b45309; }
 .status-dot-ok { width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px; }
 .empty-table { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
 
@@ -167,7 +179,7 @@ body::after {
 .toast.error   { background:#7f1d1d; }
 
 @keyframes slideUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
-@media(max-width:640px){ .stats-row{grid-template-columns:1fr 1fr;} .options-grid{grid-template-columns:1fr;} .tickets-table th,.tickets-table td{padding:12px 16px;} .cat-tab{min-width:100px;font-size:12px;padding:12px 8px;} }
+@media(max-width:640px){ .stats-row{grid-template-columns:1fr 1fr;} .options-grid{grid-template-columns:1fr;} .tickets-table th,.tickets-table td{padding:12px 16px;} .cat-tab{min-width:100px;font-size:12px;padding:12px 8px;} .mode-tab{font-size:12.5px;padding:13px 10px;} }
 </style>
 </head>
 <body>
@@ -175,19 +187,19 @@ body::after {
 
   <nav class="top-nav">
     <a href="index.html" class="nav-logo">Vend<span>Hub</span></a>
-    <div class="nav-badge">🎟️ Multi-Category Auto Uploader</div>
+    <div class="nav-badge">🎟️🏪 Tickets & Vendor Events Auto Uploader</div>
   </nav>
 
   <div class="hero">
-    <div class="hero-eyebrow">🏆⚽🎵🏀🎾 All Categories</div>
-    <h1>Auto-Upload <em>Resale Tickets</em><br>Across Every Category</h1>
-    <p>Automatically populate your VendHub marketplace with resale tickets across FIFA World Cup 2026, Football, Music, Basketball, and Tennis — real events, live dates, and competitive prices uploaded in minutes.</p>
+    <div class="hero-eyebrow">🏆⚽🎵🏀🎾🛍🎉🎨🏢🍴 All Categories</div>
+    <h1>Auto-Upload <em>Tickets & Vendor Events</em><br>Across Every Category</h1>
+    <p>Automatically populate your VendHub marketplace with resale tickets across FIFA World Cup 2026, Football, Music, Basketball, and Tennis — or with vendor booth events across Markets, Festivals, Arts, Business, Music, and Food. Real events, live dates, and competitive prices, uploaded in minutes.</p>
   </div>
 
   <!-- AUTH CARD -->
   <div class="auth-card" id="authCard">
     <h2>Sign In to Continue</h2>
-    <p>Use your VendHub admin Google account to start auto-uploading tickets.</p>
+    <p>Use your VendHub admin Google account to start auto-uploading tickets or vendor events.</p>
     <button class="google-btn" id="loginBtn">
       <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Continue with Google
@@ -204,14 +216,14 @@ body::after {
       <div class="stat-card"><div class="stat-num" id="statCategories">5</div><div class="stat-label">Categories Available</div></div>
     </div>
 
-    <!-- CATEGORY TABS -->
-    <div class="category-tabs" id="categoryTabs">
-      <div class="cat-tab active" data-cat="worldcup"><span class="cat-emoji">🏆</span> World Cup</div>
-      <div class="cat-tab" data-cat="football"><span class="cat-emoji">⚽</span> Football</div>
-      <div class="cat-tab" data-cat="music"><span class="cat-emoji">🎵</span> Music</div>
-      <div class="cat-tab" data-cat="basketball"><span class="cat-emoji">🏀</span> Basketball</div>
-      <div class="cat-tab" data-cat="tennis"><span class="cat-emoji">🎾</span> Tennis</div>
+    <!-- MODE TABS -->
+    <div class="mode-tabs" id="modeTabs">
+      <div class="mode-tab active" data-mode="tickets"><span class="cat-emoji">🎟️</span> Ticket Listings</div>
+      <div class="mode-tab" data-mode="vendors"><span class="cat-emoji">🏪</span> Vendor Events</div>
     </div>
+
+    <!-- CATEGORY TABS (rebuilt per mode) -->
+    <div class="category-tabs" id="categoryTabs"></div>
 
     <!-- CONTROL PANEL -->
     <div class="control-panel">
@@ -225,7 +237,7 @@ body::after {
       <div class="control-body">
         <div class="options-grid">
           <div class="option-group">
-            <label>Number of Ticket Listings</label>
+            <label id="countLabel">Number of Ticket Listings</label>
             <select id="countSelect">
               <option value="5">5 listings</option>
               <option value="10" selected>10 listings</option>
@@ -243,6 +255,16 @@ body::after {
               <option value="quarter">Quarterfinals</option>
               <option value="semi">Semifinals</option>
               <option value="final">Final</option>
+            </select>
+          </div>
+          <div class="option-group" id="spotsGroup" style="display:none;">
+            <label>Booth Spots Available</label>
+            <select id="spotsSelect">
+              <option value="30">Up to 30 spots</option>
+              <option value="80" selected>Up to 80 spots</option>
+              <option value="150">Up to 150 spots</option>
+              <option value="300">Up to 300 spots</option>
+              <option value="500">Up to 500 spots</option>
             </select>
           </div>
           <div class="option-group">
@@ -286,29 +308,29 @@ body::after {
         <button class="log-clear" id="logClear">Clear</button>
       </div>
       <div class="log-body" id="logBody">
-        <div class="log-empty">Sign in, pick a category, and press Start Auto-Upload to begin…</div>
+        <div class="log-empty">Sign in, pick a mode & category, and press Start Auto-Upload to begin…</div>
       </div>
     </div>
 
-    <!-- UPLOADED TICKETS TABLE -->
+    <!-- UPLOADED TABLE -->
     <div class="tickets-card">
       <div class="tickets-header">
         <div class="tickets-title">Uploaded This Session</div>
-        <div class="tickets-count-badge" id="sessionBadge">0 tickets</div>
+        <div class="tickets-count-badge" id="sessionBadge">0 items</div>
       </div>
       <table class="tickets-table">
         <thead>
           <tr>
             <th>Event</th>
             <th>Date & Time</th>
-            <th>Venue</th>
+            <th id="colLocationHeader">Venue</th>
             <th>Price</th>
             <th>Category</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody id="ticketsTableBody">
-          <tr><td colspan="6" class="empty-table">No tickets uploaded yet this session.</td></tr>
+          <tr><td colspan="6" class="empty-table">Nothing uploaded yet this session.</td></tr>
         </tbody>
       </table>
     </div>
@@ -358,9 +380,7 @@ function log(msg, type="", icon="→") {
 }
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ─── RANDOM SELLER IDENTITY ────────────────────────────────
-// Used instead of the signed-in admin's real name/email so listings
-// look like they come from a variety of independent sellers.
+// ─── RANDOM SELLER IDENTITY (ticket listings only) ────────
 const SELLER_FIRST_NAMES = [
   'James','Michael','David','John','Robert','William','Daniel','Matthew','Andrew','Joseph',
   'Christopher','Ryan','Brandon','Justin','Kevin','Jason','Eric','Nathan','Tyler','Adam',
@@ -383,19 +403,13 @@ function generateSellerName() {
 let uploadCount = 0;
 let stopFlag    = false;
 let uploadedThisSession = [];
+let activeMode = 'tickets';       // 'tickets' | 'vendors'
 let activeCategory = 'worldcup';
 
-// ─── CATEGORY CONFIG ──────────────────────────────────────
-// Each category defines: label, emoji, sport key (matches VendHub's tc-sport-pill / SPORT_LABEL),
-// whether it uses a "stage" concept, the stage select options, default fallback image,
-// and the function used to build its pool/pricing/seat logic.
-const CATEGORY_CONFIG = {
+// ─── TICKET CATEGORY CONFIG ────────────────────────────────
+const TICKET_CATEGORY_CONFIG = {
   worldcup: {
-    label: 'World Cup',
-    emoji: '🏆',
-    sportKey: 'worldcup',
-    hasStage: true,
-    stageLabel: 'Match Stage',
+    label: 'World Cup', emoji: '🏆', sportKey: 'worldcup', stageLabel: 'Match Stage',
     stageOptions: [
       { value:'all', label:'All Stages', selected:true },
       { value:'group', label:'Group Stage' },
@@ -407,17 +421,10 @@ const CATEGORY_CONFIG = {
     controlTitle: 'World Cup Ticket Upload Controller',
     controlSub: 'Configure and launch the batch upload. Tickets are spread across World Cup 2026 matches.',
     eventsLabel: 'World Cup Matches',
-    getPool: getWorldCupMatchesPool,
-    pickPrice: pickWorldCupPrice,
-    pickSeat: pickWorldCupSeat,
-    matchEventName: 'matches',
+    getPool: getWorldCupMatchesPool, pickPrice: pickWorldCupPrice, pickSeat: pickWorldCupSeat,
   },
   football: {
-    label: 'Football',
-    emoji: '⚽',
-    sportKey: 'football',
-    hasStage: true,
-    stageLabel: 'Competition',
+    label: 'Football', emoji: '⚽', sportKey: 'football', stageLabel: 'Competition',
     stageOptions: [
       { value:'all', label:'All Competitions', selected:true },
       { value:'league', label:'League Matches' },
@@ -428,17 +435,10 @@ const CATEGORY_CONFIG = {
     controlTitle: 'Football Ticket Upload Controller',
     controlSub: 'Configure and launch the batch upload. Tickets are spread across top club football fixtures.',
     eventsLabel: 'Football Fixtures',
-    getPool: getFootballMatchesPool,
-    pickPrice: pickFootballPrice,
-    pickSeat: pickFootballSeat,
-    matchEventName: 'fixtures',
+    getPool: getFootballMatchesPool, pickPrice: pickFootballPrice, pickSeat: pickFootballSeat,
   },
   music: {
-    label: 'Music',
-    emoji: '🎵',
-    sportKey: 'music',
-    hasStage: true,
-    stageLabel: 'Tour Type',
+    label: 'Music', emoji: '🎵', sportKey: 'music', stageLabel: 'Tour Type',
     stageOptions: [
       { value:'all', label:'All Tour Types', selected:true },
       { value:'arena', label:'Arena Tour' },
@@ -449,17 +449,10 @@ const CATEGORY_CONFIG = {
     controlTitle: 'Music Ticket Upload Controller',
     controlSub: 'Configure and launch the batch upload. Tickets are spread across top concerts and tours.',
     eventsLabel: 'Concerts & Tours',
-    getPool: getMusicEventsPool,
-    pickPrice: pickMusicPrice,
-    pickSeat: pickMusicSeat,
-    matchEventName: 'shows',
+    getPool: getMusicEventsPool, pickPrice: pickMusicPrice, pickSeat: pickMusicSeat,
   },
   basketball: {
-    label: 'Basketball',
-    emoji: '🏀',
-    sportKey: 'basketball',
-    hasStage: true,
-    stageLabel: 'Game Type',
+    label: 'Basketball', emoji: '🏀', sportKey: 'basketball', stageLabel: 'Game Type',
     stageOptions: [
       { value:'all', label:'All Game Types', selected:true },
       { value:'regular', label:'Regular Season' },
@@ -470,17 +463,10 @@ const CATEGORY_CONFIG = {
     controlTitle: 'Basketball Ticket Upload Controller',
     controlSub: 'Configure and launch the batch upload. Tickets are spread across NBA games.',
     eventsLabel: 'NBA Games',
-    getPool: getBasketballGamesPool,
-    pickPrice: pickBasketballPrice,
-    pickSeat: pickBasketballSeat,
-    matchEventName: 'games',
+    getPool: getBasketballGamesPool, pickPrice: pickBasketballPrice, pickSeat: pickBasketballSeat,
   },
   tennis: {
-    label: 'Tennis',
-    emoji: '🎾',
-    sportKey: 'tennis',
-    hasStage: true,
-    stageLabel: 'Round',
+    label: 'Tennis', emoji: '🎾', sportKey: 'tennis', stageLabel: 'Round',
     stageOptions: [
       { value:'all', label:'All Rounds', selected:true },
       { value:'early', label:'Early Rounds' },
@@ -491,10 +477,66 @@ const CATEGORY_CONFIG = {
     controlTitle: 'Tennis Ticket Upload Controller',
     controlSub: 'Configure and launch the batch upload. Tickets are spread across Grand Slam & ATP/WTA matches.',
     eventsLabel: 'Tennis Matches',
-    getPool: getTennisMatchesPool,
-    pickPrice: pickTennisPrice,
-    pickSeat: pickTennisSeat,
-    matchEventName: 'matches',
+    getPool: getTennisMatchesPool, pickPrice: pickTennisPrice, pickSeat: pickTennisSeat,
+  },
+};
+
+// ─── VENDOR EVENT CATEGORY CONFIG ──────────────────────────
+// Writes to the `events` collection with the schema VendHub's index.html expects:
+// title, category, location, address, state, image, description, price, max_spots, event_dates, contact_email
+const VENDOR_CATEGORY_CONFIG = {
+  markets: {
+    label: 'Markets', emoji: '🛍', categoryValue: 'Markets',
+    controlTitle: 'Markets Vendor Event Uploader',
+    controlSub: 'Configure and launch the batch upload. Vendor events are spread across craft fairs, flea markets, and maker markets nationwide.',
+    eventsLabel: 'Market Events',
+    getPool: getMarketsPool,
+  },
+  festivals: {
+    label: 'Festivals', emoji: '🎉', categoryValue: 'Festivals',
+    controlTitle: 'Festivals Vendor Event Uploader',
+    controlSub: 'Configure and launch the batch upload. Vendor events are spread across major U.S. festivals.',
+    eventsLabel: 'Festival Vendor Spots',
+    getPool: getFestivalsPool,
+  },
+  arts: {
+    label: 'Arts', emoji: '🎨', categoryValue: 'Arts',
+    controlTitle: 'Arts Vendor Event Uploader',
+    controlSub: 'Configure and launch the batch upload. Vendor events are spread across juried art fairs and gallery walks.',
+    eventsLabel: 'Art Fairs',
+    getPool: getArtsPool,
+  },
+  business: {
+    label: 'Business', emoji: '🏢', categoryValue: 'Business',
+    controlTitle: 'Business Vendor Event Uploader',
+    controlSub: 'Configure and launch the batch upload. Vendor events are spread across trade shows and business expos.',
+    eventsLabel: 'Business Expos',
+    getPool: getBusinessPool,
+  },
+  music: {
+    label: 'Music', emoji: '🎵', categoryValue: 'Music',
+    controlTitle: 'Music Vendor Event Uploader',
+    controlSub: 'Configure and launch the batch upload. Vendor events are spread across on-site marketplaces at major music festivals.',
+    eventsLabel: 'Music Vendor Markets',
+    getPool: getMusicVendorPool,
+  },
+  food: {
+    label: 'Food', emoji: '🍴', categoryValue: 'Food',
+    controlTitle: 'Food Vendor Event Uploader',
+    controlSub: 'Configure and launch the batch upload. Vendor events are spread across food festivals and truck rallies.',
+    eventsLabel: 'Food Events',
+    getPool: getFoodPool,
+  },
+};
+
+const MODES = {
+  tickets: {
+    label: 'Ticket Listings', collectionName: 'ticket_listings', categories: TICKET_CATEGORY_CONFIG,
+    countLabel: 'Number of Ticket Listings', unitSingular: 'ticket listing', unitPlural: 'ticket listings',
+  },
+  vendors: {
+    label: 'Vendor Events', collectionName: 'events', categories: VENDOR_CATEGORY_CONFIG,
+    countLabel: 'Number of Vendor Events', unitSingular: 'vendor event', unitPlural: 'vendor events',
   },
 };
 
@@ -519,8 +561,11 @@ onAuthStateChanged(auth, async user => {
 
 async function refreshTotalCount() {
   try {
-    const cfg = CATEGORY_CONFIG[activeCategory];
-    const snap = await getDocs(query(collection(db,"ticket_listings"), where("sport", "==", cfg.sportKey)));
+    const modeCfg = MODES[activeMode];
+    const cfg = modeCfg.categories[activeCategory];
+    const field = activeMode === 'tickets' ? 'sport' : 'category';
+    const value = activeMode === 'tickets' ? cfg.sportKey : cfg.categoryValue;
+    const snap = await getDocs(query(collection(db, modeCfg.collectionName), where(field, "==", value)));
     $id("statTotal").textContent = snap.size;
     const events = new Set();
     snap.forEach(d => { const title = d.data().title || ''; if (title) events.add(title); });
@@ -529,33 +574,63 @@ async function refreshTotalCount() {
   } catch(_) {}
 }
 
-// ─── CATEGORY TAB SWITCHING ───────────────────────────────
-document.querySelectorAll('.cat-tab').forEach(tab => {
+// ─── MODE SWITCHING ────────────────────────────────────────
+document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    if ($id("startBtn").disabled) return; // don't allow switching mid-upload
-    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    if ($id("startBtn").disabled) return;
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
-    activeCategory = tab.dataset.cat;
+    activeMode = tab.dataset.mode;
+    const modeCfg = MODES[activeMode];
+    activeCategory = Object.keys(modeCfg.categories)[0];
+
+    $id("countLabel").textContent = modeCfg.countLabel;
+    $id("statCategories").textContent = Object.keys(modeCfg.categories).length;
+    $id("stageGroup").style.display = activeMode === 'tickets' ? '' : 'none';
+    $id("spotsGroup").style.display = activeMode === 'vendors' ? '' : 'none';
+    $id("colLocationHeader").textContent = activeMode === 'tickets' ? 'Venue' : 'Location';
+
+    buildCategoryTabs();
     applyCategoryToUI();
     refreshTotalCount();
   });
 });
 
+// ─── CATEGORY TAB BUILDING / SWITCHING ─────────────────────
+function buildCategoryTabs() {
+  const modeCfg = MODES[activeMode];
+  const container = $id("categoryTabs");
+  container.innerHTML = Object.entries(modeCfg.categories).map(([key, c], idx) =>
+    `<div class="cat-tab${idx === 0 ? ' active' : ''}" data-cat="${key}"><span class="cat-emoji">${c.emoji}</span> ${c.label}</div>`
+  ).join('');
+  container.querySelectorAll('.cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      if ($id("startBtn").disabled) return;
+      container.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeCategory = tab.dataset.cat;
+      applyCategoryToUI();
+      refreshTotalCount();
+    });
+  });
+}
+
 function applyCategoryToUI() {
-  const cfg = CATEGORY_CONFIG[activeCategory];
+  const modeCfg = MODES[activeMode];
+  const cfg = modeCfg.categories[activeCategory];
   $id("catIconBadge").textContent = cfg.emoji;
   $id("controlTitleText").textContent = cfg.controlTitle;
   $id("controlSub").textContent = cfg.controlSub;
   $id("startBtnText").textContent = `Start Auto-Upload (${cfg.label})`;
   $id("statEventsLabel").textContent = cfg.eventsLabel;
 
-  // Rebuild stage select options for this category
-  $id("stageLabel").textContent = cfg.stageLabel;
-  const stageSelect = $id("matchStage");
-  stageSelect.innerHTML = cfg.stageOptions.map(o =>
-    `<option value="${o.value}"${o.selected ? ' selected' : ''}>${o.label}</option>`
-  ).join('');
-  $id("stageGroup").classList.toggle('is-disabled', !cfg.hasStage);
+  if (activeMode === 'tickets') {
+    $id("stageLabel").textContent = cfg.stageLabel;
+    const stageSelect = $id("matchStage");
+    stageSelect.innerHTML = cfg.stageOptions.map(o =>
+      `<option value="${o.value}"${o.selected ? ' selected' : ''}>${o.label}</option>`
+    ).join('');
+  }
 }
 
 // ─── MAIN UPLOAD ─────────────────────────────────────────
@@ -563,12 +638,12 @@ $id("logClear").addEventListener("click", () => { $id("logBody").innerHTML = '<d
 $id("stopBtn").addEventListener("click", () => { stopFlag = true; log("Stop requested — finishing current upload…","warn","⚠"); });
 
 $id("startBtn").addEventListener("click", async () => {
-  const cfg       = CATEGORY_CONFIG[activeCategory];
-  const count     = parseInt($id("countSelect").value);
-  const stage     = $id("matchStage").value;
-  const speed     = parseInt($id("speedSelect").value);
-  const offset    = parseInt($id("dateOffset").value);
-  const user      = auth.currentUser;
+  const modeCfg = MODES[activeMode];
+  const cfg     = modeCfg.categories[activeCategory];
+  const count   = parseInt($id("countSelect").value);
+  const speed   = parseInt($id("speedSelect").value);
+  const offset  = parseInt($id("dateOffset").value);
+  const user    = auth.currentUser;
   if (!user) { showToast("Please sign in first.","error"); return; }
 
   stopFlag = false;
@@ -583,40 +658,59 @@ $id("startBtn").addEventListener("click", async () => {
   $id("progressFill").style.width = "0%";
   $id("progressText").textContent = `0 / ${count}`;
 
-  log(`Starting upload of ${count} ${cfg.emoji} ${cfg.label} ticket listings…`, "info", "🚀");
-  log(`${cfg.stageLabel}: ${stage} | Speed: ${speed}ms | Offset: +${offset} days`, "info", "⚙");
+  log(`Starting upload of ${count} ${cfg.emoji} ${cfg.label} ${modeCfg.unitPlural}…`, "info", "🚀");
 
-  const tickets = generateTickets(cfg, count, stage, offset);
+  let items;
+  if (activeMode === 'tickets') {
+    const stage = $id("matchStage").value;
+    log(`${cfg.stageLabel}: ${stage} | Speed: ${speed}ms | Offset: +${offset} days`, "info", "⚙");
+    items = generateTickets(cfg, count, stage, offset);
+  } else {
+    const spotsMax = parseInt($id("spotsSelect").value);
+    log(`Max spots: ${spotsMax} | Speed: ${speed}ms | Offset: +${offset} days`, "info", "⚙");
+    items = generateVendorEvents(cfg, count, spotsMax, offset);
+  }
 
-  for (let i=0; i<tickets.length; i++) {
+  for (let i=0; i<items.length; i++) {
     if (stopFlag) { log("Upload stopped by user.","warn","■"); break; }
-    const tk = tickets[i];
+    const it = items[i];
     try {
-      const sellerName = generateSellerName();
-      await addDoc(collection(db,"ticket_listings"), {
-        ...tk,
-        approvalStatus: 'approved',
-        user_id: user.uid,
-        user_email: user.email,
-        submittedAt: serverTimestamp(),
-        sport: cfg.sportKey,
-        seller: {
-          name: sellerName,
-          rating: '4.9 ⭐',
-          sales: Math.floor(Math.random() * 200) + 50,
-          initial: sellerName.charAt(0).toUpperCase()
-        }
-      });
+      if (activeMode === 'tickets') {
+        const sellerName = generateSellerName();
+        await addDoc(collection(db,"ticket_listings"), {
+          ...it,
+          approvalStatus: 'approved',
+          user_id: user.uid,
+          user_email: user.email,
+          submittedAt: serverTimestamp(),
+          sport: cfg.sportKey,
+          seller: {
+            name: sellerName,
+            rating: '4.9 ⭐',
+            sales: Math.floor(Math.random() * 200) + 50,
+            initial: sellerName.charAt(0).toUpperCase()
+          }
+        });
+        log(`✅ Uploaded: <strong>${it.title}</strong> — $${it.price} x${it.qty}`, "success", "");
+      } else {
+        await addDoc(collection(db,"events"), {
+          ...it,
+          category: cfg.categoryValue,
+          user_id: user.uid,
+          user_email: user.email,
+          submittedAt: serverTimestamp()
+        });
+        log(`✅ Uploaded: <strong>${it.title}</strong> — ${it.price} · ${it.max_spots} spots`, "success", "");
+      }
       uploadCount++;
-      uploadedThisSession.push(tk);
+      uploadedThisSession.push(it);
       $id("statThisRun").textContent = uploadCount;
-      const pct = Math.round((i+1)/tickets.length*100);
+      const pct = Math.round((i+1)/items.length*100);
       $id("progressFill").style.width = pct+"%";
       $id("progressText").textContent = `${i+1} / ${count}`;
-      log(`✅ Uploaded: <strong>${tk.title}</strong> — $${tk.price} x${tk.qty}`, "success", "");
-      addTicketRow(tk, cfg);
+      addRow(it, cfg, modeCfg);
     } catch(err) {
-      log(`❌ Failed: ${tk.title} — ${err.message}`, "error", "");
+      log(`❌ Failed: ${it.title} — ${err.message}`, "error", "");
     }
     await sleep(speed);
   }
@@ -624,31 +718,62 @@ $id("startBtn").addEventListener("click", async () => {
   $id("startBtn").disabled = false;
   $id("stopBtn").classList.remove("show");
   log(`─────────────────────────────────────────────────`, "", "");
-  log(`Done! ${uploadCount} ${cfg.label} ticket listings uploaded successfully.`, "success", "🎉");
-  showToast(`${uploadCount} ${cfg.label} tickets uploaded!`, "success");
+  log(`Done! ${uploadCount} ${cfg.label} ${modeCfg.unitPlural} uploaded successfully.`, "success", "🎉");
+  showToast(`${uploadCount} ${cfg.label} ${modeCfg.unitPlural} uploaded!`, "success");
   await refreshTotalCount();
-  $id("sessionBadge").textContent = `${uploadedThisSession.length} tickets`;
+  $id("sessionBadge").textContent = `${uploadedThisSession.length} ${modeCfg.unitPlural}`;
 });
 
-function addTicketRow(tk, cfg) {
+function addRow(it, cfg, modeCfg) {
   const tb = $id("ticketsTableBody");
   const empty = tb.querySelector(".empty-table");
   if (empty) tb.innerHTML = "";
   const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>
-      <div class="ticket-row-title">${tk.title}</div>
-      <div class="ticket-row-sub">${tk.stage || ''}</div>
-    </td>
-    <td><div class="ticket-row-title">${tk.date}</div><div class="ticket-row-sub">${tk.time || 'TBD'}</div></td>
-    <td><div class="ticket-row-title">${tk.venue}</div><div class="ticket-row-sub">${tk.city}</div></td>
-    <td><strong>$${Number(tk.price).toLocaleString()}</strong></td>
-    <td><span class="sport-pill ${cfg.sportKey}">${cfg.emoji} ${cfg.label}</span></td>
-    <td><span class="status-dot-ok"></span><span style="font-size:12px;color:#166534;font-weight:600;">Live</span></td>`;
+
+  if (modeCfg === MODES.tickets) {
+    tr.innerHTML = `
+      <td><div class="ticket-row-title">${it.title}</div><div class="ticket-row-sub">${it.stage || ''}</div></td>
+      <td><div class="ticket-row-title">${it.date}</div><div class="ticket-row-sub">${it.time || 'TBD'}</div></td>
+      <td><div class="ticket-row-title">${it.venue}</div><div class="ticket-row-sub">${it.city}</div></td>
+      <td><strong>$${Number(it.price).toLocaleString()}</strong></td>
+      <td><span class="sport-pill ${cfg.sportKey}">${cfg.emoji} ${cfg.label}</span></td>
+      <td><span class="status-dot-ok"></span><span style="font-size:12px;color:#166534;font-weight:600;">Live</span></td>`;
+  } else {
+    const firstDate = (it.event_dates && it.event_dates[0]) || '';
+    const parts = firstDate.split('•').map(s => (s || '').trim());
+    tr.innerHTML = `
+      <td><div class="ticket-row-title">${it.title}</div><div class="ticket-row-sub">${it.event_dates.length > 1 ? '+' + (it.event_dates.length - 1) + ' more date(s)' : ''}</div></td>
+      <td><div class="ticket-row-title">${parts[0] || ''}</div><div class="ticket-row-sub">${parts[1] || 'TBD'}</div></td>
+      <td><div class="ticket-row-title">${it.location}</div><div class="ticket-row-sub">${it.state || ''}</div></td>
+      <td><strong>${it.price}</strong></td>
+      <td><span class="sport-pill ${cfg.categoryValue.toLowerCase()}">${cfg.emoji} ${cfg.label}</span></td>
+      <td><span class="status-dot-ok"></span><span style="font-size:12px;color:#166534;font-weight:600;">Live</span></td>`;
+  }
   tb.prepend(tr);
 }
 
-// ─── GENERIC TICKET ENGINE (category-agnostic) ────────────
+// ─── SHARED DATE HELPER ────────────────────────────────────
+function generateEventDate(baseDate, eventIndex) {
+  const weekNum = Math.floor(eventIndex / 4);
+  const dayInWeek = eventIndex % 7;
+  const d = new Date(baseDate);
+  d.setDate(d.getDate() + weekNum*5 + dayInWeek);
+
+  const times = ['2:00 PM', '5:00 PM', '7:30 PM', '8:00 PM'];
+  const time = times[Math.floor(Math.random() * times.length)];
+
+  const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const formattedDate = `${MONTHS_S[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+
+  return { formattedDate, time };
+}
+
+function pickQuantity() {
+  const qtyOptions = [1, 1, 1, 2, 2, 2, 3, 4, 5, 6];
+  return qtyOptions[Math.floor(Math.random()*qtyOptions.length)];
+}
+
+// ─── TICKET GENERATION ENGINE (unchanged behaviour) ────────
 function generateTickets(cfg, count, stageFilter, dayOffset) {
   const listings = [];
   const pool = cfg.getPool();
@@ -657,7 +782,7 @@ function generateTickets(cfg, count, stageFilter, dayOffset) {
   if (stageFilter !== 'all') {
     filteredPool = pool.filter(m => m.stage === stageFilter);
   }
-  if (!filteredPool.length) filteredPool = pool; // safety fallback if a stage has no templates
+  if (!filteredPool.length) filteredPool = pool;
 
   const shuffled = [...filteredPool].sort(() => Math.random()-0.5);
   const baseDate = new Date();
@@ -691,25 +816,42 @@ function generateTickets(cfg, count, stageFilter, dayOffset) {
   return listings;
 }
 
-function generateEventDate(baseDate, eventIndex) {
-  const weekNum = Math.floor(eventIndex / 4);
-  const dayInWeek = eventIndex % 7;
-  const d = new Date(baseDate);
-  d.setDate(d.getDate() + weekNum*5 + dayInWeek);
+// ─── VENDOR EVENT GENERATION ENGINE ─────────────────────────
+function generateVendorEvents(cfg, count, spotsMax, dayOffset) {
+  const listings = [];
+  const pool = cfg.getPool();
+  const shuffled = [...pool].sort(() => Math.random()-0.5);
+  const baseDate = new Date();
+  baseDate.setDate(baseDate.getDate() + parseInt(dayOffset));
 
-  const times = ['2:00 PM', '5:00 PM', '7:30 PM', '8:00 PM'];
-  const time = times[Math.floor(Math.random() * times.length)];
+  for (let i=0; i<count; i++) {
+    const template = shuffled[i % shuffled.length];
+    const numDates = Math.random() < 0.6 ? 1 : 2;
+    const eventDates = [];
+    for (let d=0; d<numDates; d++) {
+      const ed = generateEventDate(baseDate, i + d);
+      eventDates.push(`${ed.formattedDate} • ${ed.time}`);
+    }
+    const price = template.priceOptions[Math.floor(Math.random()*template.priceOptions.length)];
+    const spots = Math.max(20, Math.floor(Math.random() * spotsMax));
 
-  const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const formattedDate = `${MONTHS_S[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-
-  return { formattedDate, time };
+    listings.push({
+      title: template.title,
+      location: template.location,
+      address: template.address,
+      state: template.state,
+      description: template.description,
+      image: template.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
+      price: price,
+      max_spots: String(spots),
+      event_dates: eventDates,
+      contact_email: `vendors@${template.emailSlug}.com`
+    });
+  }
+  return listings;
 }
 
-function pickQuantity() {
-  const qtyOptions = [1, 1, 1, 2, 2, 2, 3, 4, 5, 6];
-  return qtyOptions[Math.floor(Math.random()*qtyOptions.length)];
-}
+// ═══════════════════ TICKET POOLS (unchanged) ═══════════════════
 
 // ─── WORLD CUP ─────────────────────────────────────────────
 function pickWorldCupPrice(stage) {
@@ -754,7 +896,7 @@ function getWorldCupMatchesPool() {
   ];
 }
 
-// ─── FOOTBALL (club football, non-World Cup) ──────────────
+// ─── FOOTBALL ──────────────────────────────────────────────
 function pickFootballPrice(stage) {
   const prices = {
     league: [40, 55, 65, 75, 90, 110, 130, 150],
@@ -790,7 +932,7 @@ function getFootballMatchesPool() {
   ];
 }
 
-// ─── MUSIC (concerts, tours, festivals) ───────────────────
+// ─── MUSIC (concerts, tours, festivals — tickets) ──────────
 function pickMusicPrice(stage) {
   const prices = {
     arena: [80, 100, 125, 150, 180, 220, 260, 310],
@@ -854,7 +996,7 @@ function getBasketballGamesPool() {
   ];
 }
 
-// ─── TENNIS (Grand Slams & ATP/WTA) ───────────────────────
+// ─── TENNIS ────────────────────────────────────────────────
 function pickTennisPrice(stage) {
   const prices = {
     early: [50, 65, 80, 100, 120, 145, 170, 200],
@@ -887,7 +1029,83 @@ function getTennisMatchesPool() {
   ];
 }
 
-// Initialize UI for the default active category on load
+// ═══════════════════ VENDOR EVENT POOLS ═══════════════════
+
+// ─── MARKETS ───────────────────────────────────────────────
+function getMarketsPool() {
+  return [
+    { title: "Brooklyn Flea Market", location: "Brooklyn Flea - Williamsburg", address: "90 Kent Ave, Brooklyn, NY 11249", state: "New York", description: "NYC's original vintage, antiques, and craft flea market featuring hundreds of independent sellers along the East River.", image: "https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=800&q=80", priceOptions: ["$40 per table","$55 per booth","From $45/space"], emailSlug: "brooklynflea" },
+    { title: "Portland Saturday Market", location: "Tom McCall Waterfront Park", address: "2 SW Naito Pkwy, Portland, OR 97204", state: "Oregon", description: "The nation's largest continuously operating open-air arts and crafts market, running every weekend along the Willamette River.", image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80", priceOptions: ["$35 per booth","$50 for a weekend space"], emailSlug: "pdxsatmarket" },
+    { title: "Austin Sustainable Makers Market", location: "Republic Square Park", address: "422 W 4th St, Austin, TX 78701", state: "Texas", description: "Eco-conscious market spotlighting sustainable makers, upcycled goods, and local artisans.", image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80", priceOptions: ["$45 per space","$60 for a double space"], emailSlug: "austinsustainable" },
+    { title: "Santa Fe Indian Market", location: "Santa Fe Plaza", address: "63 Lincoln Ave, Santa Fe, NM 87501", state: "New Mexico", description: "The world's largest juried Native American arts market, featuring 900+ artists from across North America.", image: "https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=800&q=80", priceOptions: ["$150 per booth","$225 for a premium corner space"], emailSlug: "swaia" },
+    { title: "Nashville Flea Market", location: "Nashville Fairgrounds", address: "500 Wedgewood Ave, Nashville, TN 37203", state: "Tennessee", description: "Monthly flea market with 1,500+ vendor booths selling antiques, crafts, clothing, and more.", image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80", priceOptions: ["$45 per booth","$65 for a corner space"], emailSlug: "nashvilleflea" },
+    { title: "Denver Union Station Holiday Market", location: "Denver Union Station Plaza", address: "1701 Wynkoop St, Denver, CO 80202", state: "Colorado", description: "Festive holiday makers market in the heart of downtown Denver's historic train station district.", image: "https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=800&q=80", priceOptions: ["$60 per booth","$80 for a heated tent space"], emailSlug: "denverholidaymarket" },
+    { title: "Chicago Renegade Craft Fair", location: "Union Park", address: "1501 W Randolph St, Chicago, IL 60607", state: "Illinois", description: "Chicago's favorite indie craft market with 300+ juried booths of handmade goods.", image: "https://images.unsplash.com/photo-1555929669-e69e7aa0ba9a?w=800&q=80", priceOptions: ["$50 per booth","$70 for a corner booth"], emailSlug: "renegadecraft" },
+  ];
+}
+
+// ─── FESTIVALS ─────────────────────────────────────────────
+function getFestivalsPool() {
+  return [
+    { title: "New Orleans Jazz Fest Vendor Village", location: "Fair Grounds Race Course", address: "1751 Gentilly Blvd, New Orleans, LA 70119", state: "Louisiana", description: "Jazz Fest's Vendor Village featuring 400+ artisans, food vendors, and cultural exhibitors.", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80", priceOptions: ["$65 per booth","$90 for a food vendor space"], emailSlug: "nojazzfest" },
+    { title: "South by Southwest Vendor Expo", location: "Austin Convention Center", address: "500 E Cesar Chavez St, Austin, TX 78701", state: "Texas", description: "SXSW's sprawling trade show floor connecting brands, startups, and creators with festival attendees.", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80", priceOptions: ["$400 per booth","$650 for a premium floor space"], emailSlug: "sxswexpo" },
+    { title: "Bonnaroo Vendor Village", location: "Great Stage Park", address: "1035 Central Park Dr, Manchester, TN 37355", state: "Tennessee", description: "On-site marketplace at Bonnaroo featuring artisan crafts, food trucks, and camping gear vendors.", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80", priceOptions: ["$300 per weekend booth","$450 for a food truck space"], emailSlug: "bonnaroovendors" },
+    { title: "Sundance Film Festival Marketplace", location: "Park City Main Street", address: "528 Main St, Park City, UT 84060", state: "Utah", description: "Pop-up marketplace along Main Street during Sundance, featuring local goods and festival merchandise.", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80", priceOptions: ["$250 per storefront space","$375 for a corner storefront"], emailSlug: "sundancemarket" },
+    { title: "Albuquerque Balloon Fiesta Vendor Row", location: "Balloon Fiesta Park", address: "5000 Balloon Fiesta Pkwy NE, Albuquerque, NM 87113", state: "New Mexico", description: "Vendor row at the world's largest hot air balloon festival, drawing nearly a million visitors.", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80", priceOptions: ["$150 per booth","$220 for a premium row space"], emailSlug: "balloonfiesta" },
+    { title: "Mardi Gras Vendor Row - French Quarter", location: "French Quarter", address: "Bourbon St, New Orleans, LA 70116", state: "Louisiana", description: "Street-side vendor spaces along the Mardi Gras parade route selling beads, masks, food, and drinks.", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80", priceOptions: ["$100 per day space","$180 for a weekend space"], emailSlug: "mardigrasvendors" },
+  ];
+}
+
+// ─── ARTS ──────────────────────────────────────────────────
+function getArtsPool() {
+  return [
+    { title: "Ann Arbor Art Fair", location: "Downtown Ann Arbor", address: "S University Ave, Ann Arbor, MI 48104", state: "Michigan", description: "Premier juried art fair drawing 1,000+ artists and half a million visitors each July.", image: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&q=80", priceOptions: ["$40 per table","$60 for a corner booth"], emailSlug: "artfair" },
+    { title: "Laguna Beach Festival of Arts", location: "Festival of Arts Grounds", address: "650 Laguna Canyon Rd, Laguna Beach, CA 92651", state: "California", description: "Renowned fine arts festival showcasing 140 juried artists across painting, sculpture, and photography.", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80", priceOptions: ["$500 per season booth","$750 for a premium display space"], emailSlug: "lagunafoa" },
+    { title: "Scottsdale Arts Festival", location: "Scottsdale Civic Center", address: "3939 N Drinkwater Blvd, Scottsdale, AZ 85251", state: "Arizona", description: "Juried fine art festival featuring 175+ exhibitors alongside live music and food.", image: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&q=80", priceOptions: ["$300 per booth","$425 for a corner booth"], emailSlug: "scottsdaleartfest" },
+    { title: "Cherry Creek Arts Festival", location: "Cherry Creek North", address: "2nd Ave & University Blvd, Denver, CO 80206", state: "Colorado", description: "Top-ranked outdoor fine art festival featuring 250+ juried artists in the heart of Denver.", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80", priceOptions: ["$450 per booth","$600 for a premium corner"], emailSlug: "cherrycreekarts" },
+    { title: "Sarasota Chalk Festival", location: "Nathan Benderson Park", address: "5851 Nathan Benderson Cir, Sarasota, FL 34235", state: "Florida", description: "Street-painting festival where chalk artists and craft vendors gather for a colorful weekend showcase.", image: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&q=80", priceOptions: ["$80 per booth","$120 for a premium space"], emailSlug: "chalkfestival" },
+    { title: "First Friday Art Walk", location: "Downtown Arts District", address: "453 S Spring St, Los Angeles, CA 90013", state: "California", description: "Monthly gallery and vendor art walk through LA's Downtown Arts District.", image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80", priceOptions: ["$50 per space","$75 for a gallery-front space"], emailSlug: "firstfridayla" },
+  ];
+}
+
+// ─── BUSINESS ──────────────────────────────────────────────
+function getBusinessPool() {
+  return [
+    { title: "CES Vendor Pavilion", location: "Las Vegas Convention Center", address: "3150 Paradise Rd, Las Vegas, NV 89109", state: "Nevada", description: "Exhibitor pavilion at the world's largest consumer electronics show, connecting brands with global buyers.", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80", priceOptions: ["$2,500 per booth","$4,000 for a premium floor space"], emailSlug: "cesvendors" },
+    { title: "National Franchise Expo", location: "Orange County Convention Center", address: "9800 International Dr, Orlando, FL 32819", state: "Florida", description: "Expo connecting franchise brands and vendors with prospective business owners nationwide.", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80", priceOptions: ["$800 per booth","$1,200 for a corner booth"], emailSlug: "franchiseexpo" },
+    { title: "Small Business Expo", location: "Javits Center", address: "429 11th Ave, New York, NY 10001", state: "New York", description: "The nation's largest business-to-business trade show and networking event for entrepreneurs.", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80", priceOptions: ["$600 per table","$950 for a premium booth"], emailSlug: "sbexpo" },
+    { title: "Women's Business Expo", location: "McCormick Place", address: "2301 S King Dr, Chicago, IL 60616", state: "Illinois", description: "Expo hall spotlighting women-owned businesses, with networking sessions and vendor showcases.", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80", priceOptions: ["$350 per booth","$500 for a corner booth"], emailSlug: "womensbizexpo" },
+    { title: "Green Business Expo", location: "Washington State Convention Center", address: "705 Pike St, Seattle, WA 98101", state: "Washington", description: "Sustainability-focused trade expo for eco-conscious brands and green tech startups.", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80", priceOptions: ["$400 per booth","$600 for a premium space"], emailSlug: "greenbizexpo" },
+    { title: "Southern Women's Show Vendor Hall", location: "Charlotte Convention Center", address: "501 S College St, Charlotte, NC 28202", state: "North Carolina", description: "Vendor hall at the long-running Southern Women's Show, drawing tens of thousands of shoppers.", image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80", priceOptions: ["$450 per booth","$700 for a premium aisle-end booth"], emailSlug: "southernwomensshow" },
+  ];
+}
+
+// ─── MUSIC (vendor booths at concerts/festivals) ───────────
+function getMusicVendorPool() {
+  return [
+    { title: "Coachella Vendor Marketplace", location: "Empire Polo Club", address: "81-800 Ave 51, Indio, CA 92201", state: "California", description: "On-site marketplace at Coachella featuring apparel, jewelry, and artisan vendors.", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80", priceOptions: ["$800 per weekend booth","$1,200 for a premium marketplace spot"], emailSlug: "coachellavendors" },
+    { title: "Lollapalooza Vendor Village", location: "Grant Park", address: "337 E Randolph St, Chicago, IL 60601", state: "Illinois", description: "Vendor village at Lollapalooza featuring merch, food, and artisan booths across four festival days.", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80", priceOptions: ["$700 per booth","$1,000 for a premium spot"], emailSlug: "lollapaloozavendors" },
+    { title: "CMA Fest Fan Fair X Vendor Hall", location: "Music City Center", address: "201 5th Ave S, Nashville, TN 37203", state: "Tennessee", description: "Vendor hall alongside CMA Fest featuring country music merch, memorabilia, and artisan crafts.", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80", priceOptions: ["$400 per booth","$600 for a corner booth"], emailSlug: "cmafestvendors" },
+    { title: "Newport Folk Festival Marketplace", location: "Fort Adams State Park", address: "90 Fort Adams Dr, Newport, RI 02840", state: "Rhode Island", description: "Waterfront marketplace at the historic Newport Folk Festival featuring local artisans and record vendors.", image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80", priceOptions: ["$300 per booth","$450 for a premium waterfront spot"], emailSlug: "newportfolkvendors" },
+    { title: "ACL Festival Vendor Row", location: "Zilker Park", address: "2100 Barton Springs Rd, Austin, TX 78746", state: "Texas", description: "Vendor row at Austin City Limits Festival featuring food, drink, and craft vendors.", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80", priceOptions: ["$600 per weekend booth","$900 for a premium spot"], emailSlug: "aclvendors" },
+    { title: "Stagecoach Vendor Marketplace", location: "Empire Polo Club", address: "81-800 Ave 51, Indio, CA 92203", state: "California", description: "Country music festival marketplace featuring western wear, boots, and artisan vendors.", image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80", priceOptions: ["$700 per weekend booth","$1,000 for a premium spot"], emailSlug: "stagecoachvendors" },
+  ];
+}
+
+// ─── FOOD ──────────────────────────────────────────────────
+function getFoodPool() {
+  return [
+    { title: "South Beach Wine & Food Festival", location: "South Beach", address: "1001 Ocean Dr, Miami Beach, FL 33139", state: "Florida", description: "Star-studded culinary festival featuring tastings, chef demos, and vendor pop-ups along Ocean Drive.", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80", priceOptions: ["$500 per booth","$800 for a premium tasting tent"], emailSlug: "sobewff" },
+    { title: "Austin Food Truck Festival", location: "Zilker Park", address: "1103 Andrew Zilker Rd, Austin, TX 78746", state: "Texas", description: "Gathering of Austin's best food trucks alongside local craft vendors and live music.", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80", priceOptions: ["$150 per food truck space","$60 for a craft vendor booth"], emailSlug: "atxfoodtruckfest" },
+    { title: "Taste of Chicago", location: "Grant Park", address: "337 E Randolph St, Chicago, IL 60601", state: "Illinois", description: "The nation's largest free outdoor food festival, featuring dozens of Chicago's top restaurants.", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80", priceOptions: ["$350 per booth","$500 for a premium corner booth"], emailSlug: "tasteofchicago" },
+    { title: "LA Food & Wine Festival", location: "Downtown Los Angeles", address: "800 W Olympic Blvd, Los Angeles, CA 90015", state: "California", description: "Multi-day culinary festival with tasting pavilions, chef showcases, and artisan food vendors.", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80", priceOptions: ["$450 per booth","$700 for a premium pavilion space"], emailSlug: "lafw" },
+    { title: "Vermont Maple Festival", location: "Downtown St. Albans", address: "20 Bank St, St. Albans, VT 05478", state: "Vermont", description: "Small-town festival celebrating maple syrup season with local food and craft vendors.", image: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80", priceOptions: ["$50 per booth","$75 for a corner booth"], emailSlug: "maplefestival" },
+    { title: "National Food Truck Rally", location: "National Mall", address: "National Mall, Washington, DC 20024", state: "District of Columbia", description: "Rally bringing dozens of food trucks and local vendors to the nation's capital.", image: "https://images.unsplash.com/photo-1518614368389-fe108e7b2c8b?w=800&q=80", priceOptions: ["$200 per food truck space","$90 for a craft vendor booth"], emailSlug: "foodtruckrallydc" },
+  ];
+}
+
+// ─── INIT ───────────────────────────────────────────────────
+buildCategoryTabs();
 applyCategoryToUI();
 </script>
 </body>
