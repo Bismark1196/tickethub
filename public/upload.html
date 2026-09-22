@@ -28,6 +28,8 @@
   --eb-orange-light: #fff0ed;
   --ticket-purple: #6366f1;
   --ticket-purple-light: #eef2ff;
+  --sg-red: #ee3224;
+  --sg-red-light: #fdecea;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -94,8 +96,7 @@ body::after {
   color: rgba(255,255,255,0.5); cursor: pointer; border: none; background: none;
   transition: var(--transition); position: relative;
 }
-.mode-btn:first-child { border-right: 1px solid rgba(255,255,255,0.10); }
-.mode-btn:nth-child(2) { border-right: 1px solid rgba(255,255,255,0.10); }
+.mode-btn:not(:last-child) { border-right: 1px solid rgba(255,255,255,0.10); }
 .mode-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
 .mode-btn.active {
   background: var(--white); color: var(--black);
@@ -103,6 +104,7 @@ body::after {
 }
 .mode-btn.active.eb-mode { background: var(--eb-orange); color: var(--white); }
 .mode-btn.active.ticket-mode { background: var(--ticket-purple); color: var(--white); }
+.mode-btn.active.sg-mode { background: var(--sg-red); color: var(--white); }
 .mode-btn:not(.active):hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
 .mode-badge {
   background: var(--gold); color: var(--black);
@@ -111,6 +113,7 @@ body::after {
 }
 .mode-btn.active.eb-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
 .mode-btn.active.ticket-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
+.mode-btn.active.sg-mode .mode-badge { background: rgba(255,255,255,0.25); color: var(--white); }
 
 .ticket-card {
   width: 100%; background: var(--white); border-radius: 24px; overflow: hidden;
@@ -151,7 +154,7 @@ body::after {
 .btn-submit-ticket { background: linear-gradient(135deg, #4f46e5, #6366f1); }
 .btn-submit-ticket:hover { box-shadow: 0 10px 28px rgba(79, 70, 229, 0.35); }
 
-.eb-card {
+.eb-card, .sg-card {
   width: 100%; background: var(--white); border-radius: 24px; overflow: hidden;
   box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; display: none;
 }
@@ -159,72 +162,85 @@ body::after {
   background: linear-gradient(135deg, #f05537 0%, #d63b1f 100%);
   padding: 26px 36px 22px; position: relative; overflow: hidden;
 }
-.eb-header::before {
+.sg-header {
+  background: linear-gradient(135deg, #ee3224 0%, #c22013 100%);
+  padding: 26px 36px 22px; position: relative; overflow: hidden;
+}
+.eb-header::before, .sg-header::before {
   content: ""; position: absolute; inset: 0;
   background: radial-gradient(ellipse at 85% 20%, rgba(255,255,255,0.12) 0%, transparent 55%);
 }
-.eb-header-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
-.eb-eyebrow {
+.eb-header-top, .sg-header-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+.eb-eyebrow, .sg-eyebrow {
   display: inline-flex; align-items: center; gap: 6px;
   background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.35);
   color: var(--white); font-size: 10.5px; font-weight: 700; letter-spacing: 1.4px;
   text-transform: uppercase; padding: 4px 13px; border-radius: 20px; margin-bottom: 10px;
 }
-.eb-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(20px,4vw,26px); font-weight: 900; color: var(--white); margin-bottom: 4px; }
-.eb-header-sub { font-size: 13px; color: rgba(255,255,255,0.65); }
-.eb-logo-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-.eb-body { padding: 28px 36px 36px; }
+.eb-header h1, .sg-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(20px,4vw,26px); font-weight: 900; color: var(--white); margin-bottom: 4px; }
+.eb-header-sub, .sg-header-sub { font-size: 13px; color: rgba(255,255,255,0.65); }
+.eb-logo-icon, .sg-logo-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.eb-body, .sg-body { padding: 28px 36px 36px; }
 
-.eb-setup-section {
+.eb-setup-section, .sg-setup-section {
   background: var(--cream); border-radius: var(--radius-sm);
   border: 1.5px solid var(--border); padding: 18px 20px; margin-bottom: 20px;
 }
-.eb-setup-title { font-size: 12px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: var(--slate); margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+.eb-setup-title, .sg-setup-title { font-size: 12px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: var(--slate); margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
 .eb-setup-title svg { width: 13px; height: 13px; color: var(--eb-orange); }
-.eb-setup-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
-.eb-setup-desc a { color: var(--eb-orange); text-decoration: none; font-weight: 600; }
-.eb-setup-desc a:hover { text-decoration: underline; }
-.eb-api-row { display: flex; gap: 8px; }
-.eb-api-row input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--black); background: var(--white); outline: none; transition: var(--transition); }
+.sg-setup-title svg { width: 13px; height: 13px; color: var(--sg-red); }
+.eb-setup-desc, .sg-setup-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+.eb-setup-desc a, .sg-setup-desc a { color: var(--eb-orange); text-decoration: none; font-weight: 600; }
+.sg-setup-desc a { color: var(--sg-red); }
+.eb-setup-desc a:hover, .sg-setup-desc a:hover { text-decoration: underline; }
+.eb-api-row, .sg-api-row { display: flex; gap: 8px; }
+.eb-api-row input, .sg-api-row input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--black); background: var(--white); outline: none; transition: var(--transition); }
 .eb-api-row input:focus { border-color: var(--eb-orange); box-shadow: 0 0 0 3px rgba(240,85,55,0.10); }
+.sg-api-row input:focus { border-color: var(--sg-red); box-shadow: 0 0 0 3px rgba(238,50,36,0.10); }
 .eb-save-key { padding: 10px 18px; background: var(--eb-orange); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: var(--transition); }
 .eb-save-key:hover { background: #d63b1f; }
-.eb-key-status { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 8px; }
-.eb-key-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
-.eb-key-dot.ok { background: #22c55e; }
-.eb-key-dot.err { background: #ef4444; }
+.sg-save-key { padding: 10px 18px; background: var(--sg-red); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: var(--transition); }
+.sg-save-key:hover { background: #c22013; }
+.eb-key-status, .sg-key-status { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 8px; }
+.eb-key-dot, .sg-key-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+.eb-key-dot.ok, .sg-key-dot.ok { background: #22c55e; }
+.eb-key-dot.err, .sg-key-dot.err { background: #ef4444; }
 
-.eb-search-row { display: flex; gap: 8px; margin-bottom: 16px; }
-.eb-search-row input { flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); }
+.eb-search-row, .sg-search-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.eb-search-row input, .sg-search-row input { flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); }
 .eb-search-row input:focus { border-color: var(--eb-orange); background: var(--white); box-shadow: 0 0 0 3px rgba(240,85,55,0.10); }
+.sg-search-row input:focus { border-color: var(--sg-red); background: var(--white); box-shadow: 0 0 0 3px rgba(238,50,36,0.10); }
 .eb-search-btn { padding: 12px 22px; background: var(--eb-orange); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); white-space: nowrap; }
 .eb-search-btn:hover { background: #d63b1f; transform: translateY(-1px); }
-.eb-search-btn svg { width: 15px; height: 15px; }
-.eb-search-btn:disabled { opacity: 0.6; pointer-events: none; }
+.sg-search-btn { padding: 12px 22px; background: var(--sg-red); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); white-space: nowrap; }
+.sg-search-btn:hover { background: #c22013; transform: translateY(-1px); }
+.eb-search-btn svg, .sg-search-btn svg { width: 15px; height: 15px; }
+.eb-search-btn:disabled, .sg-search-btn:disabled { opacity: 0.6; pointer-events: none; }
 
-.eb-divider { text-align: center; font-size: 12px; color: var(--muted); margin: 16px 0; position: relative; }
-.eb-divider::before, .eb-divider::after { content: ""; position: absolute; top: 50%; width: calc(50% - 20px); height: 1px; background: var(--border); }
-.eb-divider::before { left: 0; } .eb-divider::after { right: 0; }
+.eb-divider, .sg-divider { text-align: center; font-size: 12px; color: var(--muted); margin: 16px 0; position: relative; }
+.eb-divider::before, .eb-divider::after, .sg-divider::before, .sg-divider::after { content: ""; position: absolute; top: 50%; width: calc(50% - 20px); height: 1px; background: var(--border); }
+.eb-divider::before, .sg-divider::before { left: 0; } .eb-divider::after, .sg-divider::after { right: 0; }
 
-.eb-url-row { display: flex; gap: 8px; margin-bottom: 20px; }
-.eb-url-row input { flex: 1; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); }
+.eb-url-row, .sg-url-row { display: flex; gap: 8px; margin-bottom: 20px; }
+.eb-url-row input, .sg-url-row input { flex: 1; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--black); background: var(--cream); outline: none; transition: var(--transition); }
 .eb-url-row input:focus { border-color: var(--eb-orange); background: var(--white); box-shadow: 0 0 0 3px rgba(240,85,55,0.10); }
-.eb-fetch-btn { padding: 11px 18px; background: var(--black); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); white-space: nowrap; }
-.eb-fetch-btn:hover { background: var(--charcoal); }
-.eb-fetch-btn:disabled { opacity: 0.6; pointer-events: none; }
-.eb-fetch-btn svg { width: 14px; height: 14px; }
+.sg-url-row input:focus { border-color: var(--sg-red); background: var(--white); box-shadow: 0 0 0 3px rgba(238,50,36,0.10); }
+.eb-fetch-btn, .sg-fetch-btn { padding: 11px 18px; background: var(--black); color: var(--white); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: var(--transition); white-space: nowrap; }
+.eb-fetch-btn:hover, .sg-fetch-btn:hover { background: var(--charcoal); }
+.eb-fetch-btn:disabled, .sg-fetch-btn:disabled { opacity: 0.6; pointer-events: none; }
+.eb-fetch-btn svg, .sg-fetch-btn svg { width: 14px; height: 14px; }
 
-.eb-results { display: none; }
-.eb-results.show { display: block; }
-.eb-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.eb-results-title { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
-.eb-results-count { font-size: 12px; font-weight: 600; color: var(--slate); background: var(--cream); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); }
-.eb-event-grid { display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 4px; }
-.eb-event-grid::-webkit-scrollbar { width: 4px; }
-.eb-event-grid::-webkit-scrollbar-track { background: var(--cream); border-radius: 4px; }
-.eb-event-grid::-webkit-scrollbar-thumb { background: #d0cdc7; border-radius: 4px; }
+.eb-results, .sg-results { display: none; }
+.eb-results.show, .sg-results.show { display: block; }
+.eb-results-header, .sg-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.eb-results-title, .sg-results-title { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+.eb-results-count, .sg-results-count { font-size: 12px; font-weight: 600; color: var(--slate); background: var(--cream); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); }
+.eb-event-grid, .sg-event-grid { display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 4px; }
+.eb-event-grid::-webkit-scrollbar, .sg-event-grid::-webkit-scrollbar { width: 4px; }
+.eb-event-grid::-webkit-scrollbar-track, .sg-event-grid::-webkit-scrollbar-track { background: var(--cream); border-radius: 4px; }
+.eb-event-grid::-webkit-scrollbar-thumb, .sg-event-grid::-webkit-scrollbar-thumb { background: #d0cdc7; border-radius: 4px; }
 
-.eb-event-card {
+.eb-event-card, .sg-event-card {
   display: flex; align-items: stretch; gap: 0;
   border: 1.5px solid var(--border); border-radius: var(--radius-sm);
   overflow: hidden; cursor: pointer; transition: var(--transition);
@@ -232,42 +248,46 @@ body::after {
   animation: chipIn 0.2s ease both;
 }
 .eb-event-card:hover { border-color: var(--eb-orange); box-shadow: 0 4px 16px rgba(240,85,55,0.12); transform: translateY(-1px); }
+.sg-event-card:hover { border-color: var(--sg-red); box-shadow: 0 4px 16px rgba(238,50,36,0.12); transform: translateY(-1px); }
 .eb-event-card.selected { border-color: var(--eb-orange); background: var(--eb-orange-light); }
-.eb-event-thumb {
+.sg-event-card.selected { border-color: var(--sg-red); background: var(--sg-red-light); }
+.eb-event-thumb, .sg-event-thumb {
   width: 90px; flex-shrink: 0;
   background: var(--cream); overflow: hidden;
   position: relative;
 }
-.eb-event-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.eb-event-thumb img, .sg-event-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .eb-event-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; background: linear-gradient(135deg, #fff0ed, #ffe0d9); }
-.eb-event-info { flex: 1; padding: 12px 14px; }
-.eb-event-name { font-weight: 700; font-size: 13.5px; color: var(--black); margin-bottom: 4px; line-height: 1.35; }
-.eb-event-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11.5px; color: var(--muted); }
-.eb-event-meta span { display: flex; align-items: center; gap: 4px; }
-.eb-event-meta svg { width: 11px; height: 11px; }
-.eb-event-check {
+.sg-event-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; background: linear-gradient(135deg, #fdecea, #fbd6d1); }
+.eb-event-info, .sg-event-info { flex: 1; padding: 12px 14px; }
+.eb-event-name, .sg-event-name { font-weight: 700; font-size: 13.5px; color: var(--black); margin-bottom: 4px; line-height: 1.35; }
+.eb-event-meta, .sg-event-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11.5px; color: var(--muted); }
+.eb-event-meta span, .sg-event-meta span { display: flex; align-items: center; gap: 4px; }
+.eb-event-meta svg, .sg-event-meta svg { width: 11px; height: 11px; }
+.eb-event-check, .sg-event-check {
   width: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: var(--border); transition: var(--transition);
   border-left: 1.5px solid var(--border);
 }
 .eb-event-card.selected .eb-event-check { color: var(--eb-orange); border-left-color: var(--eb-orange); }
+.sg-event-card.selected .sg-event-check { color: var(--sg-red); border-left-color: var(--sg-red); }
 
-.eb-import-status {
+.eb-import-status, .sg-import-status {
   display: none; background: var(--cream); border: 1.5px solid var(--border);
   border-radius: var(--radius-sm); padding: 16px 20px; margin-top: 16px;
 }
-.eb-import-status.show { display: block; }
-.eb-import-log { font-size: 12.5px; color: var(--slate); line-height: 2; }
-.eb-import-log-line { display: flex; align-items: center; gap: 8px; }
-.eb-import-log-icon { font-size: 14px; }
+.eb-import-status.show, .sg-import-status.show { display: block; }
+.eb-import-log, .sg-import-log { font-size: 12.5px; color: var(--slate); line-height: 2; }
+.eb-import-log-line, .sg-import-log-line { display: flex; align-items: center; gap: 8px; }
+.eb-import-log-icon, .sg-import-log-icon { font-size: 14px; }
 
-.eb-action-bar {
+.eb-action-bar, .sg-action-bar {
   display: none; padding: 16px 0 0; border-top: 1.5px solid var(--border);
   margin-top: 16px; align-items: center; justify-content: space-between; gap: 12px;
 }
-.eb-action-bar.show { display: flex; }
-.eb-selected-info { font-size: 13px; color: var(--slate); font-weight: 500; }
-.eb-selected-info strong { color: var(--black); }
+.eb-action-bar.show, .sg-action-bar.show { display: flex; }
+.eb-selected-info, .sg-selected-info { font-size: 13px; color: var(--slate); font-weight: 500; }
+.eb-selected-info strong, .sg-selected-info strong { color: var(--black); }
 .eb-import-btn {
   padding: 12px 24px; background: var(--eb-orange); color: var(--white);
   border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
@@ -277,22 +297,36 @@ body::after {
 .eb-import-btn:hover { background: #d63b1f; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(240,85,55,0.3); }
 .eb-import-btn:disabled { opacity: 0.6; pointer-events: none; }
 .eb-import-btn svg { width: 15px; height: 15px; }
+.sg-import-btn {
+  padding: 12px 24px; background: var(--sg-red); color: var(--white);
+  border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center;
+  gap: 7px; transition: var(--transition);
+}
+.sg-import-btn:hover { background: #c22013; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(238,50,36,0.3); }
+.sg-import-btn:disabled { opacity: 0.6; pointer-events: none; }
+.sg-import-btn svg { width: 15px; height: 15px; }
 
-.eb-loading {
+.eb-loading, .sg-loading {
   text-align: center; padding: 32px 16px; display: none;
 }
-.eb-loading.show { display: block; }
+.eb-loading.show, .sg-loading.show { display: block; }
 .eb-spinner {
   width: 36px; height: 36px; border: 3px solid #ffd5cc;
   border-top-color: var(--eb-orange); border-radius: 50%;
   animation: spin 0.8s linear infinite; margin: 0 auto 12px;
 }
-.eb-loading-text { font-size: 13px; color: var(--muted); }
+.sg-spinner {
+  width: 36px; height: 36px; border: 3px solid #fbd0cb;
+  border-top-color: var(--sg-red); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+}
+.eb-loading-text, .sg-loading-text { font-size: 13px; color: var(--muted); }
 
-.eb-empty { text-align: center; padding: 28px 16px; display: none; }
-.eb-empty.show { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.eb-empty-icon { font-size: 36px; }
-.eb-empty-msg { font-size: 14px; color: var(--muted); }
+.eb-empty, .sg-empty { text-align: center; padding: 28px 16px; display: none; }
+.eb-empty.show, .sg-empty.show { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.eb-empty-icon, .sg-empty-icon { font-size: 36px; }
+.eb-empty-msg, .sg-empty-msg { font-size: 14px; color: var(--muted); }
 
 .form-card { width: 100%; background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-lg); animation: slideUp 0.45s cubic-bezier(0.34,1.56,0.64,1) both; display: none; }
 .form-header { background: var(--black); padding: 26px 36px 22px; position: relative; overflow: hidden; }
@@ -449,7 +483,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 @media (max-width: 640px) {
   .page { padding: 20px 12px 48px; }
   .form-header { padding: 22px 20px 18px; }
-  .form-body, .eb-body, .ticket-body { padding: 22px 18px 28px; }
+  .form-body, .eb-body, .sg-body, .ticket-body { padding: 22px 18px 28px; }
   .field-row { grid-template-columns: 1fr; gap: 0; }
   .category-grid { grid-template-columns: repeat(3, 1fr); }
   .nav-link-gold span { display: none; }
@@ -501,6 +535,11 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     <button class="mode-btn" id="modeEventbrite">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       <span class="mode-label">Import from Eventbrite</span>
+      <span class="mode-badge">AUTO</span>
+    </button>
+    <button class="mode-btn" id="modeSeatgeek">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+      <span class="mode-label">Search SeatGeek</span>
       <span class="mode-badge">AUTO</span>
     </button>
     <button class="mode-btn" id="modeTickets">
@@ -579,6 +618,88 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
       </div>
       <div class="eb-import-status" id="ebImportStatus">
         <div class="eb-import-log" id="ebImportLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-card" id="sgCard">
+    <div class="sg-header">
+      <div class="sg-header-top">
+        <div>
+          <div class="sg-eyebrow">⚡ Auto Import</div>
+          <h1>Search SeatGeek</h1>
+          <p class="sg-header-sub">Search SeatGeek's event listings or paste an event URL — we'll fill the event details automatically</p>
+        </div>
+        <div class="sg-logo-icon">🪑</div>
+      </div>
+    </div>
+    <div class="sg-body">
+      <div class="sg-setup-section" id="sgSetupSection">
+        <div class="sg-setup-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          SeatGeek Client ID Required
+        </div>
+        <p class="sg-setup-desc">
+          Get a free Client ID from <a href="https://seatgeek.com/build" target="_blank" rel="noopener">SeatGeek → Platform (seatgeek.com/build)</a>. It's free and instant — no secret key needed for public event search.
+        </p>
+        <div class="sg-api-row">
+          <input type="password" id="sgApiKey" placeholder="Paste your SeatGeek Client ID here…" autocomplete="off">
+          <button class="sg-save-key" id="sgSaveKey">Save Key</button>
+        </div>
+        <div class="sg-key-status" id="sgKeyStatus">
+          <div class="sg-key-dot" id="sgKeyDot"></div>
+          <span id="sgKeyMsg">No Client ID saved</span>
+        </div>
+      </div>
+      <div class="sg-setup-section" style="background:#fff7e6;border-color:rgba(201,168,76,0.4);">
+        <div class="sg-setup-title" style="color:var(--gold-dark);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gold-dark);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Good to know
+        </div>
+        <p class="sg-setup-desc" style="margin-bottom:0;">
+          SeatGeek's public API only searches its event catalog (name, venue, date, image) — it doesn't expose a seller's personal ticket inventory. Use this to auto-fill the event details below, then enter your own price, quantity and seat section, and upload your proof image, in the <strong>Upload Tickets</strong> tab.
+        </p>
+      </div>
+      <div class="section-label" style="margin-top:0;">Search SeatGeek Events</div>
+      <div class="sg-search-row">
+        <input type="text" id="sgSearchInput" placeholder="Search by team, artist, venue, or event name…" autocomplete="off">
+        <button class="sg-search-btn" id="sgSearchBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search
+        </button>
+      </div>
+      <div class="sg-divider">or paste a SeatGeek event URL</div>
+      <div class="sg-url-row">
+        <input type="text" id="sgUrlInput" placeholder="https://seatgeek.com/some-team-vs-other-team-tickets/date/event/123456" autocomplete="off">
+        <button class="sg-fetch-btn" id="sgFetchBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Fetch Event
+        </button>
+      </div>
+      <div class="sg-loading" id="sgLoading">
+        <div class="sg-spinner"></div>
+        <div class="sg-loading-text" id="sgLoadingText">Searching SeatGeek…</div>
+      </div>
+      <div class="sg-empty" id="sgEmpty">
+        <div class="sg-empty-icon">🔍</div>
+        <div class="sg-empty-msg">No events found. Try a different search.</div>
+      </div>
+      <div class="sg-results" id="sgResults">
+        <div class="sg-results-header">
+          <span class="sg-results-title">Results</span>
+          <span class="sg-results-count" id="sgResultsCount">0 events</span>
+        </div>
+        <div class="sg-event-grid" id="sgEventGrid"></div>
+      </div>
+      <div class="sg-action-bar" id="sgActionBar">
+        <div class="sg-selected-info"><strong id="sgSelectedCount">0</strong> event(s) selected</div>
+        <button class="sg-import-btn" id="sgImportBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Import to Ticket Form
+        </button>
+      </div>
+      <div class="sg-import-status" id="sgImportStatus">
+        <div class="sg-import-log" id="sgImportLog"></div>
       </div>
     </div>
   </div>
@@ -1088,6 +1209,7 @@ onAuthStateChanged(auth, async user => {
     el("headerEmail").textContent  = user.displayName || user.email;
     if (editingEventId) loadEvent(editingEventId);
     initEbKeyStatus();
+    initSgKeyStatus();
   } else {
     el("loginCard").style.display = "flex";
     el("loginCard").style.flexDirection = "column";
@@ -1095,6 +1217,7 @@ onAuthStateChanged(auth, async user => {
     el("modeSwitcher").style.display = "none";
     el("formCard").style.display  = "none";
     el("ebCard").style.display    = "none";
+    el("sgCard").style.display    = "none";
     el("ticketCard").style.display = "none";
   }
 });
@@ -1102,20 +1225,24 @@ onAuthStateChanged(auth, async user => {
 let currentMode = "manual";
 el("modeManual").addEventListener("click", () => setMode("manual"));
 el("modeEventbrite").addEventListener("click", () => setMode("eventbrite"));
+el("modeSeatgeek").addEventListener("click", () => setMode("seatgeek"));
 el("modeTickets").addEventListener("click", () => setMode("tickets"));
 
 function setMode(mode) {
   currentMode = mode;
   el("modeManual").classList.toggle("active", mode === "manual");
   el("modeEventbrite").classList.toggle("active", mode === "eventbrite");
+  el("modeSeatgeek").classList.toggle("active", mode === "seatgeek");
   el("modeTickets").classList.toggle("active", mode === "tickets");
 
   el("modeEventbrite").classList.toggle("eb-mode", mode === "eventbrite");
+  el("modeSeatgeek").classList.toggle("sg-mode", mode === "seatgeek");
   el("modeTickets").classList.toggle("ticket-mode", mode === "tickets");
 
-  el("formCard").style.display = mode === "manual" ? "block" : "none";
-  el("ebCard").style.display   = mode === "eventbrite" ? "block" : "none";
-  el("ticketCard").style.display = mode === "tickets" ? "block" : "none";
+  el("formCard").style.display   = mode === "manual"     ? "block" : "none";
+  el("ebCard").style.display     = mode === "eventbrite"  ? "block" : "none";
+  el("sgCard").style.display     = mode === "seatgeek"    ? "block" : "none";
+  el("ticketCard").style.display = mode === "tickets"     ? "block" : "none";
 }
 
 const EB_KEY_STORAGE = "vhub_eb_private_token";
@@ -1416,6 +1543,277 @@ async function doEbImport() {
 }
 
 el("prefillDismiss").addEventListener("click", () => el("prefillNotice").classList.remove("show"));
+
+/* ---------------- SeatGeek Import Mode ---------------- */
+
+const SG_KEY_STORAGE = "vhub_sg_client_id";
+let sgClientId = "";
+let sgSelectedEvents = new Set();
+let sgFetchedEvents  = [];
+
+function initSgKeyStatus() {
+  const saved = localStorage.getItem(SG_KEY_STORAGE) || "";
+  if (saved) {
+    sgClientId = saved;
+    el("sgApiKey").value = saved;
+    setSgKeyStatus("ok", "Client ID loaded from storage");
+  } else {
+    setSgKeyStatus("none", "No Client ID saved");
+  }
+}
+
+function setSgKeyStatus(state, msg) {
+  const dot = el("sgKeyDot");
+  dot.className = "sg-key-dot" + (state === "ok" ? " ok" : state === "err" ? " err" : "");
+  el("sgKeyMsg").textContent = msg;
+}
+
+el("sgSaveKey").addEventListener("click", () => {
+  const val = el("sgApiKey").value.trim();
+  if (!val) { showToast("Please enter your SeatGeek Client ID.", "error"); return; }
+  sgClientId = val;
+  localStorage.setItem(SG_KEY_STORAGE, val);
+  setSgKeyStatus("ok", "Client ID saved ✓");
+  showToast("Client ID saved!", "success");
+});
+
+el("sgSearchBtn").addEventListener("click", doSgSearch);
+el("sgSearchInput").addEventListener("keydown", e => { if (e.key === "Enter") doSgSearch(); });
+
+async function doSgSearch() {
+  if (!sgClientId) { showToast("Please save your SeatGeek Client ID first.", "error"); return; }
+  const q = el("sgSearchInput").value.trim();
+  if (!q) { showToast("Please enter a search term.", "error"); return; }
+  showSgLoading("Searching SeatGeek…");
+  clearSgResults();
+
+  try {
+    const url = `https://api.seatgeek.com/2/events?q=${encodeURIComponent(q)}&client_id=${encodeURIComponent(sgClientId)}&per_page=20`;
+    const resp = await fetchSgWithProxy(url);
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.errors?.[0]?.message || `HTTP ${resp.status}`);
+    }
+    const data = await resp.json();
+    const events = data.events || [];
+    hideSgLoading();
+    if (!events.length) { showSgEmpty(); return; }
+    renderSgResults(events);
+  } catch (err) {
+    hideSgLoading();
+    console.error("SeatGeek search error:", err);
+    showToast("SeatGeek error: " + err.message, "error");
+    setSgKeyStatus("err", "API error — check Client ID or try again");
+  }
+}
+
+el("sgFetchBtn").addEventListener("click", doSgFetchUrl);
+
+async function doSgFetchUrl() {
+  if (!sgClientId) { showToast("Please save your SeatGeek Client ID first.", "error"); return; }
+  const raw = el("sgUrlInput").value.trim();
+  if (!raw) { showToast("Please paste a SeatGeek event URL.", "error"); return; }
+
+  const idMatch = raw.match(/\/event\/(\d+)|\/(\d+)(?:[/?]|$)/) || raw.match(/(\d{5,})/);
+  if (!idMatch) { showToast("Couldn't extract an event ID from that URL.", "error"); return; }
+  const eventId = idMatch[1] || idMatch[2] || idMatch[0];
+
+  showSgLoading("Fetching event details…");
+  clearSgResults();
+
+  try {
+    const url = `https://api.seatgeek.com/2/events/${eventId}?client_id=${encodeURIComponent(sgClientId)}`;
+    const resp = await fetchSgWithProxy(url);
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.errors?.[0]?.message || `HTTP ${resp.status}`);
+    }
+    const event = await resp.json();
+    hideSgLoading();
+    renderSgResults([event]);
+  } catch (err) {
+    hideSgLoading();
+    console.error("SeatGeek fetch error:", err);
+    showToast("SeatGeek error: " + err.message, "error");
+  }
+}
+
+async function fetchSgWithProxy(url) {
+  try {
+    const direct = await fetch(url);
+    if (direct.ok || direct.status !== 0) return direct;
+  } catch (_) { }
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+  return fetch(proxyUrl);
+}
+
+function renderSgResults(events) {
+  sgFetchedEvents = events;
+  el("sgResults").classList.add("show");
+  el("sgResultsCount").textContent = `${events.length} event${events.length !== 1 ? "s" : ""}`;
+  const grid = el("sgEventGrid");
+  grid.innerHTML = "";
+
+  events.forEach((ev, i) => {
+    const name     = ev.title || ev.short_title || "Untitled Event";
+    const venue    = ev.venue?.name || "";
+    const city     = ev.venue?.city || "";
+    const state    = ev.venue?.state || "";
+    const start    = ev.datetime_local ? new Date(ev.datetime_local) : null;
+    const thumb    = ev.performers?.[0]?.image || "";
+    const lowest   = ev.stats?.lowest_price;
+
+    const dateStr = start
+      ? start.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "Date TBD";
+    const timeStr = start
+      ? start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+      : "";
+    const priceStr = lowest ? `From $${lowest}` : "Price varies";
+    const locationStr = [venue, city, state].filter(Boolean).join(", ");
+
+    const card = document.createElement("div");
+    card.className = "sg-event-card";
+    card.dataset.idx = i;
+    card.innerHTML = `
+      <div class="sg-event-thumb">
+        ${thumb
+          ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\"sg-event-thumb-placeholder\">🪑</div>'">`
+          : `<div class="sg-event-thumb-placeholder">🪑</div>`}
+      </div>
+      <div class="sg-event-info">
+        <div class="sg-event-name">${escHtml(name)}</div>
+        <div class="sg-event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            ${escHtml(dateStr)}${timeStr ? " · " + escHtml(timeStr) : ""}
+          </span>
+          ${locationStr ? `<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${escHtml(locationStr)}</span>` : ""}
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>${priceStr}</span>
+        </div>
+      </div>
+      <div class="sg-event-check">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>`;
+
+    card.addEventListener("click", () => toggleSgSelect(i, card));
+    grid.appendChild(card);
+  });
+}
+
+function toggleSgSelect(idx, card) {
+  if (sgSelectedEvents.has(idx)) {
+    sgSelectedEvents.delete(idx);
+    card.classList.remove("selected");
+  } else {
+    sgSelectedEvents.clear();
+    document.querySelectorAll(".sg-event-card").forEach(c => c.classList.remove("selected"));
+    sgSelectedEvents.add(idx);
+    card.classList.add("selected");
+  }
+  const count = sgSelectedEvents.size;
+  el("sgSelectedCount").textContent = count;
+  const bar = el("sgActionBar");
+  if (count > 0) bar.classList.add("show"); else bar.classList.remove("show");
+}
+
+function clearSgResults() {
+  el("sgResults").classList.remove("show");
+  el("sgEmpty").classList.remove("show");
+  el("sgActionBar").classList.remove("show");
+  el("sgImportStatus").classList.remove("show");
+  el("sgEventGrid").innerHTML = "";
+  sgSelectedEvents.clear();
+  sgFetchedEvents = [];
+}
+function showSgLoading(msg) {
+  el("sgLoading").classList.add("show");
+  el("sgLoadingText").textContent = msg;
+  el("sgSearchBtn").disabled = true;
+  el("sgFetchBtn").disabled  = true;
+}
+function hideSgLoading() {
+  el("sgLoading").classList.remove("show");
+  el("sgSearchBtn").disabled = false;
+  el("sgFetchBtn").disabled  = false;
+}
+function showSgEmpty() { el("sgEmpty").classList.add("show"); }
+
+el("sgImportBtn").addEventListener("click", doSgImport);
+
+async function doSgImport() {
+  if (!sgSelectedEvents.size) return;
+  const idx = [...sgSelectedEvents][0];
+  const ev  = sgFetchedEvents[idx];
+  if (!ev) return;
+
+  el("sgImportBtn").disabled = true;
+  el("sgImportStatus").classList.add("show");
+
+  const logEl = el("sgImportLog");
+  function log(icon, msg) {
+    const line = document.createElement("div");
+    line.className = "sg-import-log-line";
+    line.innerHTML = `<span class="sg-import-log-icon">${icon}</span><span>${msg}</span>`;
+    logEl.appendChild(line);
+  }
+  logEl.innerHTML = "";
+  log("⏳", "Starting import…");
+
+  const name    = ev.title || ev.short_title || "";
+  const venue   = ev.venue;
+  const start   = ev.datetime_local ? new Date(ev.datetime_local) : null;
+  const thumb   = ev.performers?.[0]?.image || "";
+
+  const sportMap = {
+    "nba": "nba", "nfl": "nfl", "nhl": "nhl", "mlb": "mlb",
+    "world_cup": "worldcup", "soccer": "worldcup",
+  };
+  const typeKey = (ev.type || "").toLowerCase();
+  let sportVal = sportMap[typeKey];
+  if (!sportVal) {
+    sportVal = /concert|music/.test(typeKey) ? "concert" : "other";
+  }
+
+  // Switch to the Upload Tickets form and prefill it
+  setMode("tickets");
+
+  if (name) { el("ticketTitle").value = name; log("✅", `Event Name: "${name.slice(0, 50)}${name.length > 50 ? "…" : ""}"`); }
+  if (sportVal) { el("ticketSport").value = sportVal; log("✅", `Sport Category: ${el("ticketSport").selectedOptions[0]?.text || sportVal}`); }
+  if (venue?.name) { el("ticketVenue").value = venue.name; log("✅", `Venue: ${venue.name}`); }
+  if (venue?.city || venue?.state) {
+    el("ticketCity").value = [venue.city, venue.state].filter(Boolean).join(", ");
+    log("✅", `City: ${el("ticketCity").value}`);
+  }
+  if (start) {
+    const y = start.getFullYear(), m = String(start.getMonth() + 1).padStart(2, "0"), d = String(start.getDate()).padStart(2, "0");
+    el("ticketDate").value = `${y}-${m}-${d}`;
+    const hh = String(start.getHours()).padStart(2, "0"), mm = String(start.getMinutes()).padStart(2, "0");
+    el("ticketTime").value = `${hh}:${mm}`;
+    log("✅", `Date/Time: ${start.toDateString()} at ${start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`);
+  }
+  if (thumb) {
+    ticketImageHidden.value = thumb;
+    el("ticketImageUrl").value = thumb;
+    ticketSwitchTab("url");
+    ticketPreviewImage(thumb);
+    log("✅", "Event image imported (replace with your own ticket proof before submitting)");
+  } else {
+    log("⚠️", "No image found — please upload your ticket proof manually");
+  }
+
+  log("ℹ️", "Now enter your Price, Quantity, Seat Section and upload proof of your ticket.");
+  log("🎉", "Import complete! Review the ticket form below.");
+  el("sgImportBtn").disabled = false;
+
+  setTimeout(() => {
+    el("ticketPrefillNotice").classList.add("show");
+    el("ticketCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    showToast("Event details imported! Fill in your ticket info.", "success");
+  }, 1200);
+}
+
+/* -------------------------------------------------------- */
 
 function escHtml(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");

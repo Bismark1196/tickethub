@@ -232,6 +232,35 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
 .ticket-preview-placeholder svg { width:28px; height:28px; opacity:0.4; }
 .ticket-preview-placeholder span { font-size:12.5px; }
 
+/* Ticket Edit — Image upload/URL editing (mirrors upload.html's event image UI, purple-themed) */
+.ticket-img-tabs { display:flex; gap:0; margin-bottom:10px; border:1.5px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; background:var(--cream); }
+.ticket-img-tab { flex:1; padding:9px 12px; display:flex; align-items:center; justify-content:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--muted); cursor:pointer; border:none; background:none; font-family:'DM Sans',sans-serif; transition:var(--transition); }
+.ticket-img-tab svg { width:13px; height:13px; flex-shrink:0; }
+.ticket-img-tab:first-child { border-right:1.5px solid var(--border); }
+.ticket-img-tab.active { background:var(--ticket-purple); color:var(--white); }
+.ticket-img-tab:not(.active):hover { background:#eeebe4; color:var(--slate); }
+.ticket-img-upload-zone { border:2px dashed var(--border); border-radius:var(--radius-sm); background:var(--cream); padding:18px 16px; text-align:center; cursor:pointer; transition:var(--transition); position:relative; }
+.ticket-img-upload-zone:hover, .ticket-img-upload-zone.drag-over { border-color:var(--ticket-purple); background:#f2f2ff; }
+.ticket-img-upload-zone input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; padding:0; border:none; background:none; }
+.ticket-img-upload-zone-icon { width:36px; height:36px; border-radius:50%; background:var(--white); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; margin:0 auto 9px; }
+.ticket-img-upload-zone-icon svg { width:17px; height:17px; color:var(--muted); }
+.ticket-img-upload-zone-title { font-size:13px; font-weight:600; color:var(--slate); margin-bottom:3px; }
+.ticket-img-upload-zone-title strong { color:var(--ticket-purple); }
+.ticket-img-upload-zone-sub { font-size:11px; color:var(--muted); }
+.ticket-img-upload-progress { display:none; margin-top:10px; }
+.ticket-img-upload-progress.show { display:block; }
+.ticket-img-upload-progress-track { height:4px; background:var(--border); border-radius:4px; overflow:hidden; }
+.ticket-img-upload-progress-fill { height:100%; background:linear-gradient(90deg,#4f46e5,var(--ticket-purple)); border-radius:4px; width:0%; transition:width 0.2s ease; }
+.ticket-img-upload-progress-label { font-size:11px; color:var(--muted); margin-top:5px; display:flex; align-items:center; justify-content:space-between; }
+.ticket-img-url-panel { display:none; }
+.ticket-img-url-panel.show { display:block; }
+.ticket-preview-wrap { cursor:default; }
+.ticket-img-filename-badge { display:none; position:absolute; bottom:8px; left:50%; transform:translateX(-50%); background:rgba(10,10,10,0.72); backdrop-filter:blur(6px); color:var(--white); font-size:11px; font-weight:600; padding:3px 12px; border-radius:20px; white-space:nowrap; max-width:90%; overflow:hidden; text-overflow:ellipsis; }
+.ticket-img-filename-badge.show { display:block; }
+.ticket-img-clear-btn { display:none; position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; background:rgba(10,10,10,0.65); border:none; cursor:pointer; color:var(--white); font-size:14px; line-height:1; align-items:center; justify-content:center; transition:background 0.15s; }
+.ticket-img-clear-btn.show { display:flex; }
+.ticket-img-clear-btn:hover { background:#ef4444; }
+
 /* Toast */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--charcoal); color:var(--white); padding:11px 22px; border-radius:30px; font-size:14px; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,0.3); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
 .toast.show { transform:translateX(-50%) translateY(0); }
@@ -631,12 +660,51 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--bl
           </select>
         </div>
 
+        <div class="ticket-edit-field" style="margin-top:16px;">
+          <label class="ticket-edit-label">Ticket Proof Image</label>
+          <div class="ticket-img-tabs">
+            <button type="button" class="ticket-img-tab active" id="editTicketTabUpload">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload File
+            </button>
+            <button type="button" class="ticket-img-tab" id="editTicketTabUrl">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              Paste URL
+            </button>
+          </div>
+          <div id="editTicketUploadPanel">
+            <div class="ticket-img-upload-zone" id="editTicketImgDropZone">
+              <input type="file" id="editTicketImgFileInput" accept="image/jpeg,image/png,image/webp,image/gif" />
+              <div class="ticket-img-upload-zone-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="ticket-img-upload-zone-title"><strong>Click to upload</strong> or drag & drop</div>
+              <div class="ticket-img-upload-zone-sub">JPG, PNG, WEBP, GIF · Max 5 MB</div>
+            </div>
+            <div class="ticket-img-upload-progress" id="editTicketImgUploadProgress">
+              <div class="ticket-img-upload-progress-track">
+                <div class="ticket-img-upload-progress-fill" id="editTicketImgProgressFill"></div>
+              </div>
+              <div class="ticket-img-upload-progress-label">
+                <span id="editTicketImgProgressName">Uploading…</span>
+                <span id="editTicketImgProgressPct">0%</span>
+              </div>
+            </div>
+          </div>
+          <div class="ticket-img-url-panel" id="editTicketUrlPanel">
+            <input type="text" id="editTicketImageUrl" class="ticket-edit-input" placeholder="https://example.com/image.jpg" autocomplete="off">
+          </div>
+        </div>
+
+        <input type="hidden" id="editTicketImage">
         <div class="ticket-preview-wrap" id="ticketPreviewWrap">
           <img id="editTicketImagePreview" alt="Preview">
           <div class="ticket-preview-placeholder">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             <span>No image</span>
           </div>
+          <div class="ticket-img-filename-badge" id="editTicketImgFilenameBadge"></div>
+          <button type="button" class="ticket-img-clear-btn" id="editTicketImgClearBtn" title="Remove image">×</button>
         </div>
 
         <div class="ticket-edit-actions">
@@ -659,6 +727,8 @@ import { getFirestore, collection, getDocs, doc, deleteDoc, query, orderBy, upda
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAQ-GT_LdGUfoFUw_-CCT-i2k_Ju1DKYCA",
@@ -672,6 +742,7 @@ const firebaseConfig = {
 const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 const MONTHS_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
@@ -742,12 +813,12 @@ function buildDateRowHTML(dates) {
 // Load + Render Events
 async function loadEvents() {
   const today = new Date(); today.setHours(0,0,0,0);
-  let snap;
-  try {
-    snap = await getDocs(query(collection(db, "events"), orderBy("created_at", "desc")));
-  } catch(e) {
-    snap = await getDocs(collection(db, "events"));
-  }
+  // NOTE: We intentionally do NOT use orderBy("created_at") here.
+  // Firestore's orderBy silently excludes any document missing that field,
+  // and auto-uploaded vendor events (see upload.html's auto-uploader) are
+  // written with `submittedAt` instead of `created_at` — so they would
+  // vanish from this list entirely. We fetch everything and sort client-side.
+  const snap = await getDocs(collection(db, "events"));
   allEvents = [];
   snap.forEach(d => {
     const ev    = d.data();
@@ -755,12 +826,15 @@ async function loadEvents() {
     const lastRaw  = dates.length ? dates[dates.length - 1] : null;
     const lastDate = toJSDate(lastRaw);
     const isPast   = lastDate ? lastDate < today : false;
-    allEvents.push({ id: d.id, ...ev, _isPast: isPast, _dates: dates });
+    // Support both manually-applied events (created_at) and auto-uploaded
+    // vendor events (submittedAt) for sorting purposes.
+    const sortTs = ev.created_at?.toMillis?.() ?? ev.submittedAt?.toMillis?.() ?? 0;
+    allEvents.push({ id: d.id, ...ev, _isPast: isPast, _dates: dates, _sortTs: sortTs });
   });
   allEvents.sort((a, b) => {
     if (a._isPast !== b._isPast) return a._isPast ? 1 : -1;
     const da = toJSDate(a._dates[0]), db2 = toJSDate(b._dates[0]);
-    if (!da && !db2) return 0;
+    if (!da && !db2) return b._sortTs - a._sortTs;
     if (!da) return 1; if (!db2) return -1;
     return da - db2;
   });
@@ -776,17 +850,16 @@ async function loadEvents() {
 
 // Load + Render Tickets
 async function loadTickets() {
-  let snap;
-  try {
-    snap = await getDocs(query(collection(db, "ticket_listings"), orderBy("submittedAt", "desc")));
-  } catch(e) {
-    snap = await getDocs(collection(db, "ticket_listings"));
-  }
+  // Same reasoning as loadEvents(): don't orderBy a field ("submittedAt")
+  // that might be missing on some documents — fetch all, sort client-side.
+  const snap = await getDocs(collection(db, "ticket_listings"));
   allTickets = [];
   snap.forEach(d => {
     const ticket = d.data();
-    allTickets.push({ id: d.id, ...ticket });
+    const sortTs = ticket.submittedAt?.toMillis?.() ?? 0;
+    allTickets.push({ id: d.id, ...ticket, _sortTs: sortTs });
   });
+  allTickets.sort((a, b) => b._sortTs - a._sortTs);
   const pending = allTickets.filter(t => t.approvalStatus === 'pending').length;
   const approved = allTickets.filter(t => t.approvalStatus === 'approved').length;
   const rejected = allTickets.filter(t => t.approvalStatus === 'rejected').length;
@@ -819,17 +892,47 @@ function getSportIcon(sport) {
   return icons[sport] || '🎟️';
 }
 
-// NEW: Format seller rating display
+// Ticket data model note:
+// Both the buyer-facing "Sell Ticket" form and the admin auto-uploader write
+// `seller` as a NESTED OBJECT: { name, rating, sales, initial } — never as
+// flat `seller`/`sellerRating`/`sellerSales` string/number fields. The
+// helpers below normalize either shape so editing works no matter which
+// tool created the listing.
+function getSellerName(ticket) {
+  if (!ticket) return "";
+  if (typeof ticket.seller === "string") return ticket.seller;
+  if (ticket.seller && typeof ticket.seller === "object") return ticket.seller.name || "";
+  return ticket.sellerName || "";
+}
+function getSellerRatingNumber(ticket) {
+  if (!ticket) return null;
+  let raw = null;
+  if (ticket.seller && typeof ticket.seller === "object") raw = ticket.seller.rating;
+  else if (ticket.sellerRating !== undefined) raw = ticket.sellerRating;
+  if (raw === null || raw === undefined || raw === "") return null;
+  const num = parseFloat(String(raw).replace(/[^\d.]/g, ""));
+  return isNaN(num) ? null : num;
+}
+function getSellerSalesNumber(ticket) {
+  if (!ticket) return 0;
+  let raw = null;
+  if (ticket.seller && typeof ticket.seller === "object") raw = ticket.seller.sales;
+  else if (ticket.sellerSales !== undefined) raw = ticket.sellerSales;
+  const num = parseInt(raw, 10);
+  return isNaN(num) ? 0 : num;
+}
+
+// Format seller rating display
 function getSellerRatingDisplay(rating) {
-  if (!rating) return '';
+  if (rating === null || rating === undefined || rating === "") return '';
   const ratingNum = parseFloat(rating);
   if (isNaN(ratingNum)) return '';
-  
+
   // Create star icons based on rating
   const fullStars = Math.floor(ratingNum);
   const hasHalfStar = ratingNum % 1 >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  
+  const emptyStars = Math.max(0, 5 - fullStars - (hasHalfStar ? 1 : 0));
+
   let stars = '';
   for (let i = 0; i < fullStars; i++) {
     stars += '⭐';
@@ -840,16 +943,16 @@ function getSellerRatingDisplay(rating) {
   for (let i = 0; i < emptyStars; i++) {
     stars += '☆';
   }
-  
+
   return `<span class="seller-rating-badge">${stars} ${ratingNum.toFixed(1)}</span>`;
 }
 
-// NEW: Format seller sales display
+// Format seller sales display
 function getSellerSalesDisplay(sales) {
   if (!sales || sales === 0) return '';
   const salesNum = parseInt(sales);
   if (isNaN(salesNum)) return '';
-  return `<span class="sales-count-badge">📊 ${salesNum} sale${salesNum !== 1 ? 's' : ''}</span>`;
+  return `<span class="sales-count-badge">📊 ${salesNum} sale${salesNum !== 1 ? "s" : ""}</span>`;
 }
 
 function renderTickets() {
@@ -857,7 +960,7 @@ function renderTickets() {
   const list = el("ticketsList");
   const filtered = allTickets.filter(t => {
     const matchFilter = activeTicketFilter === "all" ? true : (t.approvalStatus === activeTicketFilter || t.sport === activeTicketFilter);
-    const matchSearch = !searchVal || [t.title, t.venue, t.city, t.seller, t.sport].some(f => (f || "").toLowerCase().includes(searchVal));
+    const matchSearch = !searchVal || [t.title, t.venue, t.city, getSellerName(t), t.sport].some(f => (f || "").toLowerCase().includes(searchVal));
     return matchFilter && matchSearch;
   });
   el("ticketsTableCount").textContent = `${filtered.length} ticket${filtered.length !== 1 ? "s" : ""}`;
@@ -875,12 +978,14 @@ function renderTickets() {
       ? `<img class="event-thumb" src="${esc(t.image)}" alt="${esc(t.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="event-thumb-placeholder" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`
       : `<div class="event-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
     const statusBadge = getStatusBadge(t.approvalStatus);
-    
-    // NEW: Add seller rating and sales to meta
-    const ratingDisplay = getSellerRatingDisplay(t.sellerRating);
-    const salesDisplay = getSellerSalesDisplay(t.sellerSales);
-    
-    row.innerHTML = `${thumbHtml}<div class="event-info"><div class="event-title">${sportIcon} ${esc(t.title || "Untitled Ticket")}</div><div class="event-meta"><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(t.date || "TBD")} ${t.time ? `• ${esc(t.time)}` : ''}</span><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(t.venue || "TBD")}, ${esc(t.city || "TBD")}</span><span class="cat-badge">${sportIcon} ${esc(t.sport || "Other")}</span>${statusBadge}</div><div class="event-meta" style="margin-top:4px;"><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>$${t.price || '0'} × ${t.qty || '1'}</span><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${esc(t.seller || "Anonymous")}</span>${t.seat ? `<span class="event-meta-item">${esc(t.seat)}</span>` : ''}${ratingDisplay}${salesDisplay}</div></div><div class="event-actions"><button class="btn-edit edit-ticket-btn" title="Edit ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>${t.approvalStatus === 'pending' ? `<button class="btn-approve approve-ticket-btn" title="Approve ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Approve</button>` : ''}<button class="btn-delete delete-ticket-btn" title="Delete ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Delete</button></div>`;
+
+    // Read seller name/rating/sales from the nested `seller` object (falls
+    // back to legacy flat fields if ever present).
+    const sellerName = getSellerName(t) || "Anonymous";
+    const ratingDisplay = getSellerRatingDisplay(getSellerRatingNumber(t));
+    const salesDisplay = getSellerSalesDisplay(getSellerSalesNumber(t));
+
+    row.innerHTML = `${thumbHtml}<div class="event-info"><div class="event-title">${sportIcon} ${esc(t.title || "Untitled Ticket")}</div><div class="event-meta"><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${esc(t.date || "TBD")} ${t.time ? `• ${esc(t.time)}` : ''}</span><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>${esc(t.venue || "TBD")}, ${esc(t.city || "TBD")}</span><span class="cat-badge">${sportIcon} ${esc(t.sport || "Other")}</span>${statusBadge}</div><div class="event-meta" style="margin-top:4px;"><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>$${t.price || '0'} × ${t.qty || '1'}</span><span class="event-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${esc(sellerName)}</span>${t.seat ? `<span class="event-meta-item">${esc(t.seat)}</span>` : ''}${ratingDisplay}${salesDisplay}</div></div><div class="event-actions"><button class="btn-edit edit-ticket-btn" title="Edit ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>${t.approvalStatus === 'pending' ? `<button class="btn-approve approve-ticket-btn" title="Approve ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Approve</button>` : ''}<button class="btn-delete delete-ticket-btn" title="Delete ticket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Delete</button></div>`;
     row.querySelector(".edit-ticket-btn").onclick = () => openTicketEdit(t.id);
     if (t.approvalStatus === 'pending') {
       const approveBtn = row.querySelector(".approve-ticket-btn");
@@ -921,7 +1026,153 @@ function renderEvents() {
   });
 }
 
-// Ticket Edit Modal
+/* ---------------- Ticket Edit Modal: image upload/URL editing ---------------- */
+
+const editTicketTabUpload      = el("editTicketTabUpload");
+const editTicketTabUrl         = el("editTicketTabUrl");
+const editTicketUploadPanel    = el("editTicketUploadPanel");
+const editTicketUrlPanel       = el("editTicketUrlPanel");
+const editTicketImgDropZone    = el("editTicketImgDropZone");
+const editTicketImgFileInput   = el("editTicketImgFileInput");
+const editTicketImgUploadProgress = el("editTicketImgUploadProgress");
+const editTicketImgProgressFill   = el("editTicketImgProgressFill");
+const editTicketImgProgressName   = el("editTicketImgProgressName");
+const editTicketImgProgressPct    = el("editTicketImgProgressPct");
+const editTicketImageHidden    = el("editTicketImage");
+const editTicketImgPreview     = el("editTicketImagePreview");
+const editTicketImgPlaceholder = () => el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder");
+const editTicketImgFilenameBadge = el("editTicketImgFilenameBadge");
+const editTicketImgClearBtn    = el("editTicketImgClearBtn");
+
+let editTicketActiveTab = "upload";
+
+function editTicketSwitchTab(tab) {
+  editTicketActiveTab = tab;
+  editTicketTabUpload.classList.toggle("active", tab === "upload");
+  editTicketTabUrl.classList.toggle("active", tab === "url");
+  editTicketUploadPanel.style.display = tab === "upload" ? "" : "none";
+  editTicketUrlPanel.classList.toggle("show", tab === "url");
+}
+editTicketTabUpload.addEventListener("click", () => editTicketSwitchTab("upload"));
+editTicketTabUrl.addEventListener("click", () => editTicketSwitchTab("url"));
+
+function editTicketPreviewImage(url) {
+  if (!url) {
+    editTicketImgPreview.style.display = "none";
+    editTicketImgPreview.removeAttribute("src");
+    editTicketImgPlaceholder().style.display = "flex";
+    editTicketImgClearBtn.classList.remove("show");
+    return;
+  }
+  editTicketImgPreview.onload  = () => {
+    editTicketImgPreview.style.display = "block";
+    editTicketImgPlaceholder().style.display = "none";
+    editTicketImgClearBtn.classList.add("show");
+  };
+  editTicketImgPreview.onerror = () => {
+    editTicketImgPreview.style.display = "none";
+    editTicketImgPlaceholder().style.display = "flex";
+  };
+  editTicketImgPreview.src = url;
+}
+
+el("editTicketImageUrl").addEventListener("input", e => {
+  const v = e.target.value.trim();
+  editTicketImageHidden.value = v;
+  editTicketPreviewImage(v);
+  editTicketImgFilenameBadge.textContent = "";
+  editTicketImgFilenameBadge.classList.remove("show");
+});
+
+editTicketImgDropZone.addEventListener("dragover", e => { e.preventDefault(); editTicketImgDropZone.classList.add("drag-over"); });
+editTicketImgDropZone.addEventListener("dragleave", () => editTicketImgDropZone.classList.remove("drag-over"));
+editTicketImgDropZone.addEventListener("drop", e => {
+  e.preventDefault(); editTicketImgDropZone.classList.remove("drag-over");
+  const file = e.dataTransfer.files[0];
+  if (file) handleEditTicketImageFile(file);
+});
+editTicketImgFileInput.addEventListener("change", () => {
+  if (editTicketImgFileInput.files[0]) handleEditTicketImageFile(editTicketImgFileInput.files[0]);
+  editTicketImgFileInput.value = "";
+});
+
+function friendlyStorageError(err) {
+  const code = err?.code || "";
+  if (code === "storage/unauthorized")     return "Upload blocked — check Firebase Storage rules.";
+  if (code === "storage/canceled")         return "Upload cancelled.";
+  if (code === "storage/unknown")          return "Storage bucket not found. Enable Firebase Storage first.";
+  if (err?.message?.includes("404"))      return "Storage bucket not found (404). Go to Firebase Console → Build → Storage → Get Started.";
+  return "Upload failed: " + (err?.message || err?.code || "Unknown error");
+}
+
+async function handleEditTicketImageFile(file) {
+  if (!file.type.startsWith("image/")) { showToast("Please select an image file.", "error"); return; }
+  if (file.size > 5 * 1024 * 1024)     { showToast("Image must be under 5 MB.", "error");   return; }
+  if (!auth.currentUser)                { showToast("Please sign in first.", "error");        return; }
+
+  editTicketImgUploadProgress.classList.add("show");
+  editTicketImgProgressFill.style.width = "0%";
+  editTicketImgProgressName.textContent = file.name;
+  editTicketImgProgressPct.textContent  = "0%";
+  editTicketImgDropZone.style.pointerEvents = "none";
+
+  const safeName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
+  const path     = `ticket_images/${safeName}`;
+
+  async function tryUpload(bucketUrl) {
+    const storageInstance = bucketUrl ? getStorage(app, `gs://${bucketUrl}`) : storage;
+    const ref  = storageRef(storageInstance, path);
+    const task = uploadBytesResumable(ref, file);
+    return new Promise((resolve, reject) => {
+      task.on("state_changed",
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          editTicketImgProgressFill.style.width = pct + "%";
+          editTicketImgProgressPct.textContent  = pct + "%";
+        },
+        err => reject(err),
+        async () => { try { resolve(await getDownloadURL(task.snapshot.ref)); } catch(e) { reject(e); } }
+      );
+    });
+  }
+
+  try {
+    let downloadURL;
+    try { downloadURL = await tryUpload(null); }
+    catch (primaryErr) {
+      const isNotFound = primaryErr?.code === "storage/unknown" || primaryErr?.message?.includes("404");
+      if (isNotFound) {
+        editTicketImgProgressName.textContent = "Retrying with legacy bucket…";
+        downloadURL = await tryUpload("vendors-de792.appspot.com");
+      } else { throw primaryErr; }
+    }
+    editTicketImageHidden.value = downloadURL;
+    editTicketPreviewImage(downloadURL);
+    editTicketImgFilenameBadge.textContent = file.name;
+    editTicketImgFilenameBadge.classList.add("show");
+    editTicketImgUploadProgress.classList.remove("show");
+    editTicketImgDropZone.style.pointerEvents = "";
+    showToast("Ticket image updated!", "success");
+  } catch (err) {
+    console.error("Ticket edit storage upload error:", err);
+    editTicketImgUploadProgress.classList.remove("show");
+    editTicketImgDropZone.style.pointerEvents = "";
+    showToast(friendlyStorageError(err), "error");
+  }
+}
+
+editTicketImgClearBtn.addEventListener("click", () => {
+  editTicketImageHidden.value = "";
+  el("editTicketImageUrl").value = "";
+  editTicketImgFilenameBadge.textContent = "";
+  editTicketImgFilenameBadge.classList.remove("show");
+  editTicketImgFileInput.value = "";
+  editTicketImgUploadProgress.classList.remove("show");
+  editTicketPreviewImage("");
+});
+
+/* ---------------- Ticket Edit Modal ---------------- */
+
 function openTicketEdit(id) {
   const ticket = allTickets.find(t => t.id === id);
   if (!ticket) return;
@@ -936,24 +1187,42 @@ function openTicketEdit(id) {
   el("editTicketPrice").value = ticket.price || 0;
   el("editTicketQty").value = ticket.qty || 1;
   el("editTicketSeat").value = ticket.seat || "";
-  el("editTicketSeller").value = ticket.seller || "";
-  el("editTicketSellerContact").value = ticket.sellerContact || "";
-  
-  // NEW: Set seller rating and sales fields
-  el("editTicketSellerRating").value = ticket.sellerRating || "";
-  el("editTicketSellerSales").value = ticket.sellerSales || 0;
-  
+
+  // Seller info lives in the nested `seller` object for real listings
+  // (both user-submitted and auto-uploaded) — read through the helpers
+  // so the form is actually populated instead of showing [object Object].
+  el("editTicketSeller").value = getSellerName(ticket);
+  el("editTicketSellerContact").value = ticket.sellerContact || (ticket.seller && ticket.seller.contact) || "";
+
+  const ratingNum = getSellerRatingNumber(ticket);
+  const ratingSelect = el("editTicketSellerRating");
+  // Snap to the closest available <option> if the stored rating isn't an
+  // exact match (e.g. auto-uploader always writes "4.9").
+  if (ratingNum === null) {
+    ratingSelect.value = "";
+  } else {
+    const optionValues = Array.from(ratingSelect.options).map(o => o.value).filter(Boolean).map(Number);
+    const closest = optionValues.reduce((best, v) => Math.abs(v - ratingNum) < Math.abs(best - ratingNum) ? v : best, optionValues[0]);
+    ratingSelect.value = optionValues.length ? String(closest) : "";
+  }
+  el("editTicketSellerSales").value = getSellerSalesNumber(ticket);
+
   el("editTicketNotes").value = ticket.notes || "";
   el("editTicketStatus").value = ticket.approvalStatus || "pending";
-  const preview = el("editTicketImagePreview");
-  if (ticket.image) {
-    preview.src = ticket.image;
-    preview.style.display = "block";
-    el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder").style.display = "none";
-  } else {
-    preview.style.display = "none";
-    el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder").style.display = "flex";
-  }
+
+  // Image: seed the hidden field + URL tab with the current image (if any)
+  // and default to the "Paste URL" tab so the existing image is visible and
+  // editable immediately; switching to "Upload File" replaces it.
+  editTicketImageHidden.value = ticket.image || "";
+  el("editTicketImageUrl").value = ticket.image || "";
+  editTicketImgFilenameBadge.textContent = "";
+  editTicketImgFilenameBadge.classList.remove("show");
+  editTicketImgUploadProgress.classList.remove("show");
+  editTicketSwitchTab(ticket.image ? "url" : "upload");
+  editTicketPreviewImage(ticket.image || "");
+
+  // Make sure the Save button isn't stuck disabled from a previous edit.
+  el("saveTicketEditBtn").disabled = false;
   el("ticketEditModal").classList.add("open");
 }
 
@@ -961,17 +1230,34 @@ function closeTicketEdit() {
   editingTicketId = null;
   el("ticketEditModal").classList.remove("open");
   el("ticketEditForm").reset();
-  el("editTicketImagePreview").style.display = "none";
-  el("ticketPreviewWrap").querySelector(".ticket-preview-placeholder").style.display = "flex";
+  editTicketImageHidden.value = "";
+  editTicketImgFilenameBadge.textContent = "";
+  editTicketImgFilenameBadge.classList.remove("show");
+  editTicketImgUploadProgress.classList.remove("show");
+  editTicketSwitchTab("upload");
+  editTicketPreviewImage("");
+  el("saveTicketEditBtn").disabled = false;
 }
 
 async function saveTicketEdit(e) {
   if (e) e.preventDefault();
   if (!editingTicketId) return;
+
+  if (!editTicketImageHidden.value) {
+    showToast("Please add a ticket proof image.", "error");
+    return;
+  }
+
   const btn = el("saveTicketEditBtn");
   btn.disabled = true;
-  
-  // NEW: Include seller rating and sales in the update
+
+  const existing = allTickets.find(t => t.id === editingTicketId);
+  const existingSeller = (existing && existing.seller && typeof existing.seller === "object") ? existing.seller : {};
+
+  const sellerName = el("editTicketSeller").value.trim();
+  const ratingVal = el("editTicketSellerRating").value;
+  const salesVal = el("editTicketSellerSales").value;
+
   const ticketData = {
     sport: el("editTicketSport").value,
     title: el("editTicketTitle").value.trim(),
@@ -982,18 +1268,23 @@ async function saveTicketEdit(e) {
     price: parseFloat(el("editTicketPrice").value) || 0,
     qty: parseInt(el("editTicketQty").value) || 1,
     seat: el("editTicketSeat").value.trim(),
-    seller: el("editTicketSeller").value.trim(),
-    sellerContact: el("editTicketSellerContact").value.trim(),
-    
-    // NEW: Seller rating and sales fields
-    sellerRating: el("editTicketSellerRating").value ? parseFloat(el("editTicketSellerRating").value) : null,
-    sellerSales: el("editTicketSellerSales").value ? parseInt(el("editTicketSellerSales").value) : 0,
-    
+
+    // Write seller info back as the nested object the rest of the app
+    // (buyer-facing listing cards, purchase flow, chat) expects.
+    seller: {
+      ...existingSeller,
+      name: sellerName || existingSeller.name || "Seller",
+      initial: (sellerName || existingSeller.name || "S").charAt(0).toUpperCase(),
+      rating: ratingVal ? parseFloat(ratingVal) : (existingSeller.rating ?? null),
+      sales: salesVal !== "" ? (parseInt(salesVal, 10) || 0) : (existingSeller.sales ?? 0),
+      contact: el("editTicketSellerContact").value.trim() || existingSeller.contact || ""
+    },
+
     notes: el("editTicketNotes").value.trim(),
     approvalStatus: el("editTicketStatus").value,
-    image: allTickets.find(t => t.id === editingTicketId)?.image || null
+    image: editTicketImageHidden.value
   };
-  
+
   try {
     await updateDoc(doc(db, "ticket_listings", editingTicketId), ticketData);
     showToast("Ticket updated successfully!", "success");
