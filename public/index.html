@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VendHub">
 <meta name="theme-color" content="#080808">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="images/icon-192.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%238a6e1e'/%3E%3Cstop offset='100%25' stop-color='%23d4b466'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%230c0c0c'/%3E%3Crect x='2' y='2' width='28' height='28' rx='5' fill='url(%23g)'/%3E%3Ctext x='16' y='23' font-family='Arial,Helvetica,sans-serif' font-size='19' font-weight='900' fill='%230c0c0c' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
 <meta name="description" content="Apply for vendor booths and buy or sell resale tickets across all 50 US states.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -505,6 +507,20 @@ body.modal-open #appCartBtn{display:none !important;}
 .drawer-footer{padding:13px 16px;border-top:1px solid var(--ink-05);background:var(--white);flex-shrink:0;}
 .drawer-footer-note{font-size:11px;color:var(--ink-50);text-align:center;line-height:1.6;}
 .drawer-footer-note strong{color:var(--gold-dk);}
+
+/* ===== PWA INSTALL BANNER ===== */
+#pwa-install-banner{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--white);border:1px solid var(--ink-10);border-radius:var(--r-xl);box-shadow:var(--sh-xl);padding:14px 18px;display:flex;align-items:center;gap:14px;z-index:900;width:calc(100vw - 40px);max-width:400px;transition:transform .45s var(--spring);font-family:'Instrument Sans',sans-serif;}
+#pwa-install-banner.show{transform:translateX(-50%) translateY(0);}
+.pwa-icon{width:46px;height:46px;border-radius:var(--r-md);background:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pwa-icon-text{font-family:'Syne',sans-serif;font-size:9px;font-weight:900;color:var(--gold-lt);text-align:center;line-height:1.2;}
+.pwa-text{flex:1;min-width:0;}
+.pwa-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);}
+.pwa-sub{font-size:12px;color:var(--ink-50);margin-top:1px;}
+.pwa-btn{padding:8px 16px;background:var(--ink);color:#fff;border:none;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background var(--dur) var(--ease);flex-shrink:0;}
+.pwa-btn:hover{background:#1c1c1e;}
+.pwa-dismiss{background:none;border:none;cursor:pointer;color:var(--ink-50);font-size:18px;padding:4px;flex-shrink:0;line-height:1;}
+.pwa-dismiss:hover{color:var(--ink);}
+@media(max-width:768px){#pwa-install-banner{bottom:20px;}}
 
 /* ===== CHAT BUTTON ===== */
 #openChatBtn{position:fixed;bottom:28px;right:28px;z-index:999;display:none;align-items:center;gap:9px;background:var(--ink);color:var(--white);padding:12px 20px 12px 14px;border-radius:var(--r-pill);font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;border:none;box-shadow:var(--sh-lg);transition:all var(--dur) var(--ease);outline:1.5px solid rgba(184,150,46,.20);outline-offset:0;}
@@ -1246,6 +1262,16 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offse
 
 <!-- OFFLINE BAR -->
 <div id="offline-bar">You're offline — some features may be unavailable</div>
+
+<div id="pwa-install-banner">
+  <div class="pwa-icon"><div class="pwa-icon-text">Vend<br>Hub</div></div>
+  <div class="pwa-text">
+    <div class="pwa-title">Install VendHub</div>
+    <div class="pwa-sub">Add to home screen for quick access</div>
+  </div>
+  <button class="pwa-btn" id="pwaInstallBtn">Install</button>
+  <button class="pwa-dismiss" id="pwaDismissBtn" title="Dismiss">×</button>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -2538,6 +2564,42 @@ async function getPurchaseIdForListing(listingId) {
     return null;
   }
 }
+
+/* ── PWA install prompt ── */
+let deferredInstallPrompt = null;
+const pwaBanner = $('pwa-install-banner');
+const pwaInstallBtn = $('pwaInstallBtn');
+const pwaDismissBtn = $('pwaDismissBtn');
+const pwaDismissed = sessionStorage.getItem('pwa-dismissed');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!pwaDismissed && pwaBanner) {
+    setTimeout(() => pwaBanner.classList.add('show'), 3000);
+  }
+});
+
+if (pwaInstallBtn) {
+  pwaInstallBtn.addEventListener('click', async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    pwaBanner.classList.remove('show');
+  });
+}
+if (pwaDismissBtn) {
+  pwaDismissBtn.addEventListener('click', () => {
+    pwaBanner.classList.remove('show');
+    sessionStorage.setItem('pwa-dismissed', '1');
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  pwaBanner?.classList.remove('show');
+  deferredInstallPrompt = null;
+});
 
 $('closeChat').addEventListener('click',()=>{$('chatModal').classList.remove('open');document.body.classList.remove('modal-open');if(unsubChat){unsubChat();unsubChat=null;}});
 
